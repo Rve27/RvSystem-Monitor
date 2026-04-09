@@ -10,7 +10,7 @@ import java.util.Locale
 
 object MemoryUtils {
     private const val TAG = "MemoryUtils"
-    private const val GB_FACTOR = 1073741824.0
+    private const val GB_FACTOR = 1000000000.0
 
     private fun getSystemMemoryInfo(context: Context): ActivityManager.MemoryInfo {
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
