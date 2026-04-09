@@ -145,7 +145,7 @@ object BottomNavBar {
                 }
                 .clip(CircleShape)
                 .clickable(onClick = onClick)
-                .pointerInput(Unit) {
+                .pointerInput(isSelected) {
                     val animationSpec = spring(
                         dampingRatio = 0.5f,
                         stiffness = 300f,
@@ -153,8 +153,10 @@ object BottomNavBar {
                     )
                     awaitEachGesture {
                         awaitFirstDown(requireUnconsumed = false)
-                        animationScope.launch {
-                            progressAnimation.animateTo(1f, animationSpec)
+                        if (isSelected) {
+                            animationScope.launch {
+                                progressAnimation.animateTo(1f, animationSpec)
+                            }
                         }
 
                         waitForUpOrCancellation()
