@@ -4,10 +4,15 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -20,12 +25,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
 import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_home_rounded
 import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_list_rounded
 import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_memory_alt_rounded
@@ -121,10 +131,38 @@ object BottomNavBar {
             label = "Content Color Animation",
         )
 
+        val animationScope = rememberCoroutineScope()
+        val progressAnimation = remember { Animatable(0f) }
+
         Box(
             modifier = Modifier
+                .graphicsLayer {
+                    val progress = progressAnimation.value
+                    val maxScale = (size.width + 16.dp.toPx()) / size.width
+                    val scale = lerp(1f, maxScale, progress)
+                    scaleX = scale
+                    scaleY = scale
+                }
                 .clip(CircleShape)
                 .clickable(onClick = onClick)
+                .pointerInput(Unit) {
+                    val animationSpec = spring(
+                        dampingRatio = 0.5f,
+                        stiffness = 300f,
+                        visibilityThreshold = 0.001f
+                    )
+                    awaitEachGesture {
+                        awaitFirstDown(requireUnconsumed = false)
+                        animationScope.launch {
+                            progressAnimation.animateTo(1f, animationSpec)
+                        }
+
+                        waitForUpOrCancellation()
+                        animationScope.launch {
+                            progressAnimation.animateTo(0f, animationSpec)
+                        }
+                    }
+                }
                 .animateContentSize(
                     animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
                 ),
