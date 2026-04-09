@@ -6,12 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.rve.systemmonitor.ui.data.CPU
 import com.rve.systemmonitor.ui.data.Device
 import com.rve.systemmonitor.ui.data.Display
+import com.rve.systemmonitor.ui.data.GPU
 import com.rve.systemmonitor.ui.data.OS
 import com.rve.systemmonitor.ui.data.RAM
 import com.rve.systemmonitor.ui.data.ZRAM
 import com.rve.systemmonitor.utils.CpuUtils
 import com.rve.systemmonitor.utils.DeviceUtils
 import com.rve.systemmonitor.utils.DisplayUtils
+import com.rve.systemmonitor.utils.GpuUtils
 import com.rve.systemmonitor.utils.MemoryUtils
 import com.rve.systemmonitor.utils.OSUtils
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +38,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _cpu = MutableStateFlow(CPU())
     val cpu: StateFlow<CPU> = _cpu
 
+    private val _gpu = MutableStateFlow(GPU())
+    val gpu: StateFlow<GPU> = _gpu
+
     private val _ram = MutableStateFlow(RAM())
     val ram: StateFlow<RAM> = _ram
 
@@ -49,6 +54,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         updateOSInfo()
         updateDisplayInfo()
         updateCpuInfo()
+        updateGpuInfo()
         updateMemoryInfo()
     }
 
@@ -100,6 +106,21 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 model = CpuUtils.getSocModel(),
                 cores = CpuUtils.getCoreCount(),
             )
+        }
+    }
+
+    fun updateGpuInfo() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val context = getApplication<Application>()
+            val (renderer, vendor) = GpuUtils.getGpuDetails()
+
+            _gpu.update {
+                GPU(
+                    renderer = renderer,
+                    vendor = vendor,
+                    glesVersion = GpuUtils.getGlesVersion(context)
+                )
+            }
         }
     }
 

@@ -47,6 +47,7 @@ import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsy
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_rounded_filled
 import com.rve.systemmonitor.ui.components.AppBars.SimpleTopAppBar
 import com.rve.systemmonitor.ui.data.CPU
+import com.rve.systemmonitor.ui.data.GPU
 import com.rve.systemmonitor.ui.data.Device
 import com.rve.systemmonitor.ui.data.Display
 import com.rve.systemmonitor.ui.data.OS
@@ -60,6 +61,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     val os by viewModel.os.collectAsStateWithLifecycle()
     val display by viewModel.display.collectAsStateWithLifecycle()
     val cpu by viewModel.cpu.collectAsStateWithLifecycle()
+    val gpu by viewModel.gpu.collectAsStateWithLifecycle()
     val ram by viewModel.ram.collectAsStateWithLifecycle()
     val zram by viewModel.zram.collectAsStateWithLifecycle()
 
@@ -100,6 +102,9 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 }
                 item {
                     CPUCard(cpu)
+                }
+                item {
+                    GPUCard(gpu)
                 }
                 item {
                     MemoryCard(
@@ -321,6 +326,60 @@ fun CPUCard(cpu: CPU) {
                     )
                     Text(
                         text = "Cores: ${cpu.cores} Cores",
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun GPUCard(gpu: GPU) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        ),
+        shape = MaterialTheme.shapes.largeIncreased,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = "GPU",
+                style = MaterialTheme.typography.titleLarge,
+            )
+            HorizontalDivider(
+                thickness = 2.dp,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+            Row(
+                modifier = Modifier.height(IntrinsicSize.Min),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Icon(
+                    painter = painterResource(materialsymbols_ic_memory_rounded_filled),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(1f),
+                )
+                Column {
+                    Text(
+                        text = "GPU: ${gpu.renderer}",
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Text(
+                        text = "Vendor: ${gpu.vendor}",
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Text(
+                        text = "OpenGL ES: ${gpu.glesVersion}",
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 }
