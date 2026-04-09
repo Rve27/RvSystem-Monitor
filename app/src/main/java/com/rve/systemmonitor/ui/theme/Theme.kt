@@ -32,7 +32,7 @@ fun RvSystemMonitorTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @C
     MaterialExpressiveTheme(
         colorScheme = colorScheme,
         motionScheme = MotionScheme.expressive(),
-        typography = Typography(),
+        typography = appTypography,
         content = content,
     )
 }
