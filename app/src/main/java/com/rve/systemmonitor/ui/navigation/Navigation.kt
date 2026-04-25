@@ -17,17 +17,22 @@ fun AppNavigation() {
     NavHost(
         navController = navController,
         startDestination = Route.Main,
-        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
     ) {
         composable<Route.Main> {
             RvSystemMonitorApp(
-                onNavigateToSettings = { navController.navigate(Route.Settings) }
+                onNavigateToSettings = { navController.navigate(Route.Settings) },
             )
         }
 
-        composable<Route.Settings> {
+        composable<Route.Settings>(
+            enterTransition = { enterTransition() },
+            exitTransition = { exitTransition() },
+            popEnterTransition = { popEnterTransition() },
+            popExitTransition = { popExitTransition() },
+        ) {
             SettingsScreen(
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
             )
         }
     }

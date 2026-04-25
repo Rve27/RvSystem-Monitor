@@ -14,8 +14,8 @@ import com.rve.systemmonitor.utils.ThemeMode
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
 
         val settingsPreferences = SettingsPreferences(this)
 
