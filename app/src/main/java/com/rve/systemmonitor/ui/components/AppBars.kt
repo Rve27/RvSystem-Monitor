@@ -32,7 +32,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_settings_rounded_filled
 
+/**
+ * A collection of Top App Bars used in the application.
+ */
 object AppBars {
+    /**
+     * A simple Top App Bar with a title, subtitle, and a settings action.
+     *
+     * @param title The main title to display in the app bar.
+     * @param subtitle The subtitle to display below the main title.
+     * @param onNavigateToSettings Callback invoked when the settings icon is clicked.
+     */
     @Composable
     fun SimpleTopAppBar(title: String, subtitle: String, onNavigateToSettings: () -> Unit) {
         TopAppBar(
@@ -79,6 +89,13 @@ object AppBars {
     }
 }
 
+/**
+ * A Medium Top App Bar that adjusts its title padding and navigation icon style based on scroll.
+ *
+ * @param title The title to display in the app bar.
+ * @param onNavigateBack Callback invoked when the navigation (back) icon is clicked.
+ * @param scrollBehavior The [TopAppBarScrollBehavior] that dictates how the app bar responds to scrolling.
+ */
 @Composable
 fun ExitUntilCollapsedMediumTopAppBar(title: String, onNavigateBack: () -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
     MediumTopAppBar(
