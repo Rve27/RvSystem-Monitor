@@ -1,5 +1,8 @@
 package com.rve.systemmonitor.ui.data
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class OS(
     val name: String = "Android",
     val version: String = "unknown",

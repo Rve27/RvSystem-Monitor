@@ -8,8 +8,6 @@ import com.rve.systemmonitor.ui.data.Device
 import com.rve.systemmonitor.ui.data.Display
 import com.rve.systemmonitor.ui.data.GPU
 import com.rve.systemmonitor.ui.data.OS
-import com.rve.systemmonitor.ui.data.RAM
-import com.rve.systemmonitor.ui.data.ZRAM
 import com.rve.systemmonitor.utils.CpuUtils
 import com.rve.systemmonitor.utils.DeviceUtils
 import com.rve.systemmonitor.utils.DisplayUtils
@@ -21,31 +19,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
-    private val _device = MutableStateFlow(Device())
-    val device: StateFlow<Device> = _device
-
-    private val _os = MutableStateFlow(OS())
-    val os: StateFlow<OS> = _os
-
-    private val _display = MutableStateFlow(Display())
-    val display: StateFlow<Display> = _display
-
-    private val _cpu = MutableStateFlow(CPU())
-    val cpu: StateFlow<CPU> = _cpu
-
-    private val _gpu = MutableStateFlow(GPU())
-    val gpu: StateFlow<GPU> = _gpu
-
-    private val _ram = MutableStateFlow(RAM())
-    val ram: StateFlow<RAM> = _ram
-
-    private val _zram = MutableStateFlow(ZRAM())
-    val zram: StateFlow<ZRAM> = _zram
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     private var memoryJob: Job? = null
 
@@ -58,89 +39,101 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         updateMemoryInfo()
     }
 
-    fun updateDeviceInfo() {
+    private fun updateDeviceInfo() {
         viewModelScope.launch {
-            _device.update {
-                Device(
-                    manufacturer = DeviceUtils.getManufacturer(),
-                    model = DeviceUtils.getModel(),
-                    device = DeviceUtils.getDevice(),
+            _uiState.update {
+                it.copy(
+                    device = Device(
+                        manufacturer = DeviceUtils.getManufacturer(),
+                        model = DeviceUtils.getModel(),
+                        device = DeviceUtils.getDevice(),
+                    ),
                 )
             }
         }
     }
 
-    fun updateOSInfo() {
+    private fun updateOSInfo() {
         viewModelScope.launch {
             val currentSdk = OSUtils.getSdkInt()
 
-            _os.update {
-                OS(
-                    version = OSUtils.getAndroidVersion(),
-                    sdk = currentSdk,
-                    dessertName = OSUtils.getDessertName(currentSdk),
-                    securityPatch = OSUtils.getSecurityPatch(),
+            _uiState.update {
+                it.copy(
+                    os = OS(
+                        version = OSUtils.getAndroidVersion(),
+                        sdk = currentSdk,
+                        dessertName = OSUtils.getDessertName(currentSdk),
+                        securityPatch = OSUtils.getSecurityPatch(),
+                    ),
                 )
             }
         }
     }
 
-    fun updateDisplayInfo() {
+    private fun updateDisplayInfo() {
         viewModelScope.launch {
             val context = getApplication<Application>()
-            _display.update {
-                Display(
-                    resolution = DisplayUtils.getResolution(context),
-                    refreshRate = DisplayUtils.getRefreshRate(context),
-                    densityDpi = DisplayUtils.getDensityDpi(context),
-                    screenSizeInches = DisplayUtils.getScreenSizeInches(context),
+            _uiState.update {
+                it.copy(
+                    display = Display(
+                        resolution = DisplayUtils.getResolution(context),
+                        refreshRate = DisplayUtils.getRefreshRate(context),
+                        densityDpi = DisplayUtils.getDensityDpi(context),
+                        screenSizeInches = DisplayUtils.getScreenSizeInches(context),
+                    ),
                 )
             }
         }
     }
 
-    fun updateCpuInfo() {
-        _cpu.update {
-            CPU(
-                manufacturer = CpuUtils.getSocManufacturer(),
-                model = CpuUtils.getSocModel(),
-                cores = CpuUtils.getCoreCount(),
+    private fun updateCpuInfo() {
+        _uiState.update {
+            it.copy(
+                cpu = CPU(
+                    manufacturer = CpuUtils.getSocManufacturer(),
+                    model = CpuUtils.getSocModel(),
+                    cores = CpuUtils.getCoreCount(),
+                ),
             )
         }
     }
 
-    fun updateGpuInfo() {
+    private fun updateGpuInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             val context = getApplication<Application>()
             val (renderer, vendor) = GpuUtils.getGpuDetails()
 
-            _gpu.update {
-                GPU(
-                    renderer = renderer,
-                    vendor = vendor,
-                    glesVersion = GpuUtils.getGlesVersion(context),
+            _uiState.update {
+                it.copy(
+                    gpu = GPU(
+                        renderer = renderer,
+                        vendor = vendor,
+                        glesVersion = GpuUtils.getGlesVersion(context),
+                    ),
                 )
             }
         }
     }
 
-    fun updateMemoryInfo() {
+    private fun updateMemoryInfo() {
         memoryJob?.cancel()
 
         memoryJob = viewModelScope.launch(Dispatchers.IO) {
-            val context = getApplication<Application>()
-
             while (isActive) {
                 val newRamData = MemoryUtils.getRamData()
                 val newZramData = MemoryUtils.getZramData()
-                _ram.update { newRamData }
-                _zram.update { newZramData }
+                _uiState.update {
+                    it.copy(
+                        ram = newRamData,
+                        zram = newZramData,
+                    )
+                }
                 delay(2000L)
             }
         }
     }
 
-    fun stopMemoryJob() {
+    private fun stopMemoryJob() {
         memoryJob?.cancel()
         memoryJob = null
     }

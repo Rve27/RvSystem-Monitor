@@ -68,13 +68,7 @@ import com.rve.systemmonitor.ui.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = viewModel(), onNavigateToSettings: () -> Unit) {
-    val device by viewModel.device.collectAsStateWithLifecycle()
-    val os by viewModel.os.collectAsStateWithLifecycle()
-    val display by viewModel.display.collectAsStateWithLifecycle()
-    val cpu by viewModel.cpu.collectAsStateWithLifecycle()
-    val gpu by viewModel.gpu.collectAsStateWithLifecycle()
-    val ram by viewModel.ram.collectAsStateWithLifecycle()
-    val zram by viewModel.zram.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -104,25 +98,24 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel(), onNavigateToSettings: () 
                 modifier = Modifier.padding(horizontal = 16.dp),
             ) {
                 item {
-                    DeviceCard(device)
+                    DeviceCard(uiState.device)
                 }
                 item {
-                    OSCard(os)
+                    OSCard(uiState.os)
                 }
                 item {
-                    DisplayCard(display)
+                    DisplayCard(uiState.display)
                 }
                 item {
-                    CPUCard(cpu)
+                    CPUCard(uiState.cpu)
                 }
                 item {
-                    GPUCard(gpu)
+                    GPUCard(uiState.gpu)
                 }
                 item {
                     MemoryCard(
-                        ram = ram,
-                        zram = zram,
-                        isZramActive = zram.isActive,
+                        ram = uiState.ram,
+                        zram = uiState.zram,
                     )
                 }
             }
@@ -131,7 +124,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel(), onNavigateToSettings: () 
 }
 
 @Composable
-fun DeviceCard(device: Device) {
+private fun DeviceCard(device: Device) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -222,7 +215,7 @@ fun DeviceCard(device: Device) {
 }
 
 @Composable
-fun OSCard(os: OS) {
+private fun OSCard(os: OS) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -328,7 +321,7 @@ fun OSCard(os: OS) {
 }
 
 @Composable
-fun DisplayCard(display: Display) {
+private fun DisplayCard(display: Display) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -434,7 +427,7 @@ fun DisplayCard(display: Display) {
 }
 
 @Composable
-fun CPUCard(cpu: CPU) {
+private fun CPUCard(cpu: CPU) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -525,7 +518,7 @@ fun CPUCard(cpu: CPU) {
 }
 
 @Composable
-fun GPUCard(gpu: GPU) {
+private fun GPUCard(gpu: GPU) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -617,7 +610,7 @@ fun GPUCard(gpu: GPU) {
 }
 
 @Composable
-fun MemoryCard(ram: RAM, zram: ZRAM, isZramActive: Boolean = false) {
+private fun MemoryCard(ram: RAM, zram: ZRAM) {
     val density = LocalDensity.current
     val customStroke = remember(density) {
         with(density) {
@@ -628,14 +621,18 @@ fun MemoryCard(ram: RAM, zram: ZRAM, isZramActive: Boolean = false) {
         }
     }
 
-    val ramTargetProgress = if (ram.usedPercentage.isNaN()) 0f else (ram.usedPercentage.toFloat() / 100f)
+    val ramTargetProgress = remember(ram.usedPercentage) {
+        if (ram.usedPercentage.isNaN()) 0f else (ram.usedPercentage.toFloat() / 100f)
+    }
     val ramAnimatedProgress by animateFloatAsState(
         targetValue = ramTargetProgress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
         label = "RAM Progress Animation",
     )
 
-    val zramTargetProgress = if (zram.usedPercentage.isNaN()) 0f else (zram.usedPercentage.toFloat() / 100f)
+    val zramTargetProgress = remember(zram.usedPercentage) {
+        if (zram.usedPercentage.isNaN()) 0f else (zram.usedPercentage.toFloat() / 100f)
+    }
     val zramAnimatedProgress by animateFloatAsState(
         targetValue = zramTargetProgress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
@@ -740,7 +737,7 @@ fun MemoryCard(ram: RAM, zram: ZRAM, isZramActive: Boolean = false) {
                     }
                 }
 
-                if (isZramActive) {
+                if (zram.isActive) {
                     Row(
                         modifier = Modifier.height(IntrinsicSize.Min),
                         verticalAlignment = Alignment.CenterVertically,
