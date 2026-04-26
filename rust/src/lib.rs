@@ -1,3 +1,8 @@
+//! # RvSystem Monitor Rust Backend
+//!
+//! This crate provides the native implementation for system monitoring tasks in the RvSystem Monitor application.
+//! It interfaces with the Android application via JNI (Java Native Interface).
+
 #![allow(non_snake_case)]
 
 use jni::JNIEnv;
@@ -6,6 +11,17 @@ use jni::sys::jdoubleArray;
 
 pub mod mm;
 
+/// JNI interface to retrieve RAM data.
+///
+/// This function is called from Kotlin's `MemoryUtils.getRamDataNative()`.
+/// It returns a `jdoubleArray` containing:
+/// 1. Total RAM (GB)
+/// 2. Available RAM (GB)
+/// 3. Used RAM (GB)
+/// 4. Used RAM Percentage (%)
+///
+/// # Safety
+/// This function is marked as `unsafe` because it is called via JNI and interacts with the JVM.
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getRamDataNative<'local>(
     env: JNIEnv<'local>,
@@ -21,6 +37,18 @@ pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getRamDataNa
     output.into_raw()
 }
 
+/// JNI interface to retrieve ZRAM data.
+///
+/// This function is called from Kotlin's `MemoryUtils.getZramDataNative()`.
+/// It returns a `jdoubleArray` containing:
+/// 1. Is Active (1.0 for true, 0.0 for false)
+/// 2. Total ZRAM (GB)
+/// 3. Available ZRAM (GB)
+/// 4. Used ZRAM (GB)
+/// 5. Used ZRAM Percentage (%)
+///
+/// # Safety
+/// This function is marked as `unsafe` because it is called via JNI and interacts with the JVM.
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getZramDataNative<'local>(
     env: JNIEnv<'local>,

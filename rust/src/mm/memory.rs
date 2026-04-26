@@ -1,30 +1,48 @@
+//! # Memory Data Provider
+//!
+//! Provides functions to read and parse memory information from the system.
+
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
 
+/// Factor used to convert bytes to Gigabytes.
 const GB_FACTOR: f64 = 1_000_000_000.0;
 
+/// Represents RAM usage data.
 #[derive(Debug, Default)]
 pub struct RamData {
+    /// Total RAM in GB.
     pub total: f64,
+    /// Available RAM in GB.
     pub available: f64,
+    /// Used RAM in GB.
     pub used: f64,
+    /// Percentage of RAM used.
     pub used_percentage: f64,
 }
 
+/// Represents ZRAM (Compressed RAM) usage data.
 #[derive(Debug, Default)]
 pub struct ZramData {
+    /// Indicates if ZRAM is currently active.
     pub is_active: bool,
+    /// Total ZRAM in GB.
     pub total: f64,
+    /// Available ZRAM in GB.
     pub available: f64,
+    /// Used ZRAM in GB.
     pub used: f64,
+    /// Percentage of ZRAM used.
     pub used_percentage: f64,
 }
 
+/// Formats a float to two decimal places.
 fn format_to_two_decimals(value: f64) -> f64 {
     (value * 100.0).round() / 100.0
 }
 
+/// Helper function to read lines from a file.
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
 where
     P: AsRef<Path>,
@@ -33,6 +51,9 @@ where
     Ok(io::BufReader::new(file).lines())
 }
 
+/// Retrieves memory data by parsing `/proc/meminfo`.
+///
+/// Returns a tuple containing `RamData` and `ZramData`.
 pub fn get_memory_data() -> (RamData, ZramData) {
     let mut mem_total_bytes = 0_f64;
     let mut mem_available_bytes = 0_f64;
