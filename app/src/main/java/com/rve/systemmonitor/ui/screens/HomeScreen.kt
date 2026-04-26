@@ -46,6 +46,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_mobile_3_rounded
@@ -57,17 +58,17 @@ import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsy
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_mobile_rounded_filled
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_view_in_ar_rounded_filled
 import com.rve.systemmonitor.ui.components.AppBars.SimpleTopAppBar
-import com.rve.systemmonitor.ui.data.CPU
-import com.rve.systemmonitor.ui.data.Device
-import com.rve.systemmonitor.ui.data.Display
-import com.rve.systemmonitor.ui.data.GPU
-import com.rve.systemmonitor.ui.data.OS
-import com.rve.systemmonitor.ui.data.RAM
-import com.rve.systemmonitor.ui.data.ZRAM
+import com.rve.systemmonitor.domain.model.CPU
+import com.rve.systemmonitor.domain.model.Device
+import com.rve.systemmonitor.domain.model.Display
+import com.rve.systemmonitor.domain.model.GPU
+import com.rve.systemmonitor.domain.model.OS
+import com.rve.systemmonitor.domain.model.RAM
+import com.rve.systemmonitor.domain.model.ZRAM
 import com.rve.systemmonitor.ui.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = viewModel(), onNavigateToSettings: () -> Unit) {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onNavigateToSettings: () -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(

@@ -1,8 +1,8 @@
 package com.rve.systemmonitor.utils
 
 import android.util.Log
-import com.rve.systemmonitor.ui.data.RAM
-import com.rve.systemmonitor.ui.data.ZRAM
+import com.rve.systemmonitor.domain.model.RAM
+import com.rve.systemmonitor.domain.model.ZRAM
 
 object MemoryUtils {
     private const val TAG = "MemoryUtils"

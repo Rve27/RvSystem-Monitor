@@ -1,144 +1,57 @@
 package com.rve.systemmonitor.ui.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rve.systemmonitor.ui.data.CPU
-import com.rve.systemmonitor.ui.data.Device
-import com.rve.systemmonitor.ui.data.Display
-import com.rve.systemmonitor.ui.data.GPU
-import com.rve.systemmonitor.ui.data.OS
-import com.rve.systemmonitor.utils.CpuUtils
-import com.rve.systemmonitor.utils.DeviceUtils
-import com.rve.systemmonitor.utils.DisplayUtils
-import com.rve.systemmonitor.utils.GpuUtils
-import com.rve.systemmonitor.utils.MemoryUtils
-import com.rve.systemmonitor.utils.OSUtils
+import com.rve.systemmonitor.domain.repository.SystemInfoRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val systemInfoRepository: SystemInfoRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private var memoryJob: Job? = null
-
     init {
-        updateDeviceInfo()
-        updateOSInfo()
-        updateDisplayInfo()
-        updateCpuInfo()
-        updateGpuInfo()
-        updateMemoryInfo()
+        updateStaticInfo()
+        startMemoryUpdates()
     }
 
-    private fun updateDeviceInfo() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    device = Device(
-                        manufacturer = DeviceUtils.getManufacturer(),
-                        model = DeviceUtils.getModel(),
-                        device = DeviceUtils.getDevice(),
-                    ),
-                )
-            }
-        }
-    }
-
-    private fun updateOSInfo() {
-        viewModelScope.launch {
-            val currentSdk = OSUtils.getSdkInt()
-
-            _uiState.update {
-                it.copy(
-                    os = OS(
-                        version = OSUtils.getAndroidVersion(),
-                        sdk = currentSdk,
-                        dessertName = OSUtils.getDessertName(currentSdk),
-                        securityPatch = OSUtils.getSecurityPatch(),
-                    ),
-                )
-            }
-        }
-    }
-
-    private fun updateDisplayInfo() {
-        viewModelScope.launch {
-            val context = getApplication<Application>()
-            _uiState.update {
-                it.copy(
-                    display = Display(
-                        resolution = DisplayUtils.getResolution(context),
-                        refreshRate = DisplayUtils.getRefreshRate(context),
-                        densityDpi = DisplayUtils.getDensityDpi(context),
-                        screenSizeInches = DisplayUtils.getScreenSizeInches(context),
-                    ),
-                )
-            }
-        }
-    }
-
-    private fun updateCpuInfo() {
+    private fun updateStaticInfo() {
         _uiState.update {
             it.copy(
-                cpu = CPU(
-                    manufacturer = CpuUtils.getSocManufacturer(),
-                    model = CpuUtils.getSocModel(),
-                    cores = CpuUtils.getCoreCount(),
-                ),
+                device = systemInfoRepository.getDeviceInfo(),
+                os = systemInfoRepository.getOSInfo(),
+                display = systemInfoRepository.getDisplayInfo(),
+                cpu = systemInfoRepository.getCpuInfo(),
             )
         }
-    }
 
-    private fun updateGpuInfo() {
         viewModelScope.launch(Dispatchers.IO) {
-            val context = getApplication<Application>()
-            val (renderer, vendor) = GpuUtils.getGpuDetails()
-
+            val gpuInfo = systemInfoRepository.getGpuInfo()
             _uiState.update {
-                it.copy(
-                    gpu = GPU(
-                        renderer = renderer,
-                        vendor = vendor,
-                        glesVersion = GpuUtils.getGlesVersion(context),
-                    ),
-                )
+                it.copy(gpu = gpuInfo)
             }
         }
     }
 
-    private fun updateMemoryInfo() {
-        memoryJob?.cancel()
-
-        memoryJob = viewModelScope.launch(Dispatchers.IO) {
-            while (isActive) {
-                val newRamData = MemoryUtils.getRamData()
-                val newZramData = MemoryUtils.getZramData()
+    private fun startMemoryUpdates() {
+        viewModelScope.launch(Dispatchers.IO) {
+            systemInfoRepository.getMemoryInfo().collect { (ram, zram) ->
                 _uiState.update {
                     it.copy(
-                        ram = newRamData,
-                        zram = newZramData,
+                        ram = ram,
+                        zram = zram,
                     )
                 }
-                delay(2000L)
             }
         }
-    }
-
-    private fun stopMemoryJob() {
-        memoryJob?.cancel()
-        memoryJob = null
-    }
-
-    override fun onCleared() {
-        stopMemoryJob()
     }
 }

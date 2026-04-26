@@ -1,4 +1,4 @@
-package com.rve.systemmonitor.ui.data
+package com.rve.systemmonitor.domain.model
 
 import androidx.compose.runtime.Immutable
 

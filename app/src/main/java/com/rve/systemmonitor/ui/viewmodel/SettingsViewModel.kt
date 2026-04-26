@@ -1,19 +1,22 @@
 package com.rve.systemmonitor.ui.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rve.systemmonitor.utils.SettingsPreferences
+import com.rve.systemmonitor.domain.repository.SettingsRepository
 import com.rve.systemmonitor.utils.ThemeMode
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SettingsViewModel(application: Application) : AndroidViewModel(application) {
-    private val settingsPreferences = SettingsPreferences(application)
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
+    private val settingsRepository: SettingsRepository
+) : ViewModel() {
 
-    val themeMode: StateFlow<ThemeMode> = settingsPreferences.themeModeFlow
+    val themeMode: StateFlow<ThemeMode> = settingsRepository.themeMode
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -22,7 +25,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch {
-            settingsPreferences.saveThemeMode(mode)
+            settingsRepository.setThemeMode(mode)
         }
     }
 }

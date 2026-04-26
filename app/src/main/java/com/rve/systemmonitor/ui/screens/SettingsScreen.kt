@@ -31,15 +31,15 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_brightness_medium_rounded_filled
 import com.rve.systemmonitor.ui.components.ExitUntilCollapsedMediumTopAppBar
 import com.rve.systemmonitor.ui.viewmodel.SettingsViewModel
 import com.rve.systemmonitor.utils.ThemeMode
 
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel = viewModel(), onNavigateBack: () -> Unit) {
+fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onNavigateBack: () -> Unit) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val currentTheme by viewModel.themeMode.collectAsStateWithLifecycle()
 
