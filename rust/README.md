@@ -4,12 +4,16 @@ This directory contains the Rust implementation of the system monitoring backend
 
 ## Overview
 
-The Rust component is responsible for gathering low-level system metrics (currently memory and ZRAM data) by interacting with the Linux kernel via `/proc` filesystem. It exposes these metrics to the Android app through **JNI (Java Native Interface)**.
+The Rust component is responsible for gathering low-level system metrics (CPU, Memory, and ZRAM data) by interacting with the Linux kernel via `/proc` and `/sys` filesystems. It exposes these metrics to the Android app through **JNI (Java Native Interface)**.
+
+The project structure is intentionally organized to mirror the **Linux Kernel** organization.
 
 ## Project Structure
 
 - `src/lib.rs`: Entry point for the JNI bridge. Contains the native functions called by Kotlin.
-- `src/mm/`: Memory Management module.
+- `src/kernel/`: Core system logic (matches Linux kernel's `kernel/` directory).
+    - `cpu.rs`: Logic for detecting core count, reading frequencies (Current, Min, Max), and scaling governors.
+- `src/mm/`: Memory Management module (matches Linux kernel's `mm/` directory).
     - `memory.rs`: Logic for parsing `/proc/meminfo` and calculating RAM/ZRAM statistics.
 
 ## Building
@@ -31,22 +35,32 @@ This project is typically built as a dynamic library (`.so`) for Android using `
 
 ### Build Command
 
-To build for all supported Android architectures:
+To build for the primary Android architectures:
 
 ```bash
-cargo ndk -t aarch64-linux-android -t armv7-linux-androideabi -t i686-linux-android -t x86_64-linux-android build --release
+cargo ndk -t arm64-v8a -t armeabi-v7a build --release
 ```
 
-The resulting libraries will be located in `target/` and should be moved or linked to `app/src/main/jniLibs/`.
+The resulting libraries will be located in `target/` and are automatically managed by the Gradle task `:app:buildRustLibraries`.
 
 ## JNI Integration
 
-The Rust functions are mapped to the Kotlin `com.rve.systemmonitor.utils.MemoryUtils` object.
+The Rust functions are mapped to the corresponding Kotlin utility objects.
+
+### Memory Utilities (`MemoryUtils`)
 
 | Rust Function | Kotlin Native Method |
 | :--- | :--- |
 | `Java_..._getRamDataNative` | `getRamDataNative()` |
 | `Java_..._getZramDataNative` | `getZramDataNative()` |
+
+### CPU Utilities (`CpuUtils`)
+
+| Rust Function | Kotlin Native Method |
+| :--- | :--- |
+| `Java_..._getCoreCountNative` | `getCoreCountNative()` |
+| `Java_..._getCoreFrequencyNative` | `getCoreFrequencyNative(coreId, type)` |
+| `Java_..._getCoreGovernorNative` | `getCoreGovernorNative(coreId)` |
 
 ## Documentation
 
