@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
-
 package com.rve.systemmonitor.ui.screens
 
 import androidx.compose.animation.core.animateFloatAsState
@@ -23,12 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularWavyProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,12 +46,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_alt_rounded_filled
 import com.rve.systemmonitor.domain.model.RAM
 import com.rve.systemmonitor.domain.model.ZRAM
-import com.rve.systemmonitor.ui.components.AppBars.SimpleTopAppBar
 import com.rve.systemmonitor.ui.viewmodel.MemoryUiState
 import com.rve.systemmonitor.ui.viewmodel.MemoryViewModel
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun MemoryScreen(isActive: Boolean, viewModel: MemoryViewModel = hiltViewModel(), onNavigateToSettings: () -> Unit) {
+fun MemoryScreen(isActive: Boolean, viewModel: MemoryViewModel = hiltViewModel()) {
     val initialUiState = remember { viewModel.uiState.value }
     val uiState by if (isActive) {
         viewModel.uiState.collectAsStateWithLifecycle()
@@ -63,40 +59,21 @@ fun MemoryScreen(isActive: Boolean, viewModel: MemoryViewModel = hiltViewModel()
         remember { kotlinx.coroutines.flow.emptyFlow<MemoryUiState>() }.collectAsStateWithLifecycle(initialUiState)
     }
 
-    Scaffold(
-        topBar = {
-            SimpleTopAppBar(
-                title = "RvSystem Monitor",
-                subtitle = "Memory",
-                onNavigateToSettings = onNavigateToSettings,
+    LazyColumn(
+        contentPadding = PaddingValues(
+            top = 16.dp,
+            bottom = 112.dp,
+        ),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+    ) {
+        item {
+            MemoryCard(
+                ram = uiState.ram,
+                zram = uiState.zram,
             )
-        },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-    ) { innerPadding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = innerPadding.calculateTopPadding()),
-            shape = RoundedCornerShape(
-                topStart = 32.dp,
-                topEnd = 32.dp,
-            ),
-        ) {
-            LazyColumn(
-                contentPadding = PaddingValues(
-                    top = 16.dp,
-                    bottom = innerPadding.calculateBottomPadding() + 96.dp,
-                ),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(horizontal = 16.dp),
-            ) {
-                item {
-                    MemoryCard(
-                        ram = uiState.ram,
-                        zram = uiState.zram,
-                    )
-                }
-            }
         }
     }
 }

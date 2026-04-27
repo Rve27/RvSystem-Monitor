@@ -2,9 +2,16 @@
 
 package com.rve.systemmonitor.ui.components
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -31,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_settings_rounded_filled
+import com.rve.systemmonitor.ui.navigation.TRANSITION_DURATION
 
 /**
  * A collection of Top App Bars used in the application.
@@ -54,11 +62,31 @@ object AppBars {
                 )
             },
             subtitle = {
-                Text(
-                    text = subtitle,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                AnimatedContent(
+                    targetState = subtitle,
+                    transitionSpec = {
+                        (
+                            slideInHorizontally(
+                                animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                            ) + scaleIn(
+                                animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                            )
+                        ).togetherWith(
+                            slideOutHorizontally(
+                                animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                            ) + scaleOut(
+                                animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                            )
+                        )
+                    },
+                    label = "SubtitleAnimation",
+                ) { targetSubtitle ->
+                    Text(
+                        text = targetSubtitle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             },
             actions = {
                 TooltipBox(

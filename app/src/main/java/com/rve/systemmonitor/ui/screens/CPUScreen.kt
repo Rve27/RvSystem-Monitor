@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.rve.systemmonitor.ui.screens
 
 import androidx.compose.foundation.background
@@ -19,10 +17,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,11 +38,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_rounded_filled
 import com.rve.systemmonitor.domain.model.CPU
 import com.rve.systemmonitor.domain.model.CoreDetail
-import com.rve.systemmonitor.ui.components.AppBars.SimpleTopAppBar
 import com.rve.systemmonitor.ui.viewmodel.CPUViewModel
 
 @Composable
-fun CPUScreen(isActive: Boolean, viewModel: CPUViewModel = hiltViewModel(), onNavigateToSettings: () -> Unit) {
+fun CPUScreen(isActive: Boolean, viewModel: CPUViewModel = hiltViewModel()) {
     val initialCpuInfo = remember { viewModel.cpuInfo.value }
     val cpuInfo by if (isActive) {
         viewModel.cpuInfo.collectAsStateWithLifecycle()
@@ -54,50 +49,31 @@ fun CPUScreen(isActive: Boolean, viewModel: CPUViewModel = hiltViewModel(), onNa
         remember { kotlinx.coroutines.flow.emptyFlow<CPU>() }.collectAsStateWithLifecycle(initialCpuInfo)
     }
 
-    Scaffold(
-        topBar = {
-            SimpleTopAppBar(
-                title = "RvSystem Monitor",
-                subtitle = "CPU",
-                onNavigateToSettings = onNavigateToSettings,
+    LazyColumn(
+        contentPadding = PaddingValues(
+            top = 16.dp,
+            bottom = 112.dp,
+        ),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+    ) {
+        item {
+            CPUOverviewCard(cpuInfo)
+        }
+
+        item {
+            Text(
+                text = "Cores",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 8.dp),
             )
-        },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-    ) { innerPadding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = innerPadding.calculateTopPadding()),
-            shape = RoundedCornerShape(
-                topStart = 32.dp,
-                topEnd = 32.dp,
-            ),
-        ) {
-            LazyColumn(
-                contentPadding = PaddingValues(
-                    top = 16.dp,
-                    bottom = innerPadding.calculateBottomPadding() + 96.dp,
-                ),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(horizontal = 16.dp),
-            ) {
-                item {
-                    CPUOverviewCard(cpuInfo)
-                }
+        }
 
-                item {
-                    Text(
-                        text = "Cores",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                    )
-                }
-
-                items(cpuInfo.coreDetails) { core ->
-                    CoreDetailCard(core)
-                }
-            }
+        items(cpuInfo.coreDetails) { core ->
+            CoreDetailCard(core)
         }
     }
 }
