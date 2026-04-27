@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val settingsRepository: SettingsRepository) : ViewModel() {
+class MainViewModel @Inject constructor(settingsRepository: SettingsRepository) : ViewModel() {
     val uiState: StateFlow<MainUiState> = settingsRepository.themeMode
         .map { MainUiState.Success(it) }
         .stateIn(

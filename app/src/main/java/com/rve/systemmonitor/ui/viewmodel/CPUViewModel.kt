@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class CPUViewModel @Inject constructor(private val systemInfoRepository: SystemInfoRepository) : ViewModel() {
+class CPUViewModel @Inject constructor(systemInfoRepository: SystemInfoRepository) : ViewModel() {
     val cpuInfo = systemInfoRepository.getCpuStream()
         .stateIn(
             scope = viewModelScope,

@@ -9,7 +9,7 @@ import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 
 @Singleton
-class SettingsRepositoryImpl @Inject constructor(private val application: Application) : SettingsRepository {
+class SettingsRepositoryImpl @Inject constructor(application: Application) : SettingsRepository {
 
     private val settingsPreferences = SettingsPreferences(application)
 

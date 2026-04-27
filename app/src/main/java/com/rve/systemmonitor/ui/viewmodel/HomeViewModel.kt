@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val systemInfoRepository: SystemInfoRepository) : ViewModel() {
+class HomeViewModel @Inject constructor(systemInfoRepository: SystemInfoRepository) : ViewModel() {
     private val staticInfo = HomeUiState(
         device = systemInfoRepository.getDeviceInfo(),
         os = systemInfoRepository.getOSInfo(),
