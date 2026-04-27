@@ -29,7 +29,7 @@ import com.rve.systemmonitor.ui.navigation.BottomNavBar.BottomNavigationBar
 import com.rve.systemmonitor.ui.screens.CPUScreen
 import com.rve.systemmonitor.ui.screens.HomeScreen
 import com.rve.systemmonitor.ui.screens.ProcessesScreen
-import com.rve.systemmonitor.ui.screens.RAMScreen
+import com.rve.systemmonitor.ui.screens.MemoryScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -95,7 +95,10 @@ fun RvSystemMonitorApp(onNavigateToSettings: () -> Unit) {
                     onNavigateToSettings = onNavigateToSettings,
                 )
 
-                2 -> RAMScreen(onNavigateToSettings = onNavigateToSettings)
+                2 -> MemoryScreen(
+                    isActive = pagerState.settledPage == 2,
+                    onNavigateToSettings = onNavigateToSettings,
+                )
 
                 3 -> ProcessesScreen(onNavigateToSettings = onNavigateToSettings)
             }

@@ -71,7 +71,7 @@ object BottomNavBar {
                 iconSelected = materialsymbols_ic_memory_rounded_filled,
             ),
             NavItem(
-                label = "RAM",
+                label = "Memory",
                 iconUnselected = materialsymbols_ic_memory_alt_rounded,
                 iconSelected = materialsymbols_ic_memory_alt_rounded_filled,
             ),

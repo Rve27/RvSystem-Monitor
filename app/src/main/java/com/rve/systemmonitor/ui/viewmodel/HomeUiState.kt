@@ -6,8 +6,6 @@ import com.rve.systemmonitor.domain.model.Device
 import com.rve.systemmonitor.domain.model.Display
 import com.rve.systemmonitor.domain.model.GPU
 import com.rve.systemmonitor.domain.model.OS
-import com.rve.systemmonitor.domain.model.RAM
-import com.rve.systemmonitor.domain.model.ZRAM
 
 @Immutable
 data class HomeUiState(
@@ -16,6 +14,4 @@ data class HomeUiState(
     val display: Display = Display(),
     val cpu: CPU = CPU(),
     val gpu: GPU = GPU(),
-    val ram: RAM = RAM(),
-    val zram: ZRAM = ZRAM(),
 )
