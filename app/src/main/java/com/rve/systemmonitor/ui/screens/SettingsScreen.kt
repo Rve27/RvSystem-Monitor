@@ -55,17 +55,18 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onNavigateBac
         containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentPadding = PaddingValues(vertical = 16.dp),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                top = innerPadding.calculateTopPadding() + 16.dp,
+                bottom = innerPadding.calculateBottomPadding() + 16.dp,
+                start = 16.dp,
+                end = 16.dp,
+            ),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             item {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
                         text = "Appearance",
