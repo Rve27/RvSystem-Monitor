@@ -1,21 +1,17 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Project-specific ProGuard rules for RvSystem-Monitor
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# 1. JNI: Keep classes that interface with the Rust library
+# These classes are called by the native C/Rust code using exact class/method names.
+-keep class com.rve.systemmonitor.utils.CpuUtils { *; }
+-keep class com.rve.systemmonitor.utils.MemoryUtils { *; }
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# 2. Backdrop: Keep library classes for shaders and Liquid Glass effects
+-keep class io.github.kyant0.backdrop.** { *; }
+# Prevent warnings for optional dependencies the library might reference
+-dontwarn io.github.kyant0.backdrop.**
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# 3. Compose: Keep custom Modifier nodes (used by many UI libraries)
+-keep public class * extends androidx.compose.ui.node.ModifierNodeElement
+
+# 4. Standard Android/Compose attributes
+-keepattributes Signature,InnerClasses,EnclosingMethod,AnnotationDefault,*Annotation*

@@ -18,3 +18,4 @@ local.properties
 /rust/target/
 **/*.rs.bk
 /app/src/main/jniLibs/
+R8_Configuration_Analysis.md
