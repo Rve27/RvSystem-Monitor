@@ -25,7 +25,6 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -133,32 +132,6 @@ private fun MemoryCard(ram: RAM, zram: ZRAM) {
                 modifier = Modifier.padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(MaterialTheme.colorScheme.primary)
-                            .padding(8.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            painter = painterResource(id = materialsymbols_ic_memory_alt_rounded_filled),
-                            contentDescription = "Memory Icon",
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                        )
-                    }
-
-                    Text(
-                        text = "Memory",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                }
-
                 Row(
                     modifier = Modifier.height(IntrinsicSize.Min),
                     verticalAlignment = Alignment.CenterVertically,
