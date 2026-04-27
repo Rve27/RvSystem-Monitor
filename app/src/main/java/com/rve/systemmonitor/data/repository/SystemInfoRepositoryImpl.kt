@@ -133,16 +133,19 @@ class SystemInfoRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getMemoryInfo(): Flow<Pair<RAM, ZRAM>> = flow {
-        if (BuildConfig.DEBUG) Log.d(TAG, "Memory Stream Started")
-        while (true) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "Memory Stream Updated")
-            val ram = MemoryUtils.getRamData()
-            val zram = MemoryUtils.getZramData()
-            emit(ram to zram)
-            delay(2000L)
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    override fun getMemoryInfo(): Flow<Pair<RAM, ZRAM>> = settingsRepository.memoryRefreshDelay.flatMapLatest { delayMillis ->
+        flow {
+            if (BuildConfig.DEBUG) Log.d(TAG, "Memory Stream Started with delay: $delayMillis")
+            while (true) {
+                if (BuildConfig.DEBUG) Log.d(TAG, "Memory Stream Updated")
+                val ram = MemoryUtils.getRamData()
+                val zram = MemoryUtils.getZramData()
+                emit(ram to zram)
+                delay(delayMillis)
+            }
+        }.onCompletion {
+            if (BuildConfig.DEBUG) Log.d(TAG, "Memory Stream Stopped")
         }
-    }.onCompletion {
-        if (BuildConfig.DEBUG) Log.d(TAG, "Memory Stream Stopped")
     }
 }

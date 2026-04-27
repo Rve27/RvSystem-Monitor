@@ -17,11 +17,17 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
 
     override val cpuRefreshDelay: Flow<Long> = settingsPreferences.cpuRefreshDelayFlow
 
+    override val memoryRefreshDelay: Flow<Long> = settingsPreferences.memoryRefreshDelayFlow
+
     override suspend fun setThemeMode(mode: ThemeMode) {
         settingsPreferences.saveThemeMode(mode)
     }
 
     override suspend fun setCpuRefreshDelay(delayMillis: Long) {
         settingsPreferences.saveCpuRefreshDelay(delayMillis)
+    }
+
+    override suspend fun setMemoryRefreshDelay(delayMillis: Long) {
+        settingsPreferences.saveMemoryRefreshDelay(delayMillis)
     }
 }

@@ -16,6 +16,7 @@ class SettingsPreferences(private val context: Context) {
     companion object {
         val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
         val CPU_REFRESH_DELAY_KEY = longPreferencesKey("cpu_refresh_delay")
+        val MEMORY_REFRESH_DELAY_KEY = longPreferencesKey("memory_refresh_delay")
     }
 
     val themeModeFlow: Flow<ThemeMode> = context.dataStore.data
@@ -29,6 +30,11 @@ class SettingsPreferences(private val context: Context) {
             preferences[CPU_REFRESH_DELAY_KEY] ?: 3000L
         }
 
+    val memoryRefreshDelayFlow: Flow<Long> = context.dataStore.data
+        .map { preferences ->
+            preferences[MEMORY_REFRESH_DELAY_KEY] ?: 3000L
+        }
+
     suspend fun saveThemeMode(mode: ThemeMode) {
         context.dataStore.edit { preferences ->
             preferences[THEME_MODE_KEY] = mode.name
@@ -38,6 +44,12 @@ class SettingsPreferences(private val context: Context) {
     suspend fun saveCpuRefreshDelay(delayMillis: Long) {
         context.dataStore.edit { preferences ->
             preferences[CPU_REFRESH_DELAY_KEY] = delayMillis
+        }
+    }
+
+    suspend fun saveMemoryRefreshDelay(delayMillis: Long) {
+        context.dataStore.edit { preferences ->
+            preferences[MEMORY_REFRESH_DELAY_KEY] = delayMillis
         }
     }
 }
