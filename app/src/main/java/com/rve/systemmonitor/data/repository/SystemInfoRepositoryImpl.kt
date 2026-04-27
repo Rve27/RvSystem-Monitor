@@ -18,13 +18,13 @@ import com.rve.systemmonitor.utils.DisplayUtils
 import com.rve.systemmonitor.utils.GpuUtils
 import com.rve.systemmonitor.utils.MemoryUtils
 import com.rve.systemmonitor.utils.OSUtils
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class SystemInfoRepositoryImpl @Inject constructor(

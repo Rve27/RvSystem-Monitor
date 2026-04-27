@@ -4,9 +4,9 @@ import android.app.Application
 import com.rve.systemmonitor.domain.repository.SettingsRepository
 import com.rve.systemmonitor.utils.SettingsPreferences
 import com.rve.systemmonitor.utils.ThemeMode
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
 
 @Singleton
 class SettingsRepositoryImpl @Inject constructor(private val application: Application) : SettingsRepository {

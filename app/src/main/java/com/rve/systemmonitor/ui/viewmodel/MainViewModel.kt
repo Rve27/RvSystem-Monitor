@@ -5,11 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.rve.systemmonitor.domain.repository.SettingsRepository
 import com.rve.systemmonitor.utils.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val settingsRepository: SettingsRepository) : ViewModel() {

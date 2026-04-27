@@ -9,10 +9,7 @@ plugins {
 android {
     namespace = "com.rve.systemmonitor"
     compileSdk {
-        version =
-            release(36) {
-                minorApiLevel = 1
-            }
+        version = release(37)
     }
 
     defaultConfig {
@@ -22,7 +19,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         ndkVersion = "30.0.14904198"
-        buildToolsVersion = "36.1.0"
+        buildToolsVersion = "37.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

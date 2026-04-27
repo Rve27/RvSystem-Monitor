@@ -1,28 +1,35 @@
 # RvSystem Monitor
 
-RvSystem Monitor is a powerful, high-performance Android system monitoring application built with **Jetpack Compose** and a **Rust** backend. It provides real-time insights into your device's hardware, processor performance, and memory usage.
+RvSystem Monitor is a powerful, high-performance Android system monitoring application built with *
+*Jetpack Compose** and a **Rust** backend. It provides real-time insights into your device's
+hardware, processor performance, and memory usage.
 
 ## 🚀 Key Features
 
-- **Detailed CPU Monitoring**: Real-time per-core frequencies (Current, Min, Max) and scaling governors.
+- **Detailed CPU Monitoring**: Real-time per-core frequencies (Current, Min, Max) and scaling
+  governors.
 - **Memory Insights**: Live tracking of RAM and ZRAM usage with precise GB and percentage metrics.
-- **Hardware Overview**: Comprehensive information about SOC Manufacturer, Model, OS Version, and GPU (Vendor/Renderer).
-- **Performance Optimized**: Native Rust backend for efficient system file parsing with minimal JVM overhead.
-- **Lifecycle Aware**: Intelligent data streaming that automatically stops when the app is in the background to save battery.
-- **Modern UI**: Clean, expressive Material 3 design with animated progress indicators and responsive layouts.
+- **Hardware Overview**: Comprehensive information about SOC Manufacturer, Model, OS Version, and
+  GPU (Vendor/Renderer).
+- **Performance Optimized**: Native Rust backend for efficient system file parsing with minimal JVM
+  overhead.
+- **Lifecycle Aware**: Intelligent data streaming that automatically stops when the app is in the
+  background to save battery.
+- **Modern UI**: Clean, expressive Material 3 design with animated progress indicators and
+  responsive layouts.
 
 ## 🛠️ Architecture
 
 The project follows a modern, modular architecture:
 
-- **Frontend (Kotlin/Compose)**: 
-  - Uses **Clean Architecture** patterns with Domain, Data, and UI layers.
-  - **Dagger Hilt** for dependency injection.
-  - **StateFlow** and **Coroutines** for reactive, lifecycle-aware data handling.
+- **Frontend (Kotlin/Compose)**:
+    - Uses **Clean Architecture** patterns with Domain, Data, and UI layers.
+    - **Dagger Hilt** for dependency injection.
+    - **StateFlow** and **Coroutines** for reactive, lifecycle-aware data handling.
 - **Backend (Rust)**:
-  - Mirroring **Linux Kernel** organization (`kernel/`, `mm/`).
-  - High-performance sysfs and procfs parsing.
-  - Interfaced via **JNI (Java Native Interface)** for maximum efficiency.
+    - Mirroring **Linux Kernel** organization (`kernel/`, `mm/`).
+    - High-performance sysfs and procfs parsing.
+    - Interfaced via **JNI (Java Native Interface)** for maximum efficiency.
 
 ## 📁 Project Structure
 
@@ -40,26 +47,27 @@ RvSystem-Monitor/
 
 ### Prerequisites
 
-1.  **Android Studio** (Ladybug or newer recommended).
-2.  **Rust Toolchain**: Install via [rustup.rs](https://rustup.rs/).
-3.  **Android NDK**: Required for Rust compilation.
-4.  **cargo-ndk**: `cargo install cargo-ndk`.
+1. **Android Studio** (Ladybug or newer recommended).
+2. **Rust Toolchain**: Install via [rustup.rs](https://rustup.rs/).
+3. **Android NDK**: Required for Rust compilation.
+4. **cargo-ndk**: `cargo install cargo-ndk`.
 
 ### Building the Project
 
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/Rve27/RvSystem-Monitor.git
-    cd RvSystem-Monitor
-    ```
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Rve27/RvSystem-Monitor.git
+   cd RvSystem-Monitor
+   ```
 
-2.  **Build Rust Libraries**:
-    The project is configured to build Rust libraries automatically during the Gradle build process. You can also trigger it manually:
-    ```bash
-    ./gradlew :app:buildRustLibraries
-    ```
+2. **Build Rust Libraries**:
+   The project is configured to build Rust libraries automatically during the Gradle build process.
+   You can also trigger it manually:
+   ```bash
+   ./gradlew :app:buildRustLibraries
+   ```
 
-3.  **Build and Run**:
+3. **Build and Run**:
     - **Using Android Studio**: Open the project in Android Studio and click **Run**.
     - **Using CLI**:
         - **Build Debug APK**:
@@ -79,4 +87,5 @@ RvSystem-Monitor/
 
 ## 📝 Debugging
 
-The application includes detailed lifecycle logging in `debug` variants. You can monitor the status of CPU and Memory data streams in **Logcat** by filtering for the `SystemInfoRepository` tag.
+The application includes detailed lifecycle logging in `debug` variants. You can monitor the status
+of CPU and Memory data streams in **Logcat** by filtering for the `SystemInfoRepository` tag.
