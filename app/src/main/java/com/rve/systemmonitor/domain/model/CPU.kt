@@ -7,6 +7,9 @@ data class CPU(
     val manufacturer: String = "unknown",
     val model: String = "unknown",
     val cores: Int = 0,
+    val hardware: String = "unknown",
+    val board: String = "unknown",
+    val architecture: String = "unknown",
     val coreDetails: List<CoreDetail> = emptyList(),
 )
 

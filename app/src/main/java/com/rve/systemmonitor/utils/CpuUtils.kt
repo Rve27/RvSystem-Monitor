@@ -47,6 +47,14 @@ object CpuUtils {
         "Unknown"
     }
 
+    fun getHardware(): String = runCatching { Build.HARDWARE }.getOrElse { "Unknown" }
+
+    fun getBoard(): String = runCatching { Build.BOARD }.getOrElse { "Unknown" }
+
+    fun getArchitecture(): String = runCatching {
+        Build.SUPPORTED_ABIS.firstOrNull() ?: "Unknown"
+    }.getOrElse { "Unknown" }
+
     fun getCoreCount(): Int = runCatching {
         getCoreCountNative()
     }.getOrElse {

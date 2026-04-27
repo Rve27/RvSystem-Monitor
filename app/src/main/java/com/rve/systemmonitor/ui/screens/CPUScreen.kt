@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -103,6 +104,14 @@ fun CPUScreen(isActive: Boolean, viewModel: CPUViewModel = hiltViewModel(), onNa
 
 @Composable
 private fun CPUOverviewCard(cpu: CPU) {
+    val peakFrequency = remember(cpu.coreDetails) {
+        cpu.coreDetails.maxOfOrNull {
+            it.maxFreq.substringBefore(" ").toDoubleOrNull() ?: 0.0
+        } ?: 0.0
+    }
+
+    val peakFreqUnit = cpu.coreDetails.firstOrNull()?.maxFreq?.substringAfter(" ") ?: "MHz"
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -139,13 +148,50 @@ private fun CPUOverviewCard(cpu: CPU) {
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        BadgeChip(
-                            text = "${cpu.cores} Cores",
-                            containerColor = MaterialTheme.colorScheme.secondary,
-                            textColor = MaterialTheme.colorScheme.onSecondary,
-                        )
-                    }
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    BadgeChip(
+                        text = "${cpu.cores} Cores",
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        textColor = MaterialTheme.colorScheme.onSecondary,
+                    )
+                    BadgeChip(
+                        text = "Peak: $peakFrequency $peakFreqUnit",
+                        containerColor = MaterialTheme.colorScheme.tertiary,
+                        textColor = MaterialTheme.colorScheme.onTertiary,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    InfoItem(
+                        label = "Architecture",
+                        value = cpu.architecture,
+                        modifier = Modifier.weight(1f),
+                    )
+                    InfoItem(
+                        label = "Board",
+                        value = cpu.board,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    InfoItem(
+                        label = "Hardware",
+                        value = cpu.hardware,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }

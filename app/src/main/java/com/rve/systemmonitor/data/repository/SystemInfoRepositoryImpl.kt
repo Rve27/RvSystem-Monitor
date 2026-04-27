@@ -60,6 +60,9 @@ class SystemInfoRepositoryImpl @Inject constructor(private val application: Appl
             manufacturer = CpuUtils.getSocManufacturer(),
             model = CpuUtils.getSocModel(),
             cores = CpuUtils.getCoreCount(),
+            hardware = CpuUtils.getHardware(),
+            board = CpuUtils.getBoard(),
+            architecture = CpuUtils.getArchitecture(),
         )
     }
 
@@ -69,6 +72,9 @@ class SystemInfoRepositoryImpl @Inject constructor(private val application: Appl
         val manufacturer = CpuUtils.getSocManufacturer()
         val model = CpuUtils.getSocModel()
         val cores = CpuUtils.getCoreCount()
+        val hardware = CpuUtils.getHardware()
+        val board = CpuUtils.getBoard()
+        val architecture = CpuUtils.getArchitecture()
 
         val staticCoreInfo = (0 until cores).map { i ->
             val min = CpuUtils.getCoreFrequency(i, "min_info")
@@ -98,6 +104,9 @@ class SystemInfoRepositoryImpl @Inject constructor(private val application: Appl
                     manufacturer = manufacturer,
                     model = model,
                     cores = cores,
+                    hardware = hardware,
+                    board = board,
+                    architecture = architecture,
                     coreDetails = coreDetails,
                 ),
             )
