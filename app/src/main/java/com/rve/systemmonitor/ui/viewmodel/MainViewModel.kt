@@ -12,15 +12,13 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    private val settingsRepository: SettingsRepository
-) : ViewModel() {
+class MainViewModel @Inject constructor(private val settingsRepository: SettingsRepository) : ViewModel() {
     val uiState: StateFlow<MainUiState> = settingsRepository.themeMode
         .map { MainUiState.Success(it) }
         .stateIn(
             scope = viewModelScope,
             initialValue = MainUiState.Loading,
-            started = SharingStarted.WhileSubscribed(5_000)
+            started = SharingStarted.WhileSubscribed(5_000),
         )
 }
 

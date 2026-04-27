@@ -16,13 +16,9 @@ abstract class DataModule {
 
     @Binds
     @Singleton
-    abstract fun bindSystemInfoRepository(
-        systemInfoRepositoryImpl: SystemInfoRepositoryImpl
-    ): SystemInfoRepository
+    abstract fun bindSystemInfoRepository(systemInfoRepositoryImpl: SystemInfoRepositoryImpl): SystemInfoRepository
 
     @Binds
     @Singleton
-    abstract fun bindSettingsRepository(
-        settingsRepositoryImpl: SettingsRepositoryImpl
-    ): SettingsRepository
+    abstract fun bindSettingsRepository(settingsRepositoryImpl: SettingsRepositoryImpl): SettingsRepository
 }

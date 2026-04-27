@@ -21,14 +21,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SystemInfoRepositoryImpl @Inject constructor(
-    private val application: Application,
-) : SystemInfoRepository {
+class SystemInfoRepositoryImpl @Inject constructor(private val application: Application) : SystemInfoRepository {
     private val TAG = "SystemInfoRepository"
 
     override fun getDeviceInfo(): Device {
@@ -68,7 +65,7 @@ class SystemInfoRepositoryImpl @Inject constructor(
 
     override fun getCpuStream(): Flow<CPU> = flow {
         if (BuildConfig.DEBUG) Log.d(TAG, "CPU Stream Started")
-        
+
         val manufacturer = CpuUtils.getSocManufacturer()
         val model = CpuUtils.getSocModel()
         val cores = CpuUtils.getCoreCount()
@@ -91,7 +88,7 @@ class SystemInfoRepositoryImpl @Inject constructor(
                         currentFreq = CpuUtils.getCoreFrequency(i, "cur"),
                         minFreq = staticCoreInfo[i].first,
                         maxFreq = staticCoreInfo[i].second,
-                        governor = staticCoreInfo[i].third
+                        governor = staticCoreInfo[i].third,
                     ),
                 )
             }

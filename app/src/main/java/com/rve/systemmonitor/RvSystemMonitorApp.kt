@@ -87,13 +87,16 @@ fun RvSystemMonitorApp(onNavigateToSettings: () -> Unit) {
             when (page) {
                 0 -> HomeScreen(
                     isActive = pagerState.settledPage == 0,
-                    onNavigateToSettings = onNavigateToSettings
+                    onNavigateToSettings = onNavigateToSettings,
                 )
+
                 1 -> CPUScreen(
                     isActive = pagerState.settledPage == 1,
-                    onNavigateToSettings = onNavigateToSettings
+                    onNavigateToSettings = onNavigateToSettings,
                 )
+
                 2 -> RAMScreen(onNavigateToSettings = onNavigateToSettings)
+
                 3 -> ProcessesScreen(onNavigateToSettings = onNavigateToSettings)
             }
         }

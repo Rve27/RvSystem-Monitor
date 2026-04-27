@@ -9,9 +9,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SettingsRepositoryImpl @Inject constructor(
-    private val application: Application
-) : SettingsRepository {
+class SettingsRepositoryImpl @Inject constructor(private val application: Application) : SettingsRepository {
 
     private val settingsPreferences = SettingsPreferences(application)
 

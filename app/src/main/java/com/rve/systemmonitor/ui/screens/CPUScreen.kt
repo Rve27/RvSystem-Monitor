@@ -45,11 +45,7 @@ import com.rve.systemmonitor.ui.components.AppBars.SimpleTopAppBar
 import com.rve.systemmonitor.ui.viewmodel.CPUViewModel
 
 @Composable
-fun CPUScreen(
-    isActive: Boolean,
-    viewModel: CPUViewModel = hiltViewModel(),
-    onNavigateToSettings: () -> Unit
-) {
+fun CPUScreen(isActive: Boolean, viewModel: CPUViewModel = hiltViewModel(), onNavigateToSettings: () -> Unit) {
     val initialCpuInfo = remember { viewModel.cpuInfo.value }
     val cpuInfo by if (isActive) {
         viewModel.cpuInfo.collectAsStateWithLifecycle()

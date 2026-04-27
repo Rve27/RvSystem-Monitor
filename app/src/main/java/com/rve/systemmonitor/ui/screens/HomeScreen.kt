@@ -68,11 +68,7 @@ import com.rve.systemmonitor.ui.viewmodel.HomeUiState
 import com.rve.systemmonitor.ui.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen(
-    isActive: Boolean,
-    viewModel: HomeViewModel = hiltViewModel(),
-    onNavigateToSettings: () -> Unit
-) {
+fun HomeScreen(isActive: Boolean, viewModel: HomeViewModel = hiltViewModel(), onNavigateToSettings: () -> Unit) {
     val initialUiState = remember { viewModel.uiState.value }
     val uiState by if (isActive) {
         viewModel.uiState.collectAsStateWithLifecycle()

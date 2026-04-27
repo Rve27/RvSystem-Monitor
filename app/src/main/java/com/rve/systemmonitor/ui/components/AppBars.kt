@@ -102,7 +102,7 @@ fun ExitUntilCollapsedMediumTopAppBar(title: String, onNavigateBack: () -> Unit,
         title = {
             val titleStartPadding = animateDpAsState(
                 targetValue = if (scrollBehavior.state.collapsedFraction > 0.5f) 6.dp else 0.dp,
-                animationSpec = tween( 250),
+                animationSpec = tween(250),
                 label = "titleStartPadding",
             )
             Text(
@@ -126,7 +126,7 @@ fun ExitUntilCollapsedMediumTopAppBar(title: String, onNavigateBack: () -> Unit,
             ) {
                 Crossfade(
                     targetState = scrollBehavior.state.collapsedFraction > 0.5f,
-                    animationSpec = tween(500)
+                    animationSpec = tween(500),
                 ) { scrolled ->
                     if (scrolled) {
                         FilledIconButton(
