@@ -37,13 +37,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_home_rounded
-import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_list_rounded
 import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_memory_alt_rounded
 import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_memory_rounded
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_battery_0_bar_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_battery_full_rounded_filled
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_home_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_list_rounded_filled
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_alt_rounded_filled
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_rounded_filled
 import com.kyant.backdrop.Backdrop
@@ -51,6 +47,7 @@ import com.kyant.backdrop.drawBackdrop
 import com.kyant.backdrop.effects.blur
 import com.kyant.backdrop.effects.lens
 import com.kyant.backdrop.effects.vibrancy
+import com.rve.systemmonitor.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -79,8 +76,8 @@ object BottomNavBar {
             ),
             NavItem(
                 label = "Battery",
-                iconUnselected = materialsymbols_ic_battery_0_bar_rounded_filled,
-                iconSelected = materialsymbols_ic_battery_full_rounded_filled,
+                iconUnselected = R.drawable.battery_android_0_24px,
+                iconSelected = R.drawable.battery_android_full_24px,
             ),
         )
 
