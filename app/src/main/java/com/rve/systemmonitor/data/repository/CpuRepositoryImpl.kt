@@ -21,9 +21,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 
 @Singleton
-class CpuRepositoryImpl @Inject constructor(
-    private val settingsRepository: SettingsRepository,
-) : CpuRepository {
+class CpuRepositoryImpl @Inject constructor(private val settingsRepository: SettingsRepository) : CpuRepository {
     private val TAG = "CpuRepository"
 
     override fun getCpuInfo(): CPU {

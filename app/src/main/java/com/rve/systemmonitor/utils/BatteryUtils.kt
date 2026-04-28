@@ -68,6 +68,10 @@ object BatteryUtils {
         return intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10f
     }
 
+    fun getCycleCount(intent: Intent): Int {
+        return intent.getIntExtra(BatteryManager.EXTRA_CYCLE_COUNT, -1)
+    }
+
     @SuppressLint("PrivateApi")
     fun getCapacity(context: Context): Double {
         val powerProfileClass = "com.android.internal.os.PowerProfile"
@@ -85,7 +89,7 @@ object BatteryUtils {
 
     fun getActualCapacity(context: Context): Double {
         val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-        
+
         // On Android 14+ we can try to get it from BatteryManager (System API unfortunately, but let's see)
         // For 3rd party apps, we usually use the Charge Counter / Percentage estimation
         val chargeCounter = try {
@@ -102,7 +106,11 @@ object BatteryUtils {
         if (chargeCounter > 0 && capacityPercent > 0) {
             val capacity = (chargeCounter / capacityPercent.toDouble()) * 100.0 / 1000.0
             if (BuildConfig.DEBUG) {
-                Log.d("BatteryUtils", "Maximum capacity obtained from BATTERY_PROPERTY_CHARGE_COUNTER and BATTERY_PROPERTY_CAPACITY: $capacity mAh")
+                Log.d(
+                    "BatteryUtils",
+                    "Maximum capacity obtained from BATTERY_PROPERTY_CHARGE_COUNTER and " +
+                        "BATTERY_PROPERTY_CAPACITY: $capacity mAh",
+                )
             }
             return capacity
         }

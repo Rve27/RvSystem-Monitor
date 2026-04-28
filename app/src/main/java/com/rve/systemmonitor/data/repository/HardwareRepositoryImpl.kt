@@ -16,9 +16,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class HardwareRepositoryImpl @Inject constructor(
-    private val application: Application,
-) : HardwareRepository {
+class HardwareRepositoryImpl @Inject constructor(private val application: Application) : HardwareRepository {
 
     override fun getDeviceInfo(): Device {
         return Device(

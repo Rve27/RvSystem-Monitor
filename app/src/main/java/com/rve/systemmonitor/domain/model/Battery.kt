@@ -10,5 +10,6 @@ data class Battery(
     val capacity: Double = 0.0,
     val maxCapacity: Double = 0.0,
     val healthPercentage: Int = -1,
+    val cycleCount: Int = -1,
     val current: Int = 0,
 )

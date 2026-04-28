@@ -38,8 +38,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rve.systemmonitor.R
 import com.rve.systemmonitor.domain.model.Battery
 import com.rve.systemmonitor.ui.viewmodel.BatteryViewModel
-import kotlinx.coroutines.flow.emptyFlow
 import kotlin.math.abs
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun BatteryScreen(isActive: Boolean, viewModel: BatteryViewModel = hiltViewModel()) {
@@ -214,7 +214,7 @@ private fun BatteryDetailsCard(battery: Battery) {
                 val currentMA = abs(battery.current)
                 val isCharging = battery.status == "Charging"
                 val isDischarging = battery.status == "Discharging"
-                
+
                 val speedLabel = when {
                     isCharging -> "Charging Speed"
                     isDischarging -> "Discharging Speed"
@@ -226,7 +226,11 @@ private fun BatteryDetailsCard(battery: Battery) {
                     value = if (battery.current != 0) "$currentMA mA" else "0 mA",
                     modifier = Modifier.weight(1f),
                 )
-                Spacer(modifier = Modifier.weight(1f))
+                InfoItem(
+                    label = "Cycle Count",
+                    value = if (battery.cycleCount >= 0) "${battery.cycleCount}" else "Unknown",
+                    modifier = Modifier.weight(1f),
+                )
             }
         }
     }

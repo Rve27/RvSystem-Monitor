@@ -13,10 +13,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val hardwareRepository: HardwareRepository,
-    private val cpuRepository: CpuRepository,
-) : ViewModel() {
+class HomeViewModel @Inject constructor(private val hardwareRepository: HardwareRepository, private val cpuRepository: CpuRepository) :
+    ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 

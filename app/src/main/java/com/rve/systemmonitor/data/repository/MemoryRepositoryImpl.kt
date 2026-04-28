@@ -21,9 +21,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 
 @Singleton
-class MemoryRepositoryImpl @Inject constructor(
-    private val settingsRepository: SettingsRepository,
-) : MemoryRepository {
+class MemoryRepositoryImpl @Inject constructor(private val settingsRepository: SettingsRepository) : MemoryRepository {
     private val TAG = "MemoryRepository"
 
     override fun getMemoryInfo(): Flow<Pair<RAM, ZRAM>> = settingsRepository.memoryRefreshDelay.flatMapLatest { delayMillis ->

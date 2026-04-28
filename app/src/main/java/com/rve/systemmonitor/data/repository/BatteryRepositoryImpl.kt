@@ -19,10 +19,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 @Singleton
-class BatteryRepositoryImpl @Inject constructor(
-    private val application: Application,
-    private val settingsRepository: SettingsRepository,
-) : BatteryRepository {
+class BatteryRepositoryImpl @Inject constructor(private val application: Application, private val settingsRepository: SettingsRepository) :
+    BatteryRepository {
 
     private val staticBatteryInfo by lazy {
         val intent = BatteryUtils.getBatteryIntent(application)
@@ -34,7 +32,7 @@ class BatteryRepositoryImpl @Inject constructor(
                 technology = BatteryUtils.getTechnology(intent),
                 designCapacity = design,
                 maxCapacity = actual,
-                healthPercentage = BatteryUtils.getHealthPercentage(actual, design)
+                healthPercentage = BatteryUtils.getHealthPercentage(actual, design),
             )
         } else {
             BatteryInfo("Unknown", "Unknown", -1.0, -1.0, -1)
@@ -46,7 +44,7 @@ class BatteryRepositoryImpl @Inject constructor(
         val technology: String,
         val designCapacity: Double,
         val maxCapacity: Double,
-        val healthPercentage: Int
+        val healthPercentage: Int,
     )
 
     override fun getBatteryInfo(): Battery {
@@ -62,6 +60,7 @@ class BatteryRepositoryImpl @Inject constructor(
                 capacity = staticBatteryInfo.designCapacity,
                 maxCapacity = staticBatteryInfo.maxCapacity,
                 healthPercentage = staticBatteryInfo.healthPercentage,
+                cycleCount = BatteryUtils.getCycleCount(intent),
                 current = BatteryUtils.getCurrent(application),
             )
         } else {
@@ -92,6 +91,7 @@ class BatteryRepositoryImpl @Inject constructor(
                 capacity = staticBatteryInfo.designCapacity,
                 maxCapacity = staticBatteryInfo.maxCapacity,
                 healthPercentage = staticBatteryInfo.healthPercentage,
+                cycleCount = BatteryUtils.getCycleCount(intent),
                 current = currentNow,
             )
         }.flowOn(Dispatchers.IO)
