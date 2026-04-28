@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class BatteryViewModel @Inject constructor(private val systemInfoRepository: SystemInfoRepository) : ViewModel() {
+class BatteryViewModel @Inject constructor(systemInfoRepository: SystemInfoRepository) : ViewModel() {
     val batteryInfo: StateFlow<Battery> = systemInfoRepository.getBatteryStream()
         .stateIn(
             scope = viewModelScope,
