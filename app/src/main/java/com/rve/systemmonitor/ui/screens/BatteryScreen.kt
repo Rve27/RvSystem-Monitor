@@ -39,6 +39,7 @@ import com.rve.systemmonitor.R
 import com.rve.systemmonitor.domain.model.Battery
 import com.rve.systemmonitor.ui.viewmodel.BatteryViewModel
 import kotlinx.coroutines.flow.emptyFlow
+import kotlin.math.abs
 
 @Composable
 fun BatteryScreen(isActive: Boolean, viewModel: BatteryViewModel = hiltViewModel()) {
@@ -210,7 +211,7 @@ private fun BatteryDetailsCard(battery: Battery) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                val currentMA = Math.abs(battery.current)
+                val currentMA = abs(battery.current)
                 val isCharging = battery.status == "Charging"
                 val isDischarging = battery.status == "Discharging"
                 
