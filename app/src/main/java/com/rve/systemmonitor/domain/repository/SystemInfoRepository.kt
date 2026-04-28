@@ -1,5 +1,6 @@
 package com.rve.systemmonitor.domain.repository
 
+import com.rve.systemmonitor.domain.model.Battery
 import com.rve.systemmonitor.domain.model.CPU
 import com.rve.systemmonitor.domain.model.Device
 import com.rve.systemmonitor.domain.model.Display
@@ -19,4 +20,6 @@ interface SystemInfoRepository {
     fun getGpuInfo(): GPU
     fun getMemoryInfo(): Flow<Pair<RAM, ZRAM>>
     fun getStorageInfo(): Storage
+    fun getBatteryInfo(): Battery
+    fun getBatteryStream(): Flow<Battery>
 }

@@ -3,6 +3,7 @@ package com.rve.systemmonitor.data.repository
 import android.app.Application
 import android.util.Log
 import com.rve.systemmonitor.BuildConfig
+import com.rve.systemmonitor.domain.model.Battery
 import com.rve.systemmonitor.domain.model.CPU
 import com.rve.systemmonitor.domain.model.Device
 import com.rve.systemmonitor.domain.model.Display
@@ -13,6 +14,7 @@ import com.rve.systemmonitor.domain.model.ZRAM
 import com.rve.systemmonitor.domain.model.Storage
 import com.rve.systemmonitor.domain.repository.SettingsRepository
 import com.rve.systemmonitor.domain.repository.SystemInfoRepository
+import com.rve.systemmonitor.utils.BatteryUtils
 import com.rve.systemmonitor.utils.CpuUtils
 import com.rve.systemmonitor.utils.DeviceUtils
 import com.rve.systemmonitor.utils.DisplayUtils
@@ -28,6 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 
 @Singleton
@@ -36,6 +39,19 @@ class SystemInfoRepositoryImpl @Inject constructor(
     private val settingsRepository: SettingsRepository,
 ) : SystemInfoRepository {
     private val TAG = "SystemInfoRepository"
+
+    private val staticBatteryInfo by lazy {
+        val intent = BatteryUtils.getBatteryIntent(application)
+        if (intent != null) {
+            Triple(
+                BatteryUtils.getHealth(intent),
+                BatteryUtils.getTechnology(intent),
+                BatteryUtils.getCapacity(application),
+            )
+        } else {
+            Triple("Unknown", "Unknown", -1.0)
+        }
+    }
 
     override fun getDeviceInfo(): Device {
         return Device(
@@ -156,4 +172,34 @@ class SystemInfoRepositoryImpl @Inject constructor(
     override fun getStorageInfo(): Storage {
         return StorageUtils.getStorageData()
     }
+
+    override fun getBatteryInfo(): Battery {
+        val intent = BatteryUtils.getBatteryIntent(application)
+        return if (intent != null) {
+            Battery(
+                level = BatteryUtils.getLevel(intent),
+                health = staticBatteryInfo.first,
+                status = BatteryUtils.getStatus(intent),
+                technology = staticBatteryInfo.second,
+                voltage = BatteryUtils.getVoltage(intent),
+                temperature = BatteryUtils.getTemperature(intent),
+                capacity = staticBatteryInfo.third,
+            )
+        } else {
+            Battery()
+        }
+    }
+
+    override fun getBatteryStream(): Flow<Battery> = BatteryUtils.getBatteryFlow(application)
+        .map { intent ->
+            Battery(
+                level = BatteryUtils.getLevel(intent),
+                health = staticBatteryInfo.first,
+                status = BatteryUtils.getStatus(intent),
+                technology = staticBatteryInfo.second,
+                voltage = BatteryUtils.getVoltage(intent),
+                temperature = BatteryUtils.getTemperature(intent),
+                capacity = staticBatteryInfo.third,
+            )
+        }.flowOn(Dispatchers.IO)
 }

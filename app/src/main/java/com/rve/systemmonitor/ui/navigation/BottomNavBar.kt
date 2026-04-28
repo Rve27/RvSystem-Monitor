@@ -40,6 +40,8 @@ import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_
 import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_list_rounded
 import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_memory_alt_rounded
 import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_memory_rounded
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_battery_0_bar_rounded_filled
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_battery_full_rounded_filled
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_home_rounded_filled
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_list_rounded_filled
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_alt_rounded_filled
@@ -76,9 +78,9 @@ object BottomNavBar {
                 iconSelected = materialsymbols_ic_memory_alt_rounded_filled,
             ),
             NavItem(
-                label = "Processes",
-                iconUnselected = materialsymbols_ic_list_rounded,
-                iconSelected = materialsymbols_ic_list_rounded_filled,
+                label = "Battery",
+                iconUnselected = materialsymbols_ic_battery_0_bar_rounded_filled,
+                iconSelected = materialsymbols_ic_battery_full_rounded_filled,
             ),
         )
 

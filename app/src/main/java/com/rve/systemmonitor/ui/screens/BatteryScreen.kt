@@ -1,0 +1,240 @@
+package com.rve.systemmonitor.ui.screens
+
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_battery_0_bar_rounded_filled
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_battery_1_bar_rounded_filled
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_battery_2_bar_rounded_filled
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_battery_3_bar_rounded_filled
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_battery_4_bar_rounded_filled
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_battery_5_bar_rounded_filled
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_battery_6_bar_rounded_filled
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_battery_full_rounded_filled
+import com.rve.systemmonitor.domain.model.Battery
+import com.rve.systemmonitor.ui.viewmodel.BatteryViewModel
+
+@Composable
+fun BatteryScreen(isActive: Boolean, viewModel: BatteryViewModel = hiltViewModel()) {
+    val initialBatteryInfo = remember { viewModel.batteryInfo.value }
+    val batteryInfo by if (isActive) {
+        viewModel.batteryInfo.collectAsStateWithLifecycle()
+    } else {
+        remember { kotlinx.coroutines.flow.emptyFlow<Battery>() }.collectAsStateWithLifecycle(initialBatteryInfo)
+    }
+
+    LazyColumn(
+        contentPadding = PaddingValues(
+            top = 16.dp,
+            bottom = 112.dp,
+        ),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+    ) {
+        item {
+            BatteryOverviewCard(batteryInfo)
+        }
+
+        item {
+            BatteryDetailsCard(batteryInfo)
+        }
+    }
+}
+
+@Composable
+private fun BatteryOverviewCard(battery: Battery) {
+    val batteryIcon = remember(battery.level) {
+        when {
+            battery.level >= 100 -> materialsymbols_ic_battery_full_rounded_filled
+            battery.level >= 85 -> materialsymbols_ic_battery_6_bar_rounded_filled
+            battery.level >= 70 -> materialsymbols_ic_battery_5_bar_rounded_filled
+            battery.level >= 55 -> materialsymbols_ic_battery_4_bar_rounded_filled
+            battery.level >= 40 -> materialsymbols_ic_battery_3_bar_rounded_filled
+            battery.level >= 25 -> materialsymbols_ic_battery_2_bar_rounded_filled
+            battery.level >= 10 -> materialsymbols_ic_battery_1_bar_rounded_filled
+            else -> materialsymbols_ic_battery_0_bar_rounded_filled
+        }
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Crossfade(
+                targetState = batteryIcon,
+                label = "Battery Icon Fade",
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(y = 30.dp),
+            ) { iconRes ->
+                Icon(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .size(160.dp)
+                        .alpha(0.20f),
+                )
+            }
+
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = "${battery.level}%",
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = battery.status,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    BadgeChip(
+                        text = battery.health,
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        textColor = MaterialTheme.colorScheme.onSecondary,
+                    )
+                    BadgeChip(
+                        text = battery.technology,
+                        containerColor = MaterialTheme.colorScheme.tertiary,
+                        textColor = MaterialTheme.colorScheme.onTertiary,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BatteryDetailsCard(battery: Battery) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = "Battery Details",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                InfoItem(
+                    label = "Voltage",
+                    value = "${battery.voltage} mV",
+                    modifier = Modifier.weight(1f),
+                )
+                InfoItem(
+                    label = "Temperature",
+                    value = "${battery.temperature} °C",
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                InfoItem(
+                    label = "Capacity",
+                    value = if (battery.capacity > 0) "${battery.capacity.toInt()} mAh" else "Unknown",
+                    modifier = Modifier.weight(1f),
+                )
+                Spacer(modifier = Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+@Composable
+private fun InfoItem(label: String, value: String, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = androidx.compose.material3.LocalContentColor.current.copy(alpha = 0.7f),
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
+    }
+}
+
+@Composable
+private fun BadgeChip(text: String, containerColor: Color, textColor: Color) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(containerColor)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelMedium,
+            color = textColor,
+            fontWeight = FontWeight.Bold,
+            fontSize = 10.sp,
+        )
+    }
+}

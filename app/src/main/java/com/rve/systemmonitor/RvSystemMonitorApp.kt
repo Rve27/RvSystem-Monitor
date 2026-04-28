@@ -32,7 +32,7 @@ import com.rve.systemmonitor.ui.components.AppBars.SimpleTopAppBar
 import com.rve.systemmonitor.ui.navigation.BottomNavBar.BottomNavigationBar
 import com.rve.systemmonitor.ui.screens.CPUScreen
 import com.rve.systemmonitor.ui.screens.HomeScreen
-import com.rve.systemmonitor.ui.screens.ProcessesScreen
+import com.rve.systemmonitor.ui.screens.BatteryScreen
 import com.rve.systemmonitor.ui.screens.MemoryScreen
 import kotlinx.coroutines.launch
 
@@ -87,8 +87,9 @@ fun RvSystemMonitorApp(onNavigateToSettings: () -> Unit) {
                     0 -> "Home"
                     1 -> "CPU"
                     2 -> "Memory"
-                    3 -> "Processes"
+                    3 -> "Battery"
                     else -> ""
+
                 },
                 onNavigateToSettings = onNavigateToSettings,
             )
@@ -126,7 +127,9 @@ fun RvSystemMonitorApp(onNavigateToSettings: () -> Unit) {
                             isActive = pagerState.settledPage == 2,
                         )
 
-                        3 -> ProcessesScreen()
+                        3 -> BatteryScreen(
+                            isActive = pagerState.settledPage == 3,
+                        )
                     }
                 }
             }
