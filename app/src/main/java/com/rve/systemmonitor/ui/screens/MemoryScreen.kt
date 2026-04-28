@@ -2,12 +2,14 @@ package com.rve.systemmonitor.ui.screens
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,17 +20,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -39,20 +47,17 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_alt_rounded_filled
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_database_rounded_filled
 import com.rve.systemmonitor.domain.model.RAM
+import com.rve.systemmonitor.domain.model.Storage
 import com.rve.systemmonitor.domain.model.ZRAM
 import com.rve.systemmonitor.ui.viewmodel.MemoryUiState
 import com.rve.systemmonitor.ui.viewmodel.MemoryViewModel
-
-import androidx.compose.foundation.clickable
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -63,6 +68,12 @@ fun MemoryScreen(isActive: Boolean, viewModel: MemoryViewModel = hiltViewModel()
         viewModel.uiState.collectAsStateWithLifecycle()
     } else {
         remember { kotlinx.coroutines.flow.emptyFlow<MemoryUiState>() }.collectAsStateWithLifecycle(initialUiState)
+    }
+
+    LaunchedEffect(isActive) {
+        if (isActive) {
+            viewModel.refreshStorage()
+        }
     }
 
     var selectedDetail by remember { mutableStateOf<Pair<String, String>?>(null) }
@@ -89,6 +100,12 @@ fun MemoryScreen(isActive: Boolean, viewModel: MemoryViewModel = hiltViewModel()
             MemoryCard(
                 ram = uiState.ram,
                 zram = uiState.zram,
+            )
+        }
+
+        item {
+            StorageCard(
+                storage = uiState.storage,
             )
         }
 
@@ -161,6 +178,148 @@ private fun DetailedMemoryCard(ram: RAM, onItemClick: (String, String) -> Unit) 
             description = "Memory used by the kernel's internal data structures and objects.",
             onItemClick = onItemClick,
             modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@Composable
+private fun StorageCard(storage: Storage) {
+    val density = LocalDensity.current
+    val customStroke = remember(density) {
+        with(density) {
+            Stroke(
+                width = 12.dp.toPx(),
+                cap = StrokeCap.Round,
+            )
+        }
+    }
+
+    val storageTargetProgress = remember(storage.usedPercentage) {
+        if (storage.usedPercentage.isNaN()) 0f else (storage.usedPercentage.toFloat() / 100f)
+    }
+    val storageAnimatedProgress by animateFloatAsState(
+        targetValue = storageTargetProgress,
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
+        label = "Storage Progress Animation",
+    )
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Icon(
+                painter = painterResource(id = materialsymbols_ic_database_rounded_filled),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(160.dp)
+                    .offset(y = 30.dp)
+                    .alpha(0.20f),
+            )
+
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Row(
+                    modifier = Modifier.height(IntrinsicSize.Min),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    CircularWavyProgressIndicator(
+                        progress = { storageAnimatedProgress },
+                        color = MaterialTheme.colorScheme.secondary,
+                        trackColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.2f),
+                        stroke = customStroke,
+                        trackStroke = customStroke,
+                        wavelength = 25.dp,
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .aspectRatio(1f),
+                    )
+
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Column {
+                            Text(
+                                text = "Internal Storage",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            Text(
+                                text = "${storage.used} / ${storage.total} GB",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            BadgeChip(
+                                text = "${storage.usedPercentage}%",
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                textColor = MaterialTheme.colorScheme.onPrimary,
+                            )
+                            BadgeChip(
+                                text = "${storage.available} GB Free",
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                textColor = MaterialTheme.colorScheme.onTertiary,
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.1f),
+                    thickness = 1.dp,
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    StorageInfoItem(
+                        label = "Mount Path",
+                        value = storage.mountPath,
+                        modifier = Modifier.weight(1.5f),
+                    )
+                    StorageInfoItem(
+                        label = "Filesystem",
+                        value = storage.fileSystemType,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StorageInfoItem(label: String, value: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            .padding(8.dp),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

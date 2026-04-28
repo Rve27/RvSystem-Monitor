@@ -23,3 +23,14 @@ data class ZRAM(
     val used: Double = 0.0,
     val usedPercentage: Double = 0.0,
 )
+
+@Immutable
+data class Storage(
+    val total: Double = 0.0,
+    val available: Double = 0.0,
+    val used: Double = 0.0,
+    val usedPercentage: Double = 0.0,
+    val mountPath: String = "",
+    val fileSystemType: String = "",
+)
+

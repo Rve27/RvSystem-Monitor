@@ -7,6 +7,7 @@ import com.rve.systemmonitor.domain.model.GPU
 import com.rve.systemmonitor.domain.model.OS
 import com.rve.systemmonitor.domain.model.RAM
 import com.rve.systemmonitor.domain.model.ZRAM
+import com.rve.systemmonitor.domain.model.Storage
 import kotlinx.coroutines.flow.Flow
 
 interface SystemInfoRepository {
@@ -17,4 +18,5 @@ interface SystemInfoRepository {
     fun getCpuStream(): Flow<CPU>
     fun getGpuInfo(): GPU
     fun getMemoryInfo(): Flow<Pair<RAM, ZRAM>>
+    fun getStorageInfo(): Storage
 }

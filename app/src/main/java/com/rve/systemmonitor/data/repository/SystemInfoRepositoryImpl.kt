@@ -10,6 +10,7 @@ import com.rve.systemmonitor.domain.model.GPU
 import com.rve.systemmonitor.domain.model.OS
 import com.rve.systemmonitor.domain.model.RAM
 import com.rve.systemmonitor.domain.model.ZRAM
+import com.rve.systemmonitor.domain.model.Storage
 import com.rve.systemmonitor.domain.repository.SettingsRepository
 import com.rve.systemmonitor.domain.repository.SystemInfoRepository
 import com.rve.systemmonitor.utils.CpuUtils
@@ -18,6 +19,7 @@ import com.rve.systemmonitor.utils.DisplayUtils
 import com.rve.systemmonitor.utils.GpuUtils
 import com.rve.systemmonitor.utils.MemoryUtils
 import com.rve.systemmonitor.utils.OSUtils
+import com.rve.systemmonitor.utils.StorageUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.delay
@@ -147,5 +149,9 @@ class SystemInfoRepositoryImpl @Inject constructor(
         }.onCompletion {
             if (BuildConfig.DEBUG) Log.d(TAG, "Memory Stream Stopped")
         }
+    }
+
+    override fun getStorageInfo(): Storage {
+        return StorageUtils.getStorageData()
     }
 }
