@@ -28,6 +28,19 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
+/**
+ * A wrapper component for screen content that provides sophisticated transition effects.
+ *
+ * This component tracks the navigation backstack and the screen's own lifecycle to:
+ * 1. Animate corner radius when the screen is being transitioned (resumed vs paused).
+ * 2. Apply a dimming effect when the screen is visible but not the primary navigation target
+ *    (e.g., when a dialog or another layer is partially covering it).
+ * 3. Manage background and clipping logic efficiently using [graphicsLayer].
+ *
+ * @param navController The [NavController] used to track backstack entries and visibility.
+ * @param modifier The [Modifier] to be applied to the outer container.
+ * @param content The composable content to be wrapped inside this screen.
+ */
 @Composable
 fun ScreenWrapper(navController: NavController, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val lifecycleOwner = LocalLifecycleOwner.current
