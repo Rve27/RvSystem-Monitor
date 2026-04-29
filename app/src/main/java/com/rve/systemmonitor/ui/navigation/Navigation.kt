@@ -5,7 +5,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,7 +17,6 @@ import com.rve.systemmonitor.ui.screens.SetupScreen
 @Composable
 fun AppNavigation(isSetupCompleted: Boolean) {
     val navController = rememberNavController()
-    val context = LocalContext.current
     val startDestination = remember {
         if (isSetupCompleted) Route.Main else Route.Setup
     }
