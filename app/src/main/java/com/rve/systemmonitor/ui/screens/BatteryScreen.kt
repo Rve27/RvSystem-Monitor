@@ -47,8 +47,8 @@ import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsy
 import com.rve.systemmonitor.R
 import com.rve.systemmonitor.domain.model.Battery
 import com.rve.systemmonitor.ui.viewmodel.BatteryViewModel
-import kotlinx.coroutines.flow.emptyFlow
 import kotlin.math.abs
+import kotlinx.coroutines.flow.emptyFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

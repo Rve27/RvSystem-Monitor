@@ -7,4 +7,6 @@ sealed interface Route {
     data object Main : Route
     @Serializable
     data object Settings : Route
+    @Serializable
+    data object OverlaySettings : Route
 }

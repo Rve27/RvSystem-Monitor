@@ -22,6 +22,7 @@ fun AppNavigation() {
         composable<Route.Main> {
             RvSystemMonitorApp(
                 onNavigateToSettings = { navController.navigate(Route.Settings) },
+                onNavigateToOverlaySettings = { navController.navigate(Route.OverlaySettings) },
             )
         }
 
@@ -32,6 +33,17 @@ fun AppNavigation() {
             popExitTransition = { popExitTransition() },
         ) {
             SettingsScreen(
+                onNavigateBack = { navController.popBackStack() },
+            )
+        }
+
+        composable<Route.OverlaySettings>(
+            enterTransition = { enterTransition() },
+            exitTransition = { exitTransition() },
+            popEnterTransition = { popEnterTransition() },
+            popExitTransition = { popExitTransition() },
+        ) {
+            com.rve.systemmonitor.ui.screens.OverlaySettingsScreen(
                 onNavigateBack = { navController.popBackStack() },
             )
         }

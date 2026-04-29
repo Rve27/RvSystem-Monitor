@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_layers_rounded_filled
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_settings_rounded_filled
 import com.rve.systemmonitor.ui.navigation.TRANSITION_DURATION
 
@@ -45,14 +46,15 @@ import com.rve.systemmonitor.ui.navigation.TRANSITION_DURATION
  */
 object AppBars {
     /**
-     * A simple Top App Bar with a title, subtitle, and a settings action.
+     * A simple Top App Bar with a title, subtitle, and actions.
      *
      * @param title The main title to display in the app bar.
      * @param subtitle The subtitle to display below the main title.
      * @param onNavigateToSettings Callback invoked when the settings icon is clicked.
+     * @param onNavigateToOverlaySettings Callback invoked when the overlay icon is clicked.
      */
     @Composable
-    fun SimpleTopAppBar(title: String, subtitle: String, onNavigateToSettings: () -> Unit) {
+    fun SimpleTopAppBar(title: String, subtitle: String, onNavigateToSettings: () -> Unit, onNavigateToOverlaySettings: () -> Unit) {
         TopAppBar(
             title = {
                 Text(
@@ -89,6 +91,27 @@ object AppBars {
                 }
             },
             actions = {
+                TooltipBox(
+                    positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                        TooltipAnchorPosition.Left,
+                    ),
+                    tooltip = {
+                        PlainTooltip {
+                            Text("Overlay Settings")
+                        }
+                    },
+                    state = rememberTooltipState(),
+                ) {
+                    IconButton(
+                        onClick = onNavigateToOverlaySettings,
+                    ) {
+                        Icon(
+                            painterResource(materialsymbols_ic_layers_rounded_filled),
+                            contentDescription = "Overlay Settings",
+                        )
+                    }
+                }
+
                 TooltipBox(
                     positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
                         TooltipAnchorPosition.Left,
