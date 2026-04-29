@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,8 +46,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rve.systemmonitor.R
 import com.rve.systemmonitor.domain.model.Battery
 import com.rve.systemmonitor.ui.viewmodel.BatteryViewModel
-import kotlin.math.abs
 import kotlinx.coroutines.flow.emptyFlow
+import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -266,7 +267,7 @@ private fun BatteryDetailsCard(battery: Battery, onHelpClick: () -> Unit) {
             ) {
                 InfoItem(
                     label = "Wattage",
-                    value = String.format("%.2f W", battery.wattage),
+                    value = String.format(LocalLocale.current.platformLocale, "%.2f W", battery.wattage),
                     modifier = Modifier.weight(1f),
                 )
                 InfoItem(
