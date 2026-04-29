@@ -12,5 +12,9 @@ data class Battery(
     val healthPercentage: Int = -1,
     val cycleCount: Int = -1,
     val uptime: Long = 0L,
+    val deepSleep: Long = 0L,
     val current: Int = 0,
+    val wattage: Double = 0.0,
+    val powerSource: String = "Battery",
+    val remainingCapacity: Double = 0.0,
 )

@@ -196,21 +196,10 @@ private fun BatteryDetailsCard(battery: Battery) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 InfoItem(
-                    label = "Design Capacity",
-                    value = if (battery.capacity > 0) "${battery.capacity.toInt()} mAh" else "Unknown",
+                    label = "Power Source",
+                    value = battery.powerSource,
                     modifier = Modifier.weight(1f),
                 )
-                InfoItem(
-                    label = "Maximum Capacity",
-                    value = if (battery.maxCapacity > 0) "${battery.maxCapacity.toInt()} mAh" else "Unknown",
-                    modifier = Modifier.weight(1f),
-                )
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
                 val currentMA = abs(battery.current)
                 val isCharging = battery.status == "Charging"
                 val isDischarging = battery.status == "Discharging"
@@ -226,6 +215,17 @@ private fun BatteryDetailsCard(battery: Battery) {
                     value = if (battery.current != 0) "$currentMA mA" else "0 mA",
                     modifier = Modifier.weight(1f),
                 )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                InfoItem(
+                    label = "Wattage",
+                    value = String.format("%.2f W", battery.wattage),
+                    modifier = Modifier.weight(1f),
+                )
                 InfoItem(
                     label = "Cycle Count",
                     value = if (battery.cycleCount >= 0) "${battery.cycleCount}" else "Unknown",
@@ -238,8 +238,40 @@ private fun BatteryDetailsCard(battery: Battery) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 InfoItem(
+                    label = "Remaining Capacity",
+                    value = if (battery.remainingCapacity > 0) "${battery.remainingCapacity.toInt()} mAh" else "Unknown",
+                    modifier = Modifier.weight(1f),
+                )
+                InfoItem(
+                    label = "Maximum Capacity",
+                    value = if (battery.maxCapacity > 0) "${battery.maxCapacity.toInt()} mAh" else "Unknown",
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                InfoItem(
+                    label = "Design Capacity",
+                    value = if (battery.capacity > 0) "${battery.capacity.toInt()} mAh" else "Unknown",
+                    modifier = Modifier.weight(1f),
+                )
+                InfoItem(
                     label = "Uptime",
                     value = formatUptime(battery.uptime),
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                InfoItem(
+                    label = "Deep Sleep",
+                    value = formatUptime(battery.deepSleep),
                     modifier = Modifier.weight(1f),
                 )
                 Spacer(modifier = Modifier.weight(1f))

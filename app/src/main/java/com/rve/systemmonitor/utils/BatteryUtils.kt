@@ -56,6 +56,16 @@ object BatteryUtils {
         }
     }
 
+    fun getPowerSource(intent: Intent): String {
+        return when (intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)) {
+            BatteryManager.BATTERY_PLUGGED_AC -> "AC Charger"
+            BatteryManager.BATTERY_PLUGGED_USB -> "USB Port"
+            BatteryManager.BATTERY_PLUGGED_WIRELESS -> "Wireless"
+            0 -> "Battery"
+            else -> "Unknown"
+        }
+    }
+
     fun getTechnology(intent: Intent): String {
         return intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY) ?: "Unknown"
     }
