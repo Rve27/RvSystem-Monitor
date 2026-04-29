@@ -383,7 +383,8 @@ private fun BatteryHelpContent() {
             item {
                 HelpItem(
                     title = "Capacity (Design/Max/Remaining)",
-                    description = "Extracted from Android PowerProfile and battery charge counter calculations.",
+                    description = "Extracted from Android PowerProfile and battery charge counter calculations. " +
+                        "Maximum Capacity and Health Percentage are estimates and may not be 100% accurate.",
                 )
             }
             item {
