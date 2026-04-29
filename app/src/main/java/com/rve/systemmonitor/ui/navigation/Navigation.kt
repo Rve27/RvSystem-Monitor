@@ -1,6 +1,5 @@
 package com.rve.systemmonitor.ui.navigation
 
-import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

@@ -4,11 +4,9 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PixelFormat
-import android.os.Build
 import android.os.IBinder
 import android.view.Choreographer
 import android.view.Gravity
@@ -100,17 +98,12 @@ class SystemOverlayService : Service() {
     }
 
     private fun showOverlay() {
-        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
 
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-            } else {
-                @Suppress("DEPRECATION")
-                WindowManager.LayoutParams.TYPE_PHONE
-            },
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT,
         ).apply {
@@ -120,7 +113,7 @@ class SystemOverlayService : Service() {
         }
 
         val textView = TextView(this).apply {
-            text = "Loading metrics..."
+            text = "Loading ..."
             setTextColor(Color.GREEN)
             setBackgroundColor(Color.argb(128, 0, 0, 0))
             setPadding(16, 8, 16, 8)
@@ -161,15 +154,13 @@ class SystemOverlayService : Service() {
 
     private fun createNotification(): Notification {
         val channelId = "system_overlay_channel"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "System Overlay Service",
-                NotificationManager.IMPORTANCE_LOW,
-            )
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel(
+            channelId,
+            "System Overlay Service",
+            NotificationManager.IMPORTANCE_LOW,
+        )
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(channel)
 
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle("System Overlay Active")
