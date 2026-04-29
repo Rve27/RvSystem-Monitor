@@ -9,4 +9,6 @@ sealed interface Route {
     data object Settings : Route
     @Serializable
     data object OverlaySettings : Route
+    @Serializable
+    data object Setup : Route
 }

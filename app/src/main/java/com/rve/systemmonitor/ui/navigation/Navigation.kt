@@ -1,9 +1,12 @@
 package com.rve.systemmonitor.ui.navigation
 
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -11,16 +14,41 @@ import com.rve.systemmonitor.RvSystemMonitorApp
 import com.rve.systemmonitor.ui.components.ScreenWrapper
 import com.rve.systemmonitor.ui.screens.OverlaySettingsScreen
 import com.rve.systemmonitor.ui.screens.SettingsScreen
+import com.rve.systemmonitor.ui.screens.SetupScreen
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(isSetupCompleted: Boolean) {
     val navController = rememberNavController()
+    val context = LocalContext.current
+    val startDestination = remember {
+        if (isSetupCompleted) Route.Main else Route.Setup
+    }
 
     NavHost(
         navController = navController,
-        startDestination = Route.Main,
+        startDestination = startDestination,
         modifier = Modifier.background(MaterialTheme.colorScheme.background),
     ) {
+        composable<Route.Setup>(
+            enterTransition = { enterTransition() },
+            exitTransition = { exitTransition() },
+            popEnterTransition = { popEnterTransition() },
+            popExitTransition = { popExitTransition() },
+        ) {
+            SetupScreen(
+                onPermissionGranted = {
+                    navController.navigateSafely(Route.Main) {
+                        popUpTo(Route.Setup) { inclusive = true }
+                    }
+                },
+                onSkip = {
+                    navController.navigateSafely(Route.Main) {
+                        popUpTo(Route.Setup) { inclusive = true }
+                    }
+                },
+            )
+        }
+
         composable<Route.Main>(
             enterTransition = {
                 mainRootEnterTransition(

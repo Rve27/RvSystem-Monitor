@@ -15,6 +15,8 @@ class SettingsRepositoryImpl @Inject constructor(application: Application) : Set
 
     override val themeMode: Flow<ThemeMode> = settingsPreferences.themeModeFlow
 
+    override val isSetupCompleted: Flow<Boolean> = settingsPreferences.isSetupCompletedFlow
+
     override val cpuRefreshDelay: Flow<Long> = settingsPreferences.cpuRefreshDelayFlow
 
     override val memoryRefreshDelay: Flow<Long> = settingsPreferences.memoryRefreshDelayFlow
@@ -23,6 +25,10 @@ class SettingsRepositoryImpl @Inject constructor(application: Application) : Set
 
     override suspend fun setThemeMode(mode: ThemeMode) {
         settingsPreferences.saveThemeMode(mode)
+    }
+
+    override suspend fun setSetupCompleted(completed: Boolean) {
+        settingsPreferences.saveSetupCompleted(completed)
     }
 
     override suspend fun setCpuRefreshDelay(delayMillis: Long) {

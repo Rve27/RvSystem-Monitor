@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
 
             if (uiState is MainUiState.Success) {
                 val themeMode = (uiState as MainUiState.Success).themeMode
+                val isSetupCompleted = (uiState as MainUiState.Success).isSetupCompleted
                 val darkTheme = when (themeMode) {
                     ThemeMode.LIGHT -> false
                     ThemeMode.DARK -> true
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 RvSystemMonitorTheme(darkTheme) {
-                    AppNavigation()
+                    AppNavigation(isSetupCompleted)
                 }
             }
         }
