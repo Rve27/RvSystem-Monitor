@@ -16,6 +16,38 @@ object MemoryUtils {
     }
 
     @JvmStatic
+    private external fun getMemoryDataNative(): DoubleArray
+
+    fun getMemoryInfo(): Pair<RAM, ZRAM> = runCatching {
+        val data = getMemoryDataNative()
+
+        val ram = RAM(
+            total = data[0],
+            available = data[1],
+            used = data[2],
+            usedPercentage = data[3],
+            cached = data[4],
+            buffers = data[5],
+            active = data[6],
+            inactive = data[7],
+            slab = data[8],
+        )
+
+        val zram = ZRAM(
+            isActive = data[9] > 0.0,
+            total = data[10],
+            available = data[11],
+            used = data[12],
+            usedPercentage = data[13],
+        )
+
+        ram to zram
+    }.getOrElse {
+        Log.e(TAG, "getMemoryInfo: ${it.message}", it)
+        RAM() to ZRAM()
+    }
+
+    @JvmStatic
     private external fun getRamDataNative(): DoubleArray
 
     @JvmStatic

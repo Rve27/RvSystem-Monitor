@@ -2,19 +2,18 @@ package com.rve.systemmonitor.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rve.systemmonitor.domain.model.Storage
 import com.rve.systemmonitor.domain.repository.HardwareRepository
 import com.rve.systemmonitor.domain.repository.MemoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
 @HiltViewModel
 class MemoryViewModel @Inject constructor(
-    private val memoryRepository: MemoryRepository,
+    memoryRepository: MemoryRepository,
     private val hardwareRepository: HardwareRepository,
 ) : ViewModel() {
     private val storageInfo = MutableStateFlow(hardwareRepository.getStorageInfo())

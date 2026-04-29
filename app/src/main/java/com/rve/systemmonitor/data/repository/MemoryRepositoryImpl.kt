@@ -29,8 +29,7 @@ class MemoryRepositoryImpl @Inject constructor(private val settingsRepository: S
             if (BuildConfig.DEBUG) Log.d(TAG, "Memory Stream Started with delay: $delayMillis")
             while (true) {
                 if (BuildConfig.DEBUG) Log.d(TAG, "Memory Stream Updated")
-                val ram = MemoryUtils.getRamData()
-                val zram = MemoryUtils.getZramData()
+                val (ram, zram) = MemoryUtils.getMemoryInfo()
                 emit(ram to zram)
                 delay(delayMillis)
             }

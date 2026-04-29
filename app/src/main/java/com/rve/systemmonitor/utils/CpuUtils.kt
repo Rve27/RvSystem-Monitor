@@ -15,6 +15,16 @@ object CpuUtils {
     }
 
     @JvmStatic
+    private external fun getAllCoreFrequenciesNative(): Array<String>
+
+    fun getAllCoreFrequencies(): Array<String> = runCatching {
+        getAllCoreFrequenciesNative()
+    }.getOrElse {
+        Log.e(TAG, "getAllCoreFrequencies: ${it.message}", it)
+        emptyArray()
+    }
+
+    @JvmStatic
     private external fun getCoreCountNative(): Int
 
     @JvmStatic

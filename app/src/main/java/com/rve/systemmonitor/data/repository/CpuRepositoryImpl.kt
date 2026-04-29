@@ -56,12 +56,13 @@ class CpuRepositoryImpl @Inject constructor(private val settingsRepository: Sett
             while (true) {
                 if (BuildConfig.DEBUG) Log.d(TAG, "CPU Stream Updated")
                 val coreDetails = mutableListOf<CoreDetail>()
+                val currentFrequencies = CpuUtils.getAllCoreFrequencies()
 
                 for (i in 0 until cores) {
                     coreDetails.add(
                         CoreDetail(
                             id = i,
-                            currentFreq = CpuUtils.getCoreFrequency(i, "cur"),
+                            currentFreq = currentFrequencies.getOrElse(i) { "N/A" },
                             minFreq = staticCoreInfo[i].first,
                             maxFreq = staticCoreInfo[i].second,
                             governor = staticCoreInfo[i].third,
