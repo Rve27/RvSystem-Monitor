@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_help_rounded_filled
 import com.rve.systemmonitor.R
 import com.rve.systemmonitor.domain.model.Battery
 import com.rve.systemmonitor.ui.viewmodel.BatteryViewModel
@@ -209,9 +210,7 @@ private fun BatteryDetailsCard(battery: Battery, onHelpClick: () -> Unit) {
                     modifier = Modifier.size(24.dp),
                 ) {
                     Icon(
-                        painter = painterResource(
-                            com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_help_rounded_filled,
-                        ),
+                        painter = painterResource(materialsymbols_ic_help_rounded_filled),
                         contentDescription = "Help",
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp),
