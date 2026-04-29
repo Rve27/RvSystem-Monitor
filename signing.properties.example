@@ -1,0 +1,8 @@
+# Keystore configuration for signing the release APK
+# Copy this file to 'signing.properties' and fill in your actual values.
+# DO NOT commit 'signing.properties' to version control!
+
+KEYSTORE_PATH=/path/to/your/release.keystore
+KEYSTORE_PASSWORD=your_keystore_password
+KEY_ALIAS=your_key_alias
+KEY_PASSWORD=your_key_password

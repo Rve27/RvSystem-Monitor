@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -29,6 +31,29 @@ android {
         }
     }
 
+    val signingPropertiesFile = rootProject.file("signing.properties")
+    val signingProperties = Properties()
+    if (signingPropertiesFile.exists()) {
+        signingPropertiesFile.inputStream().use { signingProperties.load(it) }
+    }
+
+    signingConfigs {
+        create("release") {
+            if (signingProperties.isEmpty) {
+                val debugConfig = getByName("debug")
+                storeFile = debugConfig.storeFile
+                storePassword = debugConfig.storePassword
+                keyAlias = debugConfig.keyAlias
+                keyPassword = debugConfig.keyPassword
+            } else {
+                storeFile = file(signingProperties.getProperty("KEYSTORE_PATH"))
+                storePassword = signingProperties.getProperty("KEYSTORE_PASSWORD")
+                keyAlias = signingProperties.getProperty("KEY_ALIAS")
+                keyPassword = signingProperties.getProperty("KEY_PASSWORD")
+            }
+        }
+    }
+
     dependenciesInfo {
         // Disables dependency metadata when building APKs (for IzzyOnDroid/F-Droid)
         includeInApk = false
@@ -41,6 +66,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             isDebuggable = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
