@@ -45,9 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_brightness_medium_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_alt_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_rounded_filled
+import com.rve.systemmonitor.R
 import com.rve.systemmonitor.ui.components.ExitUntilCollapsedMediumTopAppBar
 import com.rve.systemmonitor.ui.viewmodel.SettingsViewModel
 import com.rve.systemmonitor.utils.ThemeMode
@@ -234,7 +232,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onNavigateBac
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Icon(
-                                        painter = painterResource(materialsymbols_ic_brightness_medium_rounded_filled),
+                                        painter = painterResource(R.drawable.brightness_medium_filled),
                                         contentDescription = "Theme Icon",
                                         tint = MaterialTheme.colorScheme.onPrimary,
                                     )
@@ -323,7 +321,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onNavigateBac
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Icon(
-                                        painter = painterResource(materialsymbols_ic_memory_rounded_filled),
+                                        painter = painterResource(R.drawable.memory_filled),
                                         contentDescription = "CPU Monitoring Icon",
                                         tint = MaterialTheme.colorScheme.onPrimary,
                                     )
@@ -405,7 +403,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onNavigateBac
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Icon(
-                                        painter = painterResource(materialsymbols_ic_memory_alt_rounded_filled),
+                                        painter = painterResource(R.drawable.memory_alt_filled),
                                         contentDescription = "Memory Monitoring Icon",
                                         tint = MaterialTheme.colorScheme.onPrimary,
                                     )
@@ -487,7 +485,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onNavigateBac
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Icon(
-                                        painter = painterResource(com.rve.systemmonitor.R.drawable.battery_android_full_24px),
+                                        painter = painterResource(R.drawable.battery_android_full),
                                         contentDescription = "Battery Monitoring Icon",
                                         tint = MaterialTheme.colorScheme.onPrimary,
                                     )

@@ -11,8 +11,6 @@ activityCompose = "1.13.0"
 kotlin = "2.3.21"
 composeBom = "2026.04.01"
 material3 = "1.5.0-alpha18"
-composeIcons = "2.2.1"
-materialIconsExtended = "1.7.8"
 navigation = "2.9.8"
 splashscreen = "1.2.0"
 spotless = "8.4.0"
@@ -20,7 +18,6 @@ hilt = "2.59.2"
 ksp = "2.3.7"
 
 [libraries]
-androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 backdrop = { module = "io.github.kyant0:backdrop", version.ref = "backdrop" }
@@ -38,8 +35,6 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
-icons-material-symbols-rounded-android = { module = "com.composables:icons-material-symbols-rounded-android", version.ref = "composeIcons" }
-icons-material-symbols-rounded-filled-android = { module = "com.composables:icons-material-symbols-rounded-filled-android", version.ref = "composeIcons" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }

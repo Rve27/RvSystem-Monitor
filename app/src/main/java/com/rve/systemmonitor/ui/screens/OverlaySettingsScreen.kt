@@ -55,8 +55,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_layers_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_speed_rounded_filled
+import com.rve.systemmonitor.R
 import com.rve.systemmonitor.service.SystemOverlayService
 import com.rve.systemmonitor.ui.components.ExitUntilCollapsedMediumTopAppBar
 import com.rve.systemmonitor.ui.viewmodel.OverlaySettingsViewModel
@@ -208,7 +207,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                     MetricToggleCard(
                         title = "FPS",
                         description = "Show real-time frame rate",
-                        icon = materialsymbols_ic_speed_rounded_filled,
+                        icon = R.drawable.sixty_fps_select_rounded,
                         isEnabled = isFpsEnabled,
                         hasPermission = hasOverlayPermission,
                         interactionSource = fpsInteractionSource,
@@ -223,7 +222,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                     MetricToggleCard(
                         title = "RAM Usage",
                         description = "Show real-time memory usage",
-                        icon = materialsymbols_ic_layers_rounded_filled,
+                        icon = R.drawable.memory_alt_filled,
                         isEnabled = isRamEnabled,
                         hasPermission = hasOverlayPermission,
                         interactionSource = ramInteractionSource,
@@ -273,7 +272,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Icon(
-                                        painter = painterResource(materialsymbols_ic_speed_rounded_filled),
+                                        painter = painterResource(R.drawable.acute_filled),
                                         contentDescription = "Update Interval Icon",
                                         tint = MaterialTheme.colorScheme.onPrimary,
                                     )

@@ -36,12 +36,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_home_rounded
-import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_memory_alt_rounded
-import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_memory_rounded
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_home_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_alt_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_rounded_filled
 import com.kyant.backdrop.Backdrop
 import com.kyant.backdrop.drawBackdrop
 import com.kyant.backdrop.effects.blur
@@ -61,23 +55,23 @@ object BottomNavBar {
         val items = listOf(
             NavItem(
                 label = "Home",
-                iconUnselected = materialsymbols_ic_home_rounded,
-                iconSelected = materialsymbols_ic_home_rounded_filled,
+                iconUnselected = R.drawable.home,
+                iconSelected = R.drawable.home_filled,
             ),
             NavItem(
                 label = "CPU",
-                iconUnselected = materialsymbols_ic_memory_rounded,
-                iconSelected = materialsymbols_ic_memory_rounded_filled,
+                iconUnselected = R.drawable.memory,
+                iconSelected = R.drawable.memory_filled,
             ),
             NavItem(
                 label = "Memory",
-                iconUnselected = materialsymbols_ic_memory_alt_rounded,
-                iconSelected = materialsymbols_ic_memory_alt_rounded_filled,
+                iconUnselected = R.drawable.memory_alt,
+                iconSelected = R.drawable.memory_alt_filled,
             ),
             NavItem(
                 label = "Battery",
-                iconUnselected = R.drawable.battery_android_0_24px,
-                iconSelected = R.drawable.battery_android_full_24px,
+                iconUnselected = R.drawable.battery_android_0,
+                iconSelected = R.drawable.battery_android_full,
             ),
         )
 

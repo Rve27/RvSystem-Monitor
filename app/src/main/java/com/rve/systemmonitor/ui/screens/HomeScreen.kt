@@ -33,13 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_mobile_3_rounded
-import com.composables.icons.materialsymbols.rounded.R.drawable.materialsymbols_ic_mobile_rounded
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_android_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_mobile_3_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_mobile_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_view_in_ar_rounded_filled
+import com.rve.systemmonitor.R
 import com.rve.systemmonitor.domain.model.CPU
 import com.rve.systemmonitor.domain.model.Device
 import com.rve.systemmonitor.domain.model.Display
@@ -100,7 +94,7 @@ private fun DeviceCard(device: Device) {
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Icon(
-                painter = painterResource(id = materialsymbols_ic_mobile_rounded_filled),
+                painter = painterResource(R.drawable.mobile_filled),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
@@ -126,7 +120,7 @@ private fun DeviceCard(device: Device) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            painter = painterResource(id = materialsymbols_ic_mobile_rounded),
+                            painter = painterResource(R.drawable.mobile_filled),
                             contentDescription = "Device Icon",
                             tint = MaterialTheme.colorScheme.onPrimary,
                         )
@@ -191,7 +185,7 @@ private fun OSCard(os: OS) {
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Icon(
-                painter = painterResource(id = materialsymbols_ic_android_rounded_filled),
+                painter = painterResource(R.drawable.android_filled),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
@@ -217,7 +211,7 @@ private fun OSCard(os: OS) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            painter = painterResource(id = materialsymbols_ic_android_rounded_filled),
+                            painter = painterResource(R.drawable.android_filled),
                             contentDescription = "OS Icon",
                             tint = MaterialTheme.colorScheme.onPrimary,
                         )
@@ -297,7 +291,7 @@ private fun DisplayCard(display: Display) {
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Icon(
-                painter = painterResource(id = materialsymbols_ic_mobile_3_rounded_filled),
+                painter = painterResource(R.drawable.mobile_3_filled),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
@@ -323,7 +317,7 @@ private fun DisplayCard(display: Display) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            painter = painterResource(id = materialsymbols_ic_mobile_3_rounded),
+                            painter = painterResource(R.drawable.mobile_3_filled),
                             contentDescription = "Display Icon",
                             tint = MaterialTheme.colorScheme.onPrimary,
                         )
@@ -403,7 +397,7 @@ private fun CPUCard(cpu: CPU) {
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Icon(
-                painter = painterResource(id = materialsymbols_ic_memory_rounded_filled),
+                painter = painterResource(R.drawable.memory_filled),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
@@ -429,7 +423,7 @@ private fun CPUCard(cpu: CPU) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            painter = painterResource(id = materialsymbols_ic_memory_rounded_filled),
+                            painter = painterResource(R.drawable.memory_filled),
                             contentDescription = "CPU Icon",
                             tint = MaterialTheme.colorScheme.onPrimary,
                         )
@@ -494,7 +488,7 @@ private fun GPUCard(gpu: GPU) {
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Icon(
-                painter = painterResource(id = materialsymbols_ic_view_in_ar_rounded_filled),
+                painter = painterResource(R.drawable.view_in_ar_filled),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
@@ -520,7 +514,7 @@ private fun GPUCard(gpu: GPU) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            painter = painterResource(id = materialsymbols_ic_view_in_ar_rounded_filled),
+                            painter = painterResource(R.drawable.view_in_ar_filled),
                             contentDescription = "GPU Icon",
                             tint = MaterialTheme.colorScheme.onPrimary,
                         )

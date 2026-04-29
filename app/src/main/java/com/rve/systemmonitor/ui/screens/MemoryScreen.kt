@@ -50,8 +50,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_database_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_memory_alt_rounded_filled
+import com.rve.systemmonitor.R
 import com.rve.systemmonitor.domain.model.RAM
 import com.rve.systemmonitor.domain.model.Storage
 import com.rve.systemmonitor.domain.model.ZRAM
@@ -217,7 +216,7 @@ private fun StorageCard(storage: Storage) {
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Icon(
-                painter = painterResource(id = materialsymbols_ic_database_rounded_filled),
+                painter = painterResource(R.drawable.database_filled),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
@@ -423,7 +422,7 @@ private fun MemoryCard(ram: RAM, zram: ZRAM) {
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Icon(
-                painter = painterResource(id = materialsymbols_ic_memory_alt_rounded_filled),
+                painter = painterResource(R.drawable.memory_alt_filled),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier

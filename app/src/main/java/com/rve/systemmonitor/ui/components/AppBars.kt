@@ -13,8 +13,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
@@ -37,8 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_layers_rounded_filled
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_settings_rounded_filled
+import com.rve.systemmonitor.R
 import com.rve.systemmonitor.ui.navigation.TRANSITION_DURATION
 
 /**
@@ -106,7 +103,7 @@ object AppBars {
                         onClick = onNavigateToOverlaySettings,
                     ) {
                         Icon(
-                            painterResource(materialsymbols_ic_layers_rounded_filled),
+                            painterResource(R.drawable.layers_filled),
                             contentDescription = "Overlay Settings",
                         )
                     }
@@ -127,7 +124,7 @@ object AppBars {
                         onClick = onNavigateToSettings,
                     ) {
                         Icon(
-                            painterResource(materialsymbols_ic_settings_rounded_filled),
+                            painterResource(R.drawable.settings_filled),
                             contentDescription = "Settings",
                         )
                     }
@@ -184,7 +181,7 @@ fun ExitUntilCollapsedMediumTopAppBar(title: String, onNavigateBack: () -> Unit,
                             onClick = onNavigateBack,
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                painter = painterResource(R.drawable.arrow_back_ios_new),
                                 contentDescription = "Back",
                             )
                         }
@@ -193,7 +190,7 @@ fun ExitUntilCollapsedMediumTopAppBar(title: String, onNavigateBack: () -> Unit,
                             onClick = onNavigateBack,
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                painter = painterResource(R.drawable.arrow_back_ios_new),
                                 contentDescription = "Back",
                             )
                         }

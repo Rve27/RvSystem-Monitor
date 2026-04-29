@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_help_rounded_filled
 import com.rve.systemmonitor.R
 import com.rve.systemmonitor.domain.model.Battery
 import com.rve.systemmonitor.ui.viewmodel.BatteryViewModel
@@ -100,14 +99,14 @@ fun BatteryScreen(isActive: Boolean, viewModel: BatteryViewModel = hiltViewModel
 private fun BatteryOverviewCard(battery: Battery) {
     val batteryIcon = remember(battery.level) {
         when {
-            battery.level >= 100 -> R.drawable.battery_android_full_24px
-            battery.level >= 85 -> R.drawable.battery_android_6_24px
-            battery.level >= 70 -> R.drawable.battery_android_5_24px
-            battery.level >= 55 -> R.drawable.battery_android_4_24px
-            battery.level >= 40 -> R.drawable.battery_android_3_24px
-            battery.level >= 25 -> R.drawable.battery_android_2_24px
-            battery.level >= 10 -> R.drawable.battery_android_1_24px
-            else -> R.drawable.battery_android_0_24px
+            battery.level >= 100 -> R.drawable.battery_android_full
+            battery.level >= 85 -> R.drawable.battery_android_6
+            battery.level >= 70 -> R.drawable.battery_android_5
+            battery.level >= 55 -> R.drawable.battery_android_4
+            battery.level >= 40 -> R.drawable.battery_android_3
+            battery.level >= 25 -> R.drawable.battery_android_2
+            battery.level >= 10 -> R.drawable.battery_android_1
+            else -> R.drawable.battery_android_0
         }
     }
 
@@ -210,7 +209,7 @@ private fun BatteryDetailsCard(battery: Battery, onHelpClick: () -> Unit) {
                     modifier = Modifier.size(24.dp),
                 ) {
                     Icon(
-                        painter = painterResource(materialsymbols_ic_help_rounded_filled),
+                        painter = painterResource(R.drawable.help_filled),
                         contentDescription = "Help",
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp),
