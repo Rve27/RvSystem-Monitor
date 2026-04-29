@@ -15,7 +15,7 @@ pub mod kernel;
 /// JNI interface to retrieve both RAM and ZRAM data in a single call.
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getMemoryDataNative<'local>(
-    mut env: JNIEnv<'local>,
+    env: JNIEnv<'local>,
     _class: JClass<'local>,
 ) -> jdoubleArray {
     let (ram, zram) = mm::memory::get_memory_data();
@@ -47,7 +47,7 @@ pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getMemoryDat
 /// JNI interface to retrieve RAM data.
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getRamDataNative<'local>(
-    mut env: JNIEnv<'local>,
+    env: JNIEnv<'local>,
     _class: JClass<'local>,
 ) -> jdoubleArray {
     let (ram, _) = mm::memory::get_memory_data();
@@ -73,7 +73,7 @@ pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getRamDataNa
 /// JNI interface to retrieve ZRAM data.
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getZramDataNative<'local>(
-    mut env: JNIEnv<'local>,
+    env: JNIEnv<'local>,
     _class: JClass<'local>,
 ) -> jdoubleArray {
     let (_, zram) = mm::memory::get_memory_data();
