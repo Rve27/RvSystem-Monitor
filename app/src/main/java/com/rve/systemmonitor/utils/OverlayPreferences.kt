@@ -14,13 +14,19 @@ val Context.overlayDataStore: DataStore<Preferences> by preferencesDataStore(nam
 
 class OverlayPreferences(private val context: Context) {
     companion object {
-        val IS_FPS_OVERLAY_ENABLED_KEY = booleanPreferencesKey("is_fps_overlay_enabled")
+        val IS_FPS_ENABLED_KEY = booleanPreferencesKey("is_fps_enabled")
+        val IS_RAM_ENABLED_KEY = booleanPreferencesKey("is_ram_enabled")
         val OVERLAY_UPDATE_INTERVAL_KEY = longPreferencesKey("overlay_update_interval")
     }
 
-    val isFpsOverlayEnabledFlow: Flow<Boolean> = context.overlayDataStore.data
+    val isFpsEnabledFlow: Flow<Boolean> = context.overlayDataStore.data
         .map { preferences ->
-            preferences[IS_FPS_OVERLAY_ENABLED_KEY] ?: false
+            preferences[IS_FPS_ENABLED_KEY] ?: false
+        }
+
+    val isRamEnabledFlow: Flow<Boolean> = context.overlayDataStore.data
+        .map { preferences ->
+            preferences[IS_RAM_ENABLED_KEY] ?: false
         }
 
     val overlayUpdateIntervalFlow: Flow<Long> = context.overlayDataStore.data
@@ -28,9 +34,15 @@ class OverlayPreferences(private val context: Context) {
             preferences[OVERLAY_UPDATE_INTERVAL_KEY] ?: 1000L
         }
 
-    suspend fun saveIsFpsOverlayEnabled(enabled: Boolean) {
+    suspend fun saveIsFpsEnabled(enabled: Boolean) {
         context.overlayDataStore.edit { preferences ->
-            preferences[IS_FPS_OVERLAY_ENABLED_KEY] = enabled
+            preferences[IS_FPS_ENABLED_KEY] = enabled
+        }
+    }
+
+    suspend fun saveIsRamEnabled(enabled: Boolean) {
+        context.overlayDataStore.edit { preferences ->
+            preferences[IS_RAM_ENABLED_KEY] = enabled
         }
     }
 

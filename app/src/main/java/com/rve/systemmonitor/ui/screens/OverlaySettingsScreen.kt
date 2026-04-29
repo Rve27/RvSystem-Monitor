@@ -40,6 +40,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,7 +57,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_layers_rounded_filled
 import com.composables.icons.materialsymbols.roundedfilled.R.drawable.materialsymbols_ic_speed_rounded_filled
-import com.rve.systemmonitor.service.FpsOverlayService
+import com.rve.systemmonitor.service.SystemOverlayService
 import com.rve.systemmonitor.ui.components.ExitUntilCollapsedMediumTopAppBar
 import com.rve.systemmonitor.ui.viewmodel.OverlaySettingsViewModel
 import kotlinx.coroutines.Job
@@ -70,35 +71,63 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
     val coroutineScope = rememberCoroutineScope()
     val snapAnimationSpec = MaterialTheme.motionScheme.fastEffectsSpec<Float>()
 
+    val overlayInteractionSource = remember { MutableInteractionSource() }
     val fpsInteractionSource = remember { MutableInteractionSource() }
+    val ramInteractionSource = remember { MutableInteractionSource() }
 
-    val isFpsEnabled by viewModel.isFpsOverlayEnabled.collectAsStateWithLifecycle()
+    val isFpsEnabled by viewModel.isFpsEnabled.collectAsStateWithLifecycle()
+    val isRamEnabled by viewModel.isRamEnabled.collectAsStateWithLifecycle()
     val updateIntervalMillis by viewModel.overlayUpdateInterval.collectAsStateWithLifecycle()
 
     var isServiceRunning by remember {
-        mutableStateOf(isServiceRunning(context, FpsOverlayService::class.java))
+        mutableStateOf(isServiceRunning(context, SystemOverlayService::class.java))
     }
 
     var hasOverlayPermission by remember {
         mutableStateOf(Settings.canDrawOverlays(context))
     }
 
-    var delayAnimateJob: Job? by remember { mutableStateOf(null) }
+    fun updateService(fps: Boolean, ram: Boolean) {
+        if (fps || ram) {
+            if (Settings.canDrawOverlays(context)) {
+                val intent = Intent(context, SystemOverlayService::class.java).apply {
+                    putExtra("update_delay", updateIntervalMillis)
+                    putExtra("show_fps", fps)
+                    putExtra("show_ram", ram)
+                }
+                context.startForegroundService(intent)
+                isServiceRunning = true
+            } else {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:${context.packageName}"),
+                )
+                context.startActivity(intent)
+            }
+        } else {
+            context.stopService(Intent(context, SystemOverlayService::class.java))
+            isServiceRunning = false
+        }
+    }
 
     val delaySliderState = rememberSliderState(
         value = (updateIntervalMillis / 1000f).coerceIn(1f, 5f),
         steps = 3,
         valueRange = 1f..5f,
     )
+    var overlayCurrentValue by rememberSaveable(updateIntervalMillis) { mutableFloatStateOf(updateIntervalMillis / 1000f) }
+    var delayAnimateJob: Job? by remember { mutableStateOf(null) }
 
     LaunchedEffect(updateIntervalMillis) {
         if (!delaySliderState.isDragging) {
             delaySliderState.value = updateIntervalMillis / 1000f
+            overlayCurrentValue = updateIntervalMillis / 1000f
         }
     }
 
     delaySliderState.shouldAutoSnap = false
     delaySliderState.onValueChange = { newValue ->
+        overlayCurrentValue = newValue
         if (delaySliderState.isDragging) {
             delayAnimateJob?.cancel()
             delaySliderState.value = newValue
@@ -107,21 +136,17 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
 
     delaySliderState.onValueChangeFinished = {
         delayAnimateJob = coroutineScope.launch {
-            val targetValue = delaySliderState.value.toInt().toFloat()
             animate(
                 initialValue = delaySliderState.value,
-                targetValue = targetValue,
+                targetValue = overlayCurrentValue,
                 animationSpec = snapAnimationSpec,
             ) { value, _ ->
                 delaySliderState.value = value
             }
-            viewModel.setOverlayUpdateInterval(targetValue.toLong() * 1000)
+            viewModel.setOverlayUpdateInterval(overlayCurrentValue.toLong() * 1000)
 
             if (isServiceRunning) {
-                val intent = Intent(context, FpsOverlayService::class.java).apply {
-                    putExtra("update_delay", targetValue.toLong() * 1000)
-                }
-                context.startForegroundService(intent)
+                updateService(isFpsEnabled, isRamEnabled)
             }
         }
     }
@@ -132,10 +157,10 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 hasOverlayPermission = Settings.canDrawOverlays(context)
-                isServiceRunning = isServiceRunning(context, FpsOverlayService::class.java)
+                isServiceRunning = isServiceRunning(context, SystemOverlayService::class.java)
 
                 if (!hasOverlayPermission && isServiceRunning) {
-                    context.stopService(Intent(context, FpsOverlayService::class.java))
+                    context.stopService(Intent(context, SystemOverlayService::class.java))
                     isServiceRunning = false
                 }
             }
@@ -170,98 +195,45 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
             item {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     Text(
                         text = "Metrics",
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 12.dp, start = 8.dp),
+                        modifier = Modifier.padding(bottom = 4.dp, start = 8.dp),
                     )
 
-                    Card(
-                        onClick = {
-                            if (!isServiceRunning) {
-                                if (Settings.canDrawOverlays(context)) {
-                                    viewModel.setFpsOverlayEnabled(true)
-                                    isServiceRunning = true
-                                    val intent = Intent(context, FpsOverlayService::class.java).apply {
-                                        putExtra("update_delay", updateIntervalMillis)
-                                    }
-                                    context.startForegroundService(intent)
-                                } else {
-                                    val intent = Intent(
-                                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                        Uri.parse("package:${context.packageName}"),
-                                    )
-                                    context.startActivity(intent)
-                                }
-                            } else {
-                                viewModel.setFpsOverlayEnabled(false)
-                                isServiceRunning = false
-                                context.stopService(Intent(context, FpsOverlayService::class.java))
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                    // FPS Toggle
+                    MetricToggleCard(
+                        title = "FPS",
+                        description = "Show real-time frame rate",
+                        icon = materialsymbols_ic_speed_rounded_filled,
+                        isEnabled = isFpsEnabled,
+                        hasPermission = hasOverlayPermission,
                         interactionSource = fpsInteractionSource,
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(20.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(MaterialTheme.colorScheme.primary),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Icon(
-                                        painter = painterResource(materialsymbols_ic_layers_rounded_filled),
-                                        contentDescription = "Overlay Icon",
-                                        tint = MaterialTheme.colorScheme.onPrimary,
-                                    )
-                                }
+                        onClick = {
+                            val nextState = !isFpsEnabled
+                            viewModel.setFpsEnabled(nextState)
+                            updateService(nextState, isRamEnabled)
+                        },
+                    )
 
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(
-                                        text = "FPS",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                    )
-                                    if (!hasOverlayPermission) {
-                                        Text(
-                                            text = "Requires 'Draw over other apps' permission",
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.error,
-                                        )
-                                    } else {
-                                        Text(
-                                            text = "Show real-time frame rate",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        )
-                                    }
-                                }
-
-                                Switch(
-                                    checked = isServiceRunning,
-                                    onCheckedChange = null,
-                                    interactionSource = fpsInteractionSource,
-                                )
-                            }
-                        }
-                    }
+                    // RAM Toggle
+                    MetricToggleCard(
+                        title = "RAM Usage",
+                        description = "Show real-time memory usage",
+                        icon = materialsymbols_ic_layers_rounded_filled,
+                        isEnabled = isRamEnabled,
+                        hasPermission = hasOverlayPermission,
+                        interactionSource = ramInteractionSource,
+                        onClick = {
+                            val nextState = !isRamEnabled
+                            viewModel.setRamEnabled(nextState)
+                            updateService(isFpsEnabled, nextState)
+                        },
+                    )
                 }
             }
 
@@ -338,7 +310,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                                         color = MaterialTheme.colorScheme.onSurface,
                                     )
                                     Text(
-                                        text = "${(updateIntervalMillis / 1000).toInt()}s",
+                                        text = "${overlayCurrentValue.toInt()}s",
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.primary,
@@ -361,6 +333,76 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun MetricToggleCard(
+    title: String,
+    description: String,
+    icon: Int,
+    isEnabled: Boolean,
+    hasPermission: Boolean,
+    interactionSource: MutableInteractionSource,
+    onClick: () -> Unit,
+) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        interactionSource = interactionSource,
+    ) {
+        Row(
+            modifier = Modifier.padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.primary),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    painter = painterResource(icon),
+                    contentDescription = "$title Icon",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                )
+            }
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                if (!hasPermission) {
+                    Text(
+                        text = "Requires 'Draw over other apps' permission",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                } else {
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+
+            Switch(
+                checked = isEnabled,
+                onCheckedChange = null,
+                interactionSource = interactionSource,
+            )
         }
     }
 }

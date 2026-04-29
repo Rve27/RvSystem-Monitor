@@ -12,12 +12,17 @@ class OverlayRepositoryImpl @Inject constructor(application: Application) : Over
 
     private val overlayPreferences = OverlayPreferences(application)
 
-    override val isFpsOverlayEnabled: Flow<Boolean> = overlayPreferences.isFpsOverlayEnabledFlow
+    override val isFpsEnabled: Flow<Boolean> = overlayPreferences.isFpsEnabledFlow
+    override val isRamEnabled: Flow<Boolean> = overlayPreferences.isRamEnabledFlow
 
     override val overlayUpdateInterval: Flow<Long> = overlayPreferences.overlayUpdateIntervalFlow
 
-    override suspend fun setFpsOverlayEnabled(enabled: Boolean) {
-        overlayPreferences.saveIsFpsOverlayEnabled(enabled)
+    override suspend fun setFpsEnabled(enabled: Boolean) {
+        overlayPreferences.saveIsFpsEnabled(enabled)
+    }
+
+    override suspend fun setRamEnabled(enabled: Boolean) {
+        overlayPreferences.saveIsRamEnabled(enabled)
     }
 
     override suspend fun setOverlayUpdateInterval(delayMillis: Long) {

@@ -18,12 +18,17 @@ import android.view.WindowManager
 import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import com.rve.systemmonitor.R
+import com.rve.systemmonitor.utils.MemoryUtils
+import java.util.Locale
 
-class FpsOverlayService : Service() {
+class SystemOverlayService : Service() {
 
     private var windowManager: WindowManager? = null
     private var overlayView: View? = null
-    private var fpsTextView: TextView? = null
+    private var metricsTextView: TextView? = null
+
+    private var showFps = true
+    private var showRam = true
 
     private val choreographer = Choreographer.getInstance()
     private var lastFrameTimeNanos: Long = 0
@@ -37,8 +42,27 @@ class FpsOverlayService : Service() {
                 frameCount++
                 val elapsedNanos = frameTimeNanos - lastFpsUpdateTime
                 if (elapsedNanos >= updateDelayNanos) {
-                    val fps = (frameCount * 1_000_000_000L) / elapsedNanos
-                    fpsTextView?.text = "FPS: $fps"
+                    val metrics = mutableListOf<String>()
+
+                    if (showFps) {
+                        val fps = (frameCount * 1_000_000_000L) / elapsedNanos
+                        metrics.add(String.format(Locale.US, "FPS: %d", fps))
+                    }
+
+                    if (showRam) {
+                        val ram = MemoryUtils.getRamData()
+                        metrics.add(
+                            String.format(
+                                Locale.US,
+                                "RAM: %.1f / %.1f GB (%.0f%%)",
+                                ram.used,
+                                ram.total,
+                                ram.usedPercentage,
+                            ),
+                        )
+                    }
+
+                    metricsTextView?.text = if (metrics.isEmpty()) "No metrics" else metrics.joinToString(" | ")
                     frameCount = 0
                     lastFpsUpdateTime = frameTimeNanos
                 }
@@ -55,6 +79,8 @@ class FpsOverlayService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val delayMillis = intent?.getLongExtra("update_delay", 1000L) ?: 1000L
         updateDelayNanos = delayMillis * 1_000_000L
+        showFps = intent?.getBooleanExtra("show_fps", true) ?: true
+        showRam = intent?.getBooleanExtra("show_ram", true) ?: true
         return START_NOT_STICKY
     }
 
@@ -94,7 +120,7 @@ class FpsOverlayService : Service() {
         }
 
         val textView = TextView(this).apply {
-            text = "FPS: --"
+            text = "Loading metrics..."
             setTextColor(Color.GREEN)
             setBackgroundColor(Color.argb(128, 0, 0, 0))
             setPadding(16, 8, 16, 8)
@@ -128,13 +154,13 @@ class FpsOverlayService : Service() {
             }
         })
 
-        fpsTextView = textView
+        metricsTextView = textView
         overlayView = textView
         windowManager?.addView(overlayView, params)
     }
 
     private fun createNotification(): Notification {
-        val channelId = "fps_overlay_channel"
+        val channelId = "system_overlay_channel"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
@@ -147,8 +173,8 @@ class FpsOverlayService : Service() {
 
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle("System Overlay Active")
-            .setContentText("Monitoring system performance")
-            .setSmallIcon(R.drawable.ic_launcher_foreground) // Use existing icon
+            .setContentText("Monitoring system performance (FPS & RAM)")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
     }

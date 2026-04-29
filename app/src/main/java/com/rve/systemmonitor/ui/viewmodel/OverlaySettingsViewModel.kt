@@ -13,7 +13,14 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class OverlaySettingsViewModel @Inject constructor(private val overlayRepository: OverlayRepository) : ViewModel() {
 
-    val isFpsOverlayEnabled: StateFlow<Boolean> = overlayRepository.isFpsOverlayEnabled
+    val isFpsEnabled: StateFlow<Boolean> = overlayRepository.isFpsEnabled
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false,
+        )
+
+    val isRamEnabled: StateFlow<Boolean> = overlayRepository.isRamEnabled
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -27,9 +34,15 @@ class OverlaySettingsViewModel @Inject constructor(private val overlayRepository
             initialValue = 1000L,
         )
 
-    fun setFpsOverlayEnabled(enabled: Boolean) {
+    fun setFpsEnabled(enabled: Boolean) {
         viewModelScope.launch {
-            overlayRepository.setFpsOverlayEnabled(enabled)
+            overlayRepository.setFpsEnabled(enabled)
+        }
+    }
+
+    fun setRamEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            overlayRepository.setRamEnabled(enabled)
         }
     }
 
