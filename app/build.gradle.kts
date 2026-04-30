@@ -62,7 +62,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+            manifestPlaceholders["app_label"] = "RvMonitor (Debug)"
+        }
+
         release {
+            manifestPlaceholders["app_label"] = "RvSystem Monitor"
             isMinifyEnabled = true
             isShrinkResources = true
             isDebuggable = false
