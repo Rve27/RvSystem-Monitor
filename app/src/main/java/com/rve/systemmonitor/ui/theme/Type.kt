@@ -12,21 +12,17 @@ import com.rve.systemmonitor.R
 
 private val RoundVariationSetting = FontVariation.Setting("ROND", 100.0f)
 
-private fun googleSansFlexFontFamily(
-    weight: Int,
-    width: Float = 100f,
-): FontFamily =
-    FontFamily(
-        Font(
-            resId = R.font.google_sans_flex,
-            variationSettings =
-                FontVariation.Settings(
-                    FontVariation.weight(weight),
-                    FontVariation.width(width),
-                    RoundVariationSetting,
-                ),
-        ),
-    )
+private fun googleSansFlexFontFamily(weight: Int, width: Float = 100f): FontFamily = FontFamily(
+    Font(
+        resId = R.font.google_sans_flex,
+        variationSettings =
+            FontVariation.Settings(
+                FontVariation.weight(weight),
+                FontVariation.width(width),
+                RoundVariationSetting,
+            ),
+    ),
+)
 
 val defaultTypography = Typography()
 val appTypography =
