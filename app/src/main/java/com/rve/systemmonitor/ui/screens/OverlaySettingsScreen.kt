@@ -4,20 +4,31 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,6 +39,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberSliderState
@@ -44,6 +56,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -73,6 +88,22 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
     val isFpsEnabled by viewModel.isFpsEnabled.collectAsStateWithLifecycle()
     val isRamEnabled by viewModel.isRamEnabled.collectAsStateWithLifecycle()
     val updateIntervalMillis by viewModel.overlayUpdateInterval.collectAsStateWithLifecycle()
+    val textSize by viewModel.overlayTextSize.collectAsStateWithLifecycle()
+    val bgOpacity by viewModel.overlayBgOpacity.collectAsStateWithLifecycle()
+    val padding by viewModel.overlayPadding.collectAsStateWithLifecycle()
+    val textColor by viewModel.overlayTextColor.collectAsStateWithLifecycle()
+    val isVerticalLayout by viewModel.isVerticalLayout.collectAsStateWithLifecycle()
+    val cornerRadius by viewModel.overlayCornerRadius.collectAsStateWithLifecycle()
+
+    val isAnyMetricEnabled = isFpsEnabled || isRamEnabled
+    val appearanceAlpha by animateFloatAsState(
+        targetValue = if (isAnyMetricEnabled) 1f else 0.5f,
+        label = "Appearance Alpha Animation",
+    )
+    val cardBgAlpha by animateFloatAsState(
+        targetValue = if (isAnyMetricEnabled) 0.7f else 0.35f,
+        label = "Card BG Alpha Animation",
+    )
 
     var isServiceRunning by remember {
         mutableStateOf(isServiceRunning(context, SystemOverlayService::class.java))
@@ -82,13 +113,29 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
         mutableStateOf(Settings.canDrawOverlays(context))
     }
 
-    fun updateService(fps: Boolean, ram: Boolean) {
+    fun updateService(
+        fps: Boolean = isFpsEnabled,
+        ram: Boolean = isRamEnabled,
+        interval: Long = updateIntervalMillis,
+        size: Float = textSize,
+        opacity: Float = bgOpacity,
+        padd: Int = padding,
+        color: Int = textColor,
+        vertical: Boolean = isVerticalLayout,
+        radius: Int = cornerRadius,
+    ) {
         if (fps || ram) {
             if (Settings.canDrawOverlays(context)) {
                 val intent = Intent(context, SystemOverlayService::class.java).apply {
-                    putExtra("update_delay", updateIntervalMillis)
+                    putExtra("update_delay", interval)
                     putExtra("show_fps", fps)
                     putExtra("show_ram", ram)
+                    putExtra("text_size", size)
+                    putExtra("bg_opacity", opacity)
+                    putExtra("padding", padd)
+                    putExtra("text_color", color)
+                    putExtra("is_vertical", vertical)
+                    putExtra("corner_radius", radius)
                 }
                 context.startForegroundService(intent)
                 isServiceRunning = true
@@ -141,12 +188,11 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
             viewModel.setOverlayUpdateInterval(overlayCurrentValue.toLong() * 1000)
 
             if (isServiceRunning) {
-                updateService(isFpsEnabled, isRamEnabled)
+                updateService(interval = overlayCurrentValue.toLong() * 1000)
             }
         }
     }
 
-    // Refresh permission status when returning to the app
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -200,7 +246,6 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                         modifier = Modifier.padding(bottom = 4.dp, start = 8.dp),
                     )
 
-                    // FPS Toggle
                     MetricToggleCard(
                         title = "FPS",
                         description = "Show real-time frame rate",
@@ -217,12 +262,11 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                             } else {
                                 val nextState = !isFpsEnabled
                                 viewModel.setFpsEnabled(nextState)
-                                updateService(nextState, isRamEnabled)
+                                updateService(fps = nextState)
                             }
                         },
                     )
 
-                    // RAM Toggle
                     MetricToggleCard(
                         title = "RAM Usage",
                         description = "Show real-time memory usage",
@@ -239,10 +283,113 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                             } else {
                                 val nextState = !isRamEnabled
                                 viewModel.setRamEnabled(nextState)
-                                updateService(isFpsEnabled, nextState)
+                                updateService(ram = nextState)
                             }
                         },
                     )
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .graphicsLayer { alpha = appearanceAlpha },
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Text(
+                            text = "Layout",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(start = 8.dp),
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            LayoutOptionCard(
+                                title = "Horizontal",
+                                isSelected = !isVerticalLayout,
+                                enabled = isAnyMetricEnabled,
+                                onClick = {
+                                    if (isAnyMetricEnabled) {
+                                        viewModel.setVerticalLayout(false)
+                                        if (isServiceRunning) updateService(vertical = false)
+                                    }
+                                },
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Row(
+                                    modifier = Modifier.size(40.dp, 20.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .fillMaxHeight()
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .background(
+                                                if (!isVerticalLayout)
+                                                    MaterialTheme.colorScheme.onPrimary
+                                                else
+                                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                            ),
+                                    )
+                                    Box(
+                                        modifier = Modifier.weight(1f)
+                                            .fillMaxHeight()
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .background(
+                                                if (!isVerticalLayout)
+                                                    MaterialTheme.colorScheme.onPrimary
+                                                else
+                                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                            ),
+                                    )
+                                }
+                            }
+
+                            LayoutOptionCard(
+                                title = "Vertical",
+                                isSelected = isVerticalLayout,
+                                enabled = isAnyMetricEnabled,
+                                onClick = {
+                                    if (isAnyMetricEnabled) {
+                                        viewModel.setVerticalLayout(true)
+                                        if (isServiceRunning) updateService(vertical = true)
+                                    }
+                                },
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Column(
+                                    modifier = Modifier.size(20.dp, 40.dp),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                ) {
+                                    Box(
+                                        Modifier.weight(1f)
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .background(
+                                                if (isVerticalLayout)
+                                                    MaterialTheme.colorScheme.onPrimary
+                                                else
+                                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                            ),
+                                    )
+                                    Box(
+                                        Modifier.weight(1f)
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .background(
+                                                if (isVerticalLayout)
+                                                    MaterialTheme.colorScheme.onPrimary
+                                                else
+                                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                            ),
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -263,12 +410,14 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(24.dp),
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = cardBgAlpha),
                         ),
                         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                     ) {
                         Column(
-                            modifier = Modifier.padding(20.dp),
+                            modifier = Modifier
+                                .padding(20.dp)
+                                .graphicsLayer { alpha = appearanceAlpha },
                             verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
                             Row(
@@ -279,13 +428,21 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                                     modifier = Modifier
                                         .size(48.dp)
                                         .clip(RoundedCornerShape(12.dp))
-                                        .background(MaterialTheme.colorScheme.primary),
+                                        .background(
+                                            if (isAnyMetricEnabled)
+                                                MaterialTheme.colorScheme.primary
+                                            else
+                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
+                                        ),
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.acute_filled),
                                         contentDescription = "Update Interval Icon",
-                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        tint = if (isAnyMetricEnabled)
+                                            MaterialTheme.colorScheme.onPrimary
+                                        else
+                                            MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.38f),
                                     )
                                 }
 
@@ -294,12 +451,18 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                                         text = "Update Interval",
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.SemiBold,
-                                        color = MaterialTheme.colorScheme.onSurface,
+                                        color = if (isAnyMetricEnabled)
+                                            MaterialTheme.colorScheme.onSurface
+                                        else
+                                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
                                     )
                                     Text(
                                         text = "Adjust how often overlay metrics refresh",
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        color = if (isAnyMetricEnabled)
+                                            MaterialTheme.colorScheme.onSurfaceVariant
+                                        else
+                                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
                                     )
                                 }
                             }
@@ -316,18 +479,46 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                                     Text(
                                         text = "Refresh Rate",
                                         style = MaterialTheme.typography.labelLarge,
-                                        color = MaterialTheme.colorScheme.onSurface,
+                                        color = if (isAnyMetricEnabled)
+                                            MaterialTheme.colorScheme.onSurface
+                                        else
+                                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
                                     )
-                                    Text(
-                                        text = "${overlayCurrentValue.toInt()}s",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.primary,
-                                    )
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = "${overlayCurrentValue.toInt()}s",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            color = if (isAnyMetricEnabled)
+                                                MaterialTheme.colorScheme.primary
+                                            else
+                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        androidx.compose.material3.IconButton(
+                                            onClick = {
+                                                viewModel.setOverlayUpdateInterval(1000L)
+                                                if (isServiceRunning) updateService(interval = 1000L)
+                                            },
+                                            enabled = isAnyMetricEnabled,
+                                            modifier = Modifier.size(24.dp),
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.reset_settings_rounded),
+                                                contentDescription = "Reset to default",
+                                                modifier = Modifier.size(16.dp),
+                                                tint = if (isAnyMetricEnabled)
+                                                    MaterialTheme.colorScheme.primary
+                                                else
+                                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
+                                            )
+                                        }
+                                    }
                                 }
 
                                 Slider(
                                     state = delaySliderState,
+                                    enabled = isAnyMetricEnabled,
                                     modifier = Modifier.fillMaxWidth(),
                                     track = {
                                         SliderDefaults.Track(
@@ -342,6 +533,281 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                     }
                 }
             }
+
+            item {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    Text(
+                        text = "Appearance",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 8.dp),
+                    )
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = cardBgAlpha),
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(20.dp)
+                                .graphicsLayer { alpha = appearanceAlpha },
+                        ) {
+                            Text(
+                                text = "Text Color",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.padding(bottom = 16.dp),
+                            )
+                            val colors = listOf(
+                                Color.Green,
+                                Color.White,
+                                Color.Red,
+                                Color.Cyan,
+                                Color.Yellow,
+                                Color.Magenta,
+                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                colors.forEach { color ->
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .clip(CircleShape)
+                                            .background(color)
+                                            .border(
+                                                width = if (textColor == color.toArgb()) 3.dp else 0.dp,
+                                                color = MaterialTheme.colorScheme.primary,
+                                                shape = CircleShape,
+                                            )
+                                            .clickable(enabled = isAnyMetricEnabled) {
+                                                viewModel.setOverlayTextColor(color.toArgb())
+                                                if (isServiceRunning) updateService(color = color.toArgb())
+                                            },
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = cardBgAlpha),
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(20.dp)
+                                .graphicsLayer { alpha = appearanceAlpha },
+                            verticalArrangement = Arrangement.spacedBy(20.dp),
+                        ) {
+                            AppearanceSlider(
+                                label = "Text Size",
+                                value = textSize,
+                                valueRange = 10f..24f,
+                                enabled = isAnyMetricEnabled,
+                                onValueChange = {
+                                    viewModel.setOverlayTextSize(it)
+                                    if (isServiceRunning) updateService(size = it)
+                                },
+                                onReset = {
+                                    viewModel.setOverlayTextSize(14f)
+                                    if (isServiceRunning) updateService(size = 14f)
+                                },
+                                valueDisplay = "${textSize.toInt()} sp",
+                            )
+
+                            AppearanceSlider(
+                                label = "Background Opacity",
+                                value = bgOpacity,
+                                valueRange = 0f..1f,
+                                enabled = isAnyMetricEnabled,
+                                onValueChange = {
+                                    viewModel.setOverlayBgOpacity(it)
+                                    if (isServiceRunning) updateService(opacity = it)
+                                },
+                                onReset = {
+                                    viewModel.setOverlayBgOpacity(0.5f)
+                                    if (isServiceRunning) updateService(opacity = 0.5f)
+                                },
+                                valueDisplay = "${(bgOpacity * 100).toInt()}%",
+                            )
+
+                            AppearanceSlider(
+                                label = "Padding",
+                                value = padding.toFloat(),
+                                valueRange = 0f..32f,
+                                enabled = isAnyMetricEnabled,
+                                onValueChange = {
+                                    viewModel.setOverlayPadding(it.toInt())
+                                    if (isServiceRunning) updateService(padd = it.toInt())
+                                },
+                                onReset = {
+                                    viewModel.setOverlayPadding(16)
+                                    if (isServiceRunning) updateService(padd = 16)
+                                },
+                                valueDisplay = "$padding px",
+                            )
+
+                            AppearanceSlider(
+                                label = "Corner Radius",
+                                value = cornerRadius.toFloat(),
+                                valueRange = 0f..64f,
+                                enabled = isAnyMetricEnabled,
+                                onValueChange = {
+                                    viewModel.setOverlayCornerRadius(it.toInt())
+                                    if (isServiceRunning) updateService(radius = it.toInt())
+                                },
+                                onReset = {
+                                    viewModel.setOverlayCornerRadius(8)
+                                    if (isServiceRunning) updateService(radius = 8)
+                                },
+                                valueDisplay = "$cornerRadius px",
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun AppearanceSlider(
+    label: String,
+    value: Float,
+    valueRange: ClosedFloatingPointRange<Float>,
+    enabled: Boolean = true,
+    onValueChange: (Float) -> Unit,
+    onReset: () -> Unit,
+    valueDisplay: String,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelLarge,
+                color = if (enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = valueDisplay,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                androidx.compose.material3.IconButton(
+                    onClick = onReset,
+                    enabled = enabled,
+                    modifier = Modifier.size(24.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.reset_settings_rounded),
+                        contentDescription = "Reset to default",
+                        modifier = Modifier.size(16.dp),
+                        tint = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
+                    )
+                }
+            }
+        }
+        Slider(
+            value = value,
+            onValueChange = onValueChange,
+            valueRange = valueRange,
+            enabled = enabled,
+            modifier = Modifier.fillMaxWidth(),
+            track = { sliderState ->
+                SliderDefaults.Track(
+                    sliderState = sliderState,
+                    modifier = Modifier.height(36.dp),
+                    trackCornerSize = 12.dp,
+                )
+            },
+        )
+    }
+}
+
+@Composable
+private fun LayoutOptionCard(
+    modifier: Modifier = Modifier,
+    title: String,
+    isSelected: Boolean,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+    content: @Composable () -> Unit,
+) {
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isSelected) {
+            if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        },
+        label = "Layout Option Background",
+    )
+    val contentColor by animateColorAsState(
+        targetValue = if (isSelected) {
+            if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.38f)
+        } else {
+            if (enabled) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+        },
+        label = "Layout Option Content Color",
+    )
+    val borderStroke = if (isSelected && enabled) 2.dp else 0.dp
+    val animatedBorderStroke by animateDpAsState(targetValue = borderStroke, label = "Layout Option Border")
+
+    Card(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(100.dp),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor,
+            contentColor = contentColor,
+        ),
+        border = if (isSelected) BorderStroke(
+            width = animatedBorderStroke,
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+        ) else null,
+        elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 4.dp else 0.dp),
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center,
+            ) {
+                content()
+            }
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 12.dp),
+            )
         }
     }
 }
@@ -412,6 +878,19 @@ private fun MetricToggleCard(
                 onCheckedChange = null,
                 enabled = hasPermission,
                 interactionSource = if (hasPermission) interactionSource else null,
+                thumbContent = {
+                    Crossfade(
+                        targetState = isEnabled,
+                        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                        label = "Switch Icon Fade",
+                    ) { enabled ->
+                        Icon(
+                            painter = painterResource(if (enabled) R.drawable.check_rounded else R.drawable.close_rounded),
+                            contentDescription = null,
+                            modifier = Modifier.size(SwitchDefaults.IconSize),
+                        )
+                    }
+                },
             )
         }
     }

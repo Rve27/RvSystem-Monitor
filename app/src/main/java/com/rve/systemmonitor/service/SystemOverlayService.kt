@@ -7,6 +7,7 @@ import android.app.Service
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.drawable.GradientDrawable
 import android.os.IBinder
 import android.view.Choreographer
 import android.view.Gravity
@@ -27,6 +28,12 @@ class SystemOverlayService : Service() {
 
     private var showFps = true
     private var showRam = true
+    private var overlayTextSize = 14f
+    private var overlayBgOpacity = 0.5f
+    private var overlayPadding = 16
+    private var overlayTextColor = Color.GREEN
+    private var isVerticalLayout = false
+    private var overlayCornerRadius = 8
 
     private val choreographer = Choreographer.getInstance()
     private var lastFrameTimeNanos: Long = 0
@@ -60,7 +67,8 @@ class SystemOverlayService : Service() {
                         )
                     }
 
-                    metricsTextView?.text = if (metrics.isEmpty()) "No metrics" else metrics.joinToString(" | ")
+                    val separator = if (isVerticalLayout) "\n" else " | "
+                    metricsTextView?.text = if (metrics.isEmpty()) "No metrics" else metrics.joinToString(separator)
                     frameCount = 0
                     lastFpsUpdateTime = frameTimeNanos
                 }
@@ -79,7 +87,34 @@ class SystemOverlayService : Service() {
         updateDelayNanos = delayMillis * 1_000_000L
         showFps = intent?.getBooleanExtra("show_fps", true) ?: true
         showRam = intent?.getBooleanExtra("show_ram", true) ?: true
+
+        overlayTextSize = intent?.getFloatExtra("text_size", 14f) ?: 14f
+        overlayBgOpacity = intent?.getFloatExtra("bg_opacity", 0.5f) ?: 0.5f
+        overlayPadding = intent?.getIntExtra("padding", 16) ?: 16
+        overlayTextColor = intent?.getIntExtra("text_color", Color.GREEN) ?: Color.GREEN
+        isVerticalLayout = intent?.getBooleanExtra("is_vertical", false) ?: false
+        overlayCornerRadius = intent?.getIntExtra("corner_radius", 8) ?: 8
+
+        applySettings()
+
         return START_NOT_STICKY
+    }
+
+    private fun applySettings() {
+        metricsTextView?.apply {
+            textSize = overlayTextSize
+            setTextColor(overlayTextColor)
+            val alphaInt = (overlayBgOpacity * 255).toInt()
+
+            val shape = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                setColor(Color.argb(alphaInt, 0, 0, 0))
+                cornerRadius = overlayCornerRadius.toFloat()
+            }
+            background = shape
+
+            setPadding(overlayPadding, overlayPadding / 2, overlayPadding, overlayPadding / 2)
+        }
     }
 
     override fun onCreate() {
@@ -114,10 +149,18 @@ class SystemOverlayService : Service() {
 
         val textView = TextView(this).apply {
             text = "Loading ..."
-            setTextColor(Color.GREEN)
-            setBackgroundColor(Color.argb(128, 0, 0, 0))
-            setPadding(16, 8, 16, 8)
-            textSize = 14f
+            textSize = overlayTextSize
+            setTextColor(overlayTextColor)
+
+            val alphaInt = (overlayBgOpacity * 255).toInt()
+            val shape = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                setColor(Color.argb(alphaInt, 0, 0, 0))
+                cornerRadius = overlayCornerRadius.toFloat()
+            }
+            background = shape
+
+            setPadding(overlayPadding, overlayPadding / 2, overlayPadding, overlayPadding / 2)
         }
 
         textView.setOnTouchListener(object : View.OnTouchListener {
