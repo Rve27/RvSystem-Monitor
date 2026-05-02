@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,9 +40,11 @@ data class InfoCardData(
     val backgroundIconRes: Int = iconRes,
     val backgroundIconOffset: Dp = 30.dp,
     val badges: List<String> = emptyList(),
+    val secondaryBadgeIndices: List<Int> = listOf(0),
     val onHelpClick: (() -> Unit)? = null,
 )
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun InfoOverviewCard(data: InfoCardData, modifier: Modifier = Modifier) {
     Card(
@@ -130,16 +134,18 @@ fun InfoOverviewCard(data: InfoCardData, modifier: Modifier = Modifier) {
                 }
 
                 if (data.badges.isNotEmpty()) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         data.badges.forEachIndexed { index, badge ->
+                            val isSecondary = data.secondaryBadgeIndices.contains(index)
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
                                     .background(
-                                        if (index == 0) MaterialTheme.colorScheme.secondary
+                                        if (isSecondary) MaterialTheme.colorScheme.secondary
                                         else MaterialTheme.colorScheme.tertiary,
                                     )
                                     .padding(horizontal = 12.dp, vertical = 6.dp),
@@ -147,7 +153,7 @@ fun InfoOverviewCard(data: InfoCardData, modifier: Modifier = Modifier) {
                                 Text(
                                     text = badge,
                                     style = MaterialTheme.typography.labelLarge,
-                                    color = if (index == 0) MaterialTheme.colorScheme.onSecondary
+                                    color = if (isSecondary) MaterialTheme.colorScheme.onSecondary
                                     else MaterialTheme.colorScheme.onTertiary,
                                     fontWeight = FontWeight.Bold,
                                 )

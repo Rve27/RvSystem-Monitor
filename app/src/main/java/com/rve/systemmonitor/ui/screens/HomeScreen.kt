@@ -78,7 +78,15 @@ fun HomeScreen(isActive: Boolean, viewModel: HomeViewModel = hiltViewModel()) {
                 subhead = "${uiState.display.screenSizeInches}\" Screen Size",
                 iconRes = R.drawable.mobile_3_filled,
                 backgroundIconOffset = 20.dp,
-                badges = listOf("${uiState.display.refreshRate}Hz", "${uiState.display.densityDpi} dpi"),
+                badges = buildList {
+                    add("${uiState.display.refreshRate}Hz")
+                    add("${uiState.display.densityDpi} dpi")
+                    if (uiState.display.isHdrSupported) {
+                        add("HDR")
+                        addAll(uiState.display.hdrTypes)
+                    }
+                },
+                secondaryBadgeIndices = listOf(0, 1),
             ),
             InfoCardData(
                 title = "Processor",

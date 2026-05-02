@@ -44,4 +44,28 @@ object DisplayUtils {
         Log.e(TAG, "getScreenSizeInches: ${it.message}", it)
         0.0
     }
+
+    fun getHdrCapabilities(context: Context): Pair<Boolean, List<String>> {
+        return try {
+            val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            val display = windowManager.defaultDisplay
+            val hdrCapabilities = display.hdrCapabilities ?: return false to emptyList()
+            val supportedTypes = hdrCapabilities.supportedHdrTypes
+
+            val types = mutableListOf<String>()
+            for (type in supportedTypes) {
+                when (type) {
+                    android.view.Display.HdrCapabilities.HDR_TYPE_DOLBY_VISION -> types.add("Dolby Vision")
+                    android.view.Display.HdrCapabilities.HDR_TYPE_HDR10 -> types.add("HDR10")
+                    android.view.Display.HdrCapabilities.HDR_TYPE_HLG -> types.add("HLG")
+                    android.view.Display.HdrCapabilities.HDR_TYPE_HDR10_PLUS -> types.add("HDR10+")
+                }
+            }
+
+            (types.isNotEmpty()) to types
+        } catch (e: Exception) {
+            Log.e(TAG, "getHdrCapabilities: ${e.message}", e)
+            false to emptyList()
+        }
+    }
 }

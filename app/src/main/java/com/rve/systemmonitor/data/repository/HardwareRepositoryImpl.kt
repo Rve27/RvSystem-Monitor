@@ -37,11 +37,14 @@ class HardwareRepositoryImpl @Inject constructor(private val application: Applic
     }
 
     override fun getDisplayInfo(): Display {
+        val (isHdr, hdrTypes) = DisplayUtils.getHdrCapabilities(application)
         return Display(
             resolution = DisplayUtils.getResolution(application),
             refreshRate = DisplayUtils.getRefreshRate(application),
             densityDpi = DisplayUtils.getDensityDpi(application),
             screenSizeInches = DisplayUtils.getScreenSizeInches(application),
+            isHdrSupported = isHdr,
+            hdrTypes = hdrTypes,
         )
     }
 

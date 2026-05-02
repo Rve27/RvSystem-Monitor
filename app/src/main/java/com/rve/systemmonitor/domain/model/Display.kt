@@ -8,4 +8,6 @@ data class Display(
     val refreshRate: Int = 0,
     val densityDpi: Int = 0,
     val screenSizeInches: Double = 0.0,
+    val isHdrSupported: Boolean = false,
+    val hdrTypes: List<String> = emptyList(),
 )
