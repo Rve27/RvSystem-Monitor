@@ -323,11 +323,41 @@ private fun BatteryDetailsCard(battery: Battery, onHelpClick: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                InfoItem(
-                    label = "Power Source",
-                    value = battery.powerSource,
-                    modifier = Modifier.weight(1f),
-                )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Power Source",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    AnimatedContent(
+                        targetState = battery.powerSource,
+                        transitionSpec = {
+                            (
+                                slideInHorizontally(
+                                    initialOffsetX = { -it },
+                                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                                ) + scaleIn(
+                                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                                )
+                                ).togetherWith(
+                                slideOutHorizontally(
+                                    targetOffsetX = { -it },
+                                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                                ) + scaleOut(
+                                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                                ),
+                            )
+                        },
+                        label = "PowerSourceAnimation",
+                    ) { powerSource ->
+                        Text(
+                            text = powerSource,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                }
                 val currentMA = abs(battery.current)
                 val isCharging = battery.status == "Charging"
                 val isDischarging = battery.status == "Discharging"
