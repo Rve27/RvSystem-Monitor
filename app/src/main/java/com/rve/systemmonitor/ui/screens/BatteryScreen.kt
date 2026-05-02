@@ -1,6 +1,14 @@
 package com.rve.systemmonitor.ui.screens
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +52,7 @@ import com.rve.systemmonitor.ui.components.chip.BadgeChip
 import com.rve.systemmonitor.ui.components.item.HelpItem
 import com.rve.systemmonitor.ui.components.item.InfoItem
 import com.rve.systemmonitor.ui.components.haptic.rememberHapticOnClick
+import com.rve.systemmonitor.ui.navigation.TRANSITION_DURATION
 import com.rve.systemmonitor.ui.viewmodel.BatteryViewModel
 import kotlin.math.abs
 import kotlinx.coroutines.flow.emptyFlow
@@ -147,11 +156,31 @@ private fun BatteryOverviewCard(battery: Battery) {
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         fontWeight = FontWeight.Bold,
                     )
-                    Text(
-                        text = battery.status,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
+                    AnimatedContent(
+                        targetState = battery.status,
+                        transitionSpec = {
+                            (
+                                slideInHorizontally(
+                                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                                ) + scaleIn(
+                                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                                )
+                                ).togetherWith(
+                                slideOutHorizontally(
+                                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                                ) + scaleOut(
+                                    animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
+                                ),
+                            )
+                        },
+                        label = "BatteryStatusAnimation",
+                    ) { status ->
+                        Text(
+                            text = status,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
                 }
 
                 Row(
