@@ -5,9 +5,10 @@
 
 #![allow(non_snake_case)]
 
-use jni::JNIEnv;
 use jni::objects::{JClass, JString};
 use jni::sys::{jdoubleArray, jint, jstring};
+use jni::EnvUnowned;
+use jni::errors::LogErrorAndDefault;
 
 pub mod kernel;
 pub mod mm;
@@ -15,7 +16,7 @@ pub mod mm;
 /// JNI interface to retrieve both RAM and ZRAM data in a single call.
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getMemoryDataNative<'local>(
-    env: JNIEnv<'local>,
+    mut unowned_env: EnvUnowned<'local>,
     _class: JClass<'local>,
 ) -> jdoubleArray {
     let (ram, zram) = mm::memory::get_memory_data();
@@ -38,16 +39,18 @@ pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getMemoryDat
         zram.used_percentage,
     ];
 
-    let output = env.new_double_array(14).unwrap();
-    env.set_double_array_region(&output, 0, &data).unwrap();
-
-    output.into_raw()
+    unowned_env.with_env(|env| {
+        let output = env.new_double_array(14)?;
+        env.set_double_array_region(&output, 0, &data)?;
+        Ok::<_, jni::errors::Error>(output.into_raw())
+    })
+    .resolve::<LogErrorAndDefault>()
 }
 
 /// JNI interface to retrieve RAM data.
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getRamDataNative<'local>(
-    env: JNIEnv<'local>,
+    mut unowned_env: EnvUnowned<'local>,
     _class: JClass<'local>,
 ) -> jdoubleArray {
     let (ram, _) = mm::memory::get_memory_data();
@@ -64,16 +67,18 @@ pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getRamDataNa
         ram.slab,
     ];
 
-    let output = env.new_double_array(9).unwrap();
-    env.set_double_array_region(&output, 0, &data).unwrap();
-
-    output.into_raw()
+    unowned_env.with_env(|env| {
+        let output = env.new_double_array(9)?;
+        env.set_double_array_region(&output, 0, &data)?;
+        Ok::<_, jni::errors::Error>(output.into_raw())
+    })
+    .resolve::<LogErrorAndDefault>()
 }
 
 /// JNI interface to retrieve ZRAM data.
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getZramDataNative<'local>(
-    env: JNIEnv<'local>,
+    mut unowned_env: EnvUnowned<'local>,
     _class: JClass<'local>,
 ) -> jdoubleArray {
     let (_, zram) = mm::memory::get_memory_data();
@@ -87,10 +92,12 @@ pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getZramDataN
         zram.used_percentage,
     ];
 
-    let output = env.new_double_array(5).unwrap();
-    env.set_double_array_region(&output, 0, &data).unwrap();
-
-    output.into_raw()
+    unowned_env.with_env(|env| {
+        let output = env.new_double_array(5)?;
+        env.set_double_array_region(&output, 0, &data)?;
+        Ok::<_, jni::errors::Error>(output.into_raw())
+    })
+    .resolve::<LogErrorAndDefault>()
 }
 
 /// JNI interface to retrieve all core frequencies in a single call.
@@ -98,7 +105,7 @@ pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getZramDataN
 pub extern "system" fn Java_com_rve_systemmonitor_utils_CpuUtils_getAllCoreFrequenciesNative<
     'local,
 >(
-    mut env: JNIEnv<'local>,
+    mut unowned_env: EnvUnowned<'local>,
     _class: JClass<'local>,
 ) -> jni::sys::jobjectArray {
     let cores = kernel::cpu::get_core_count();
@@ -108,50 +115,60 @@ pub extern "system" fn Java_com_rve_systemmonitor_utils_CpuUtils_getAllCoreFrequ
         frequencies.push(kernel::cpu::get_core_frequency(i, "cur"));
     }
 
-    let class = env.find_class("java/lang/String").unwrap();
-    let initial_element = env.new_string("").unwrap();
-    let array = env
-        .new_object_array(cores, &class, &initial_element)
-        .unwrap();
+    unowned_env.with_env(|env| {
+        let class_name = jni::strings::JNIString::try_from("java/lang/String").unwrap();
+        let class = env.find_class(class_name)?;
+        let initial_element = env.new_string("")?;
+        let array = env.new_object_array(cores, &class, &initial_element)?;
 
-    for (i, freq) in frequencies.into_iter().enumerate() {
-        let j_freq = env.new_string(freq).unwrap();
-        env.set_object_array_element(&array, i as jni::sys::jsize, &j_freq)
-            .unwrap();
-    }
+        for (i, freq) in frequencies.into_iter().enumerate() {
+            let j_freq = env.new_string(freq)?;
+            env.set_object_array_element(&array, i as usize, &j_freq)?;
+        }
 
-    array.into_raw()
+        Ok::<_, jni::errors::Error>(array.into_raw())
+    })
+    .resolve::<LogErrorAndDefault>()
 }
 
 /// JNI interface to retrieve core count.
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_rve_systemmonitor_utils_CpuUtils_getCoreCountNative<'local>(
-    _env: JNIEnv<'local>,
+    mut unowned_env: EnvUnowned<'local>,
     _class: JClass<'local>,
 ) -> jint {
-    kernel::cpu::get_core_count()
+    unowned_env.with_env(|_env| {
+        Ok::<_, jni::errors::Error>(kernel::cpu::get_core_count())
+    })
+    .resolve::<LogErrorAndDefault>()
 }
 
 /// JNI interface to retrieve core frequency.
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_rve_systemmonitor_utils_CpuUtils_getCoreFrequencyNative<'local>(
-    mut env: JNIEnv<'local>,
+    mut unowned_env: EnvUnowned<'local>,
     _class: JClass<'local>,
     core_id: jint,
     freq_type: JString<'local>,
 ) -> jstring {
-    let freq_type: String = env.get_string(&freq_type).unwrap().into();
-    let freq = kernel::cpu::get_core_frequency(core_id, &freq_type);
-    env.new_string(freq).unwrap().into_raw()
+    unowned_env.with_env(|env| {
+        let freq_type: String = env.get_string(&freq_type)?.into();
+        let freq = kernel::cpu::get_core_frequency(core_id, &freq_type);
+        Ok::<_, jni::errors::Error>(env.new_string(freq)?.into_raw())
+    })
+    .resolve::<LogErrorAndDefault>()
 }
 
 /// JNI interface to retrieve core governor.
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_rve_systemmonitor_utils_CpuUtils_getCoreGovernorNative<'local>(
-    env: JNIEnv<'local>,
+    mut unowned_env: EnvUnowned<'local>,
     _class: JClass<'local>,
     core_id: jint,
 ) -> jstring {
-    let governor = kernel::cpu::get_core_governor(core_id);
-    env.new_string(governor).unwrap().into_raw()
+    unowned_env.with_env(|env| {
+        let governor = kernel::cpu::get_core_governor(core_id);
+        Ok::<_, jni::errors::Error>(env.new_string(governor)?.into_raw())
+    })
+    .resolve::<LogErrorAndDefault>()
 }
