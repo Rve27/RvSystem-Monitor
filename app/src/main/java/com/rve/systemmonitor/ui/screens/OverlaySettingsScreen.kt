@@ -326,7 +326,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                                     else
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
                                     label = "Horizontal Layout Indicator Color",
-                                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                                 )
                                 Row(
                                     modifier = Modifier.size(40.dp, 20.dp),
@@ -366,7 +366,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                                     else
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
                                     label = "Vertical Layout Indicator Color",
-                                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                                 )
                                 Column(
                                     modifier = Modifier.size(20.dp, 40.dp),
@@ -764,7 +764,7 @@ private fun LayoutOptionCard(
             MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
         },
         label = "Layout Option Background",
-        animationSpec = colorSpec
+        animationSpec = colorSpec,
     )
     val contentColor by animateColorAsState(
         targetValue = if (isSelected) {
@@ -773,19 +773,19 @@ private fun LayoutOptionCard(
             if (enabled) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
         },
         label = "Layout Option Content Color",
-        animationSpec = colorSpec
+        animationSpec = colorSpec,
     )
 
     val animatedElevation by animateDpAsState(
         targetValue = if (isSelected && enabled) 4.dp else 0.dp,
         label = "Layout Option Elevation",
-        animationSpec = dpSpec
+        animationSpec = dpSpec,
     )
 
     val animatedBorderWidth by animateDpAsState(
         targetValue = if (isSelected && enabled) 2.dp else 0.dp,
         label = "Layout Option Border Width",
-        animationSpec = dpSpec
+        animationSpec = dpSpec,
     )
 
     Card(

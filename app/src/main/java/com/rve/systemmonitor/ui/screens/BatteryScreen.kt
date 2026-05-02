@@ -49,9 +49,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rve.systemmonitor.R
 import com.rve.systemmonitor.domain.model.Battery
 import com.rve.systemmonitor.ui.components.chip.BadgeChip
+import com.rve.systemmonitor.ui.components.haptic.rememberHapticOnClick
 import com.rve.systemmonitor.ui.components.item.HelpItem
 import com.rve.systemmonitor.ui.components.item.InfoItem
-import com.rve.systemmonitor.ui.components.haptic.rememberHapticOnClick
 import com.rve.systemmonitor.ui.navigation.TRANSITION_DURATION
 import com.rve.systemmonitor.ui.viewmodel.BatteryViewModel
 import kotlin.math.abs
