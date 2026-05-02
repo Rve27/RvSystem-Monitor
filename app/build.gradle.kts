@@ -82,6 +82,9 @@ android {
 
         create("profile") {
             initWith(getByName("release"))
+            applicationIdSuffix = ".profile"
+            versionNameSuffix = "-profile"
+            manifestPlaceholders["app_label"] = "RvMonitor (Profile)"
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks += listOf("release")
         }

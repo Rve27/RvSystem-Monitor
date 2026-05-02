@@ -31,5 +31,8 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
+
+        <profileable
+            android:shell="true" />
     </application>
 </manifest>
