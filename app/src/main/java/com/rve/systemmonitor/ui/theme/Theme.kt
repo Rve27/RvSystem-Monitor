@@ -4,10 +4,10 @@ package com.rve.systemmonitor.ui.theme
 
 import android.app.Activity
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialExpressiveTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -56,10 +56,12 @@ fun RvSystemMonitorTheme(
 
 @Composable
 private fun animateColorScheme(targetColorScheme: ColorScheme): ColorScheme {
-    val animationSpec = tween<Color>(durationMillis = 350)
-
     @Composable
-    fun animateColor(target: Color) = animateColorAsState(target, animationSpec, label = "color").value
+    fun animateColor(target: Color) = animateColorAsState(
+        targetValue = target,
+        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+        label = "color",
+    ).value
 
     return targetColorScheme.copy(
         primary = animateColor(targetColorScheme.primary),
