@@ -9,8 +9,8 @@ use jni::JNIEnv;
 use jni::objects::{JClass, JString};
 use jni::sys::{jdoubleArray, jint, jstring};
 
-pub mod mm;
 pub mod kernel;
+pub mod mm;
 
 /// JNI interface to retrieve both RAM and ZRAM data in a single call.
 #[unsafe(no_mangle)]
@@ -79,7 +79,13 @@ pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getZramDataN
     let (_, zram) = mm::memory::get_memory_data();
 
     let is_active = if zram.is_active { 1.0 } else { 0.0 };
-    let data = [is_active, zram.total, zram.available, zram.used, zram.used_percentage];
+    let data = [
+        is_active,
+        zram.total,
+        zram.available,
+        zram.used,
+        zram.used_percentage,
+    ];
 
     let output = env.new_double_array(5).unwrap();
     env.set_double_array_region(&output, 0, &data).unwrap();
@@ -89,7 +95,9 @@ pub extern "system" fn Java_com_rve_systemmonitor_utils_MemoryUtils_getZramDataN
 
 /// JNI interface to retrieve all core frequencies in a single call.
 #[unsafe(no_mangle)]
-pub extern "system" fn Java_com_rve_systemmonitor_utils_CpuUtils_getAllCoreFrequenciesNative<'local>(
+pub extern "system" fn Java_com_rve_systemmonitor_utils_CpuUtils_getAllCoreFrequenciesNative<
+    'local,
+>(
     mut env: JNIEnv<'local>,
     _class: JClass<'local>,
 ) -> jni::sys::jobjectArray {

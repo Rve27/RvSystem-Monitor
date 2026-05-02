@@ -42,7 +42,10 @@ pub fn get_core_frequency(core_id: i32, freq_type: &str) -> String {
         _ => return "N/A".to_string(),
     };
 
-    let path = format!("/sys/devices/system/cpu/cpu{}/cpufreq/{}", core_id, file_name);
+    let path = format!(
+        "/sys/devices/system/cpu/cpu{}/cpufreq/{}",
+        core_id, file_name
+    );
     if let Ok(content) = fs::read_to_string(path) {
         let freq_khz: i64 = content.trim().parse().unwrap_or(0);
         format_frequency(freq_khz)
@@ -53,7 +56,10 @@ pub fn get_core_frequency(core_id: i32, freq_type: &str) -> String {
 
 /// Retrieves the core scaling governor.
 pub fn get_core_governor(core_id: i32) -> String {
-    let path = format!("/sys/devices/system/cpu/cpu{}/cpufreq/scaling_governor", core_id);
+    let path = format!(
+        "/sys/devices/system/cpu/cpu{}/cpufreq/scaling_governor",
+        core_id
+    );
     fs::read_to_string(path)
         .map(|s| s.trim().to_string())
         .unwrap_or_else(|_| "N/A".to_string())
