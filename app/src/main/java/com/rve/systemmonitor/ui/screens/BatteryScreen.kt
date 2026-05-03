@@ -55,12 +55,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
@@ -200,7 +200,6 @@ private fun ChargingSpeedCard(battery: Battery, history: List<BatteryDataPoint>,
                     text = String.format(LocalLocale.current.platformLocale, "%.2f W", battery.wattage),
                     containerColor = MaterialTheme.colorScheme.primary,
                     textColor = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.scale(pulseScale),
                 )
             }
 
@@ -208,7 +207,7 @@ private fun ChargingSpeedCard(battery: Battery, history: List<BatteryDataPoint>,
                 if (history.isNotEmpty()) history.maxOf { abs(it.mA) }.toFloat() else 0f
             }
             val renderMax = remember(actualMax) {
-                actualMax.coerceAtLeast(1000f)
+                actualMax
             }
             val minValInHistory = remember(history) {
                 if (history.isNotEmpty()) history.minOf { abs(it.mA) }.toFloat() else 0f
@@ -232,53 +231,60 @@ private fun ChargingSpeedCard(battery: Battery, history: List<BatteryDataPoint>,
                     val width = constraints.maxWidth.toFloat()
                     val height = constraints.maxHeight.toFloat()
                     val density = LocalDensity.current
+                    val strokeWidth = with(density) { 3.dp.toPx() }
+
+                    val (linePath, fillPath) = remember(history, renderMax, width, height) {
+                        if (history.size < 2) return@remember Path() to Path()
+
+                        val minVal = 0f
+                        val range = if (renderMax > 0) renderMax - minVal else 1f
+                        val stepX = width / (history.size - 1)
+
+                        fun getY(value: Int): Float {
+                            return height - ((abs(value).toFloat() - minVal) / range * height)
+                        }
+
+                        val p = Path()
+                        p.moveTo(0f, getY(history[0].mA))
+
+                        for (i in 0 until history.size - 1) {
+                            val x1 = i * stepX
+                            val y1 = getY(history[i].mA)
+                            val x2 = (i + 1) * stepX
+                            val y2 = getY(history[i + 1].mA)
+
+                            val controlPoint1X = x1 + (x2 - x1) / 2
+                            val controlPoint1Y = y1
+                            val controlPoint2X = x1 + (x2 - x1) / 2
+                            val controlPoint2Y = y2
+
+                            p.cubicTo(
+                                controlPoint1X,
+                                controlPoint1Y,
+                                controlPoint2X,
+                                controlPoint2Y,
+                                x2,
+                                y2,
+                            )
+                        }
+
+                        val fP = Path().apply {
+                            addPath(p)
+                            lineTo(width, height)
+                            lineTo(0f, height)
+                            close()
+                        }
+                        p to fP
+                    }
 
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         if (history.size > 1) {
-                            val minVal = 0f
-                            val range = renderMax - minVal
-                            val stepX = size.width / (history.size - 1)
-
-                            fun getY(value: Int): Float {
-                                return size.height - ((abs(value).toFloat() - minVal) / range * size.height)
-                            }
-
-                            val path = Path()
-                            path.moveTo(0f, getY(history[0].mA))
-
-                            for (i in 0 until history.size - 1) {
-                                val x1 = i * stepX
-                                val y1 = getY(history[i].mA)
-                                val x2 = (i + 1) * stepX
-                                val y2 = getY(history[i + 1].mA)
-
-                                val controlPoint1X = x1 + (x2 - x1) / 2
-                                val controlPoint1Y = y1
-                                val controlPoint2X = x1 + (x2 - x1) / 2
-                                val controlPoint2Y = y2
-
-                                path.cubicTo(
-                                    controlPoint1X,
-                                    controlPoint1Y,
-                                    controlPoint2X,
-                                    controlPoint2Y,
-                                    x2,
-                                    y2,
-                                )
-                            }
-
                             drawPath(
-                                path = path,
+                                path = linePath,
                                 color = accentColor,
-                                style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round),
+                                style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
                             )
 
-                            val fillPath = Path().apply {
-                                addPath(path)
-                                lineTo(size.width, size.height)
-                                lineTo(0f, size.height)
-                                close()
-                            }
                             drawPath(
                                 path = fillPath,
                                 brush = Brush.verticalGradient(

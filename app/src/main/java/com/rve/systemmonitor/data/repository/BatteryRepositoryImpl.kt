@@ -87,6 +87,7 @@ class BatteryRepositoryImpl @Inject constructor(private val application: Applica
 
         val pollingFlow = settingsRepository.batteryRefreshDelay.flatMapLatest { delayMillis ->
             flow {
+                delay(400) // Initial delay to avoid startup peak
                 while (true) {
                     emit(BatteryUtils.getCurrent(application))
                     delay(delayMillis)

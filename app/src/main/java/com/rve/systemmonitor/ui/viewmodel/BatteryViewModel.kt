@@ -8,14 +8,17 @@ import com.rve.systemmonitor.domain.repository.BatteryRepository
 import com.rve.systemmonitor.domain.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.stateIn
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class BatteryViewModel @Inject constructor(batteryRepository: BatteryRepository, settingsRepository: SettingsRepository) : ViewModel() {
     val batteryInfo: StateFlow<Battery> = batteryRepository.getBatteryStream()
@@ -43,15 +46,17 @@ class BatteryViewModel @Inject constructor(batteryRepository: BatteryRepository,
     }
 
     init {
-        batteryInfo.onEach { info ->
-            val currentList = _batteryHistory.value.toMutableList()
-            currentList.add(BatteryDataPoint(info.current, info.status))
-            val maxHistory = graphHistorySeconds.value
-            if (currentList.size > maxHistory) {
-                _batteryHistory.value = currentList.takeLast(maxHistory)
-            } else {
-                _batteryHistory.value = currentList
-            }
-        }.launchIn(viewModelScope)
+        batteryInfo
+            .sample(1000)
+            .onEach { info ->
+                val currentList = _batteryHistory.value.toMutableList()
+                currentList.add(BatteryDataPoint(info.current, info.status))
+                val maxHistory = graphHistorySeconds.value
+                if (currentList.size > maxHistory) {
+                    _batteryHistory.value = currentList.takeLast(maxHistory)
+                } else {
+                    _batteryHistory.value = currentList
+                }
+            }.launchIn(viewModelScope)
     }
 }
