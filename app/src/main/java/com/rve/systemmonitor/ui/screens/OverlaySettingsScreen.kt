@@ -157,9 +157,9 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
     }
 
     val delaySliderState = rememberSliderState(
-        value = (updateIntervalMillis / 1000f).coerceIn(1f, 5f),
-        steps = 3,
-        valueRange = 1f..5f,
+        value = (updateIntervalMillis / 1000f).coerceIn(0.5f, 5f),
+        steps = 8,
+        valueRange = 0.5f..5f,
     )
     var overlayCurrentValue by rememberSaveable(updateIntervalMillis) { mutableFloatStateOf(updateIntervalMillis / 1000f) }
     var delayAnimateJob: Job? by remember { mutableStateOf(null) }
@@ -189,10 +189,10 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
             ) { value, _ ->
                 delaySliderState.value = value
             }
-            viewModel.setOverlayUpdateInterval(overlayCurrentValue.toLong() * 1000)
+            viewModel.setOverlayUpdateInterval((overlayCurrentValue * 1000).toLong())
 
             if (isServiceRunning) {
-                updateService(interval = overlayCurrentValue.toLong() * 1000)
+                updateService(interval = (overlayCurrentValue * 1000).toLong())
             }
         }
     }
@@ -485,8 +485,13 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                                             MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
                                     )
                                     Row(verticalAlignment = Alignment.CenterVertically) {
+                                        val displayValue = if (overlayCurrentValue % 1f == 0f) {
+                                            overlayCurrentValue.toInt().toString()
+                                        } else {
+                                            overlayCurrentValue.toString()
+                                        }
                                         Text(
-                                            text = "${overlayCurrentValue.toInt()}s",
+                                            text = "${displayValue}s",
                                             style = MaterialTheme.typography.titleMedium,
                                             fontWeight = FontWeight.Bold,
                                             color = if (isAnyMetricEnabled)
