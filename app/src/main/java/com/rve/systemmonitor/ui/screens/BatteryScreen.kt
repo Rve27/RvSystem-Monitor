@@ -194,7 +194,6 @@ private fun ChargingSpeedCard(battery: Battery, history: List<BatteryDataPoint>,
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         color = accentColor,
-                        fontFamily = FontFamily.Monospace,
                     )
                 }
 
