@@ -91,7 +91,13 @@ fun BatteryScreen(isActive: Boolean, viewModel: BatteryViewModel = hiltViewModel
         remember { emptyFlow<Battery>() }.collectAsStateWithLifecycle(initialBatteryInfo)
     }
 
-    val batteryHistory by viewModel.batteryHistory.collectAsStateWithLifecycle()
+    val initialBatteryHistory = remember { viewModel.batteryHistory.value }
+    val batteryHistory by if (isActive) {
+        viewModel.batteryHistory.collectAsStateWithLifecycle()
+    } else {
+        remember { emptyFlow<List<BatteryDataPoint>>() }.collectAsStateWithLifecycle(initialBatteryHistory)
+    }
+
     val hasAlreadyAnimated = remember { viewModel.hasAnimated }
 
     var showHelpSheet by remember { mutableStateOf(false) }
