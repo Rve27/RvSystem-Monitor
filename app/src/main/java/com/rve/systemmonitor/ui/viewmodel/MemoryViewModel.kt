@@ -12,13 +12,30 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class MemoryViewModel @Inject constructor(memoryRepository: MemoryRepository, private val hardwareRepository: HardwareRepository) :
-    ViewModel() {
-    private val storageInfo = MutableStateFlow(hardwareRepository.getStorageInfo())
+class MemoryViewModel @Inject constructor(
+    private val memoryRepository: MemoryRepository,
+    private val hardwareRepository: HardwareRepository,
+) : ViewModel() {
+    private val cachedStorage = hardwareRepository.getStorageInfo()
+    private val storageInfo = kotlinx.coroutines.flow.MutableStateFlow(cachedStorage)
+
+    private val memoryStream = memoryRepository.getMemoryInfo()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = com.rve.systemmonitor.domain.model.RAM() to com.rve.systemmonitor.domain.model.ZRAM(),
+        )
+
+    private val staticStorage = storageInfo
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = com.rve.systemmonitor.domain.model.Storage(),
+        )
 
     val uiState = combine(
-        memoryRepository.getMemoryInfo(),
-        storageInfo,
+        memoryStream,
+        staticStorage,
     ) { (ram, zram), storage ->
         MemoryUiState(
             ram = ram,

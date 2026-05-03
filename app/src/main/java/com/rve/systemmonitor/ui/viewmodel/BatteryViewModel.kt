@@ -12,20 +12,48 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.stateIn
-
 @OptIn(FlowPreview::class)
 @HiltViewModel
-class BatteryViewModel @Inject constructor(batteryRepository: BatteryRepository, settingsRepository: SettingsRepository) : ViewModel() {
-    val batteryInfo: StateFlow<Battery> = batteryRepository.getBatteryStream()
+class BatteryViewModel @Inject constructor(private val batteryRepository: BatteryRepository, settingsRepository: SettingsRepository) :
+    ViewModel() {
+    private val cachedBatteryStatic = batteryRepository.getBatteryInfo()
+
+    private val batteryStream = batteryRepository.getBatteryStream()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = batteryRepository.getBatteryInfo(),
         )
 
+    private val batteryStatic = flowOf(cachedBatteryStatic)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = Battery(),
+        )
+
+    val batteryInfo: StateFlow<Battery> = combine(
+        batteryStream,
+        batteryStatic,
+    ) { stream, static ->
+        stream.copy(
+            health = static.health,
+            technology = static.technology,
+            capacity = static.capacity,
+            maxCapacity = static.maxCapacity,
+            healthPercentage = static.healthPercentage,
+            cycleCount = static.cycleCount,
+            deepSleep = static.deepSleep,
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = batteryRepository.getBatteryInfo(),
+    )
     val graphHistorySeconds: StateFlow<Int> = settingsRepository.batteryGraphHistorySeconds
         .stateIn(
             scope = viewModelScope,
