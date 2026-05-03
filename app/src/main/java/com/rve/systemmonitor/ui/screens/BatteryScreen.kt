@@ -467,15 +467,15 @@ private fun BatteryOverviewCard(battery: Battery) {
                         targetState = displayStatus,
                         transitionSpec = {
                             (
-                                slideInVertically(
-                                    initialOffsetY = { -it },
+                                slideInHorizontally(
+                                    initialOffsetX = { -it },
                                     animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
                                 ) + scaleIn(
                                     animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
                                 )
                                 ).togetherWith(
-                                slideOutVertically(
-                                    targetOffsetY = { -it },
+                                slideOutHorizontally(
+                                    targetOffsetX = { -it },
                                     animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
                                 ) + scaleOut(
                                     animationSpec = tween(TRANSITION_DURATION, easing = FastOutSlowInEasing),
