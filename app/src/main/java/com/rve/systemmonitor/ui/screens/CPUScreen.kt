@@ -149,6 +149,11 @@ private fun CPUOverviewCard(cpu: CPU) {
                         containerColor = MaterialTheme.colorScheme.primary,
                         textColor = MaterialTheme.colorScheme.onPrimary,
                     )
+                    BadgeChip(
+                        text = String.format("%.1f °C", cpu.temperature),
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        textColor = MaterialTheme.colorScheme.onPrimary,
+                    )
                 }
 
                 Row(
@@ -243,6 +248,12 @@ private fun CoreDetailCard(core: CoreDetail) {
                     fontWeight = FontWeight.ExtraBold,
                     letterSpacing = 0.5.sp,
                     modifier = Modifier.weight(1f),
+                )
+
+                BadgeChip(
+                    text = String.format("%.1f °C", core.temperature),
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    textColor = MaterialTheme.colorScheme.onPrimary,
                 )
 
                 BadgeChip(

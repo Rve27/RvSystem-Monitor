@@ -39,9 +39,24 @@ object CpuUtils {
     private external fun getCoreFrequencyNative(coreId: Int, type: String): Long
 
     @JvmStatic
-    private external fun getCoreGovernorNative(coreId: Int): String
+    private external fun getCoreGovernorNative(core_id: Int): String
+
+    @JvmStatic
+    private external fun getCpuTemperatureNative(): Double
+
+    @JvmStatic
+    private external fun getAllCoreTemperaturesNative(): DoubleArray
+
+    fun getCpuTemperature(): Double = runCatching {
+        getCpuTemperatureNative()
+    }.getOrElse { 0.0 }
+
+    fun getAllCoreTemperatures(): DoubleArray = runCatching {
+        getAllCoreTemperaturesNative()
+    }.getOrElse { DoubleArray(0) }
 
     fun formatFrequency(freqKhz: Long): String {
+
         return if (freqKhz >= 1_000_000) {
             String.format("%.2f GHz", freqKhz / 1_000_000.0)
         } else {

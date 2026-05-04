@@ -10,6 +10,7 @@ data class CPU(
     val hardware: String = "unknown",
     val board: String = "unknown",
     val architecture: String = "unknown",
+    val temperature: Double = 0.0,
     val coreDetails: List<CoreDetail> = emptyList(),
 )
 
@@ -23,4 +24,5 @@ data class CoreDetail(
     val minFreqKhz: Long = 0,
     val maxFreqKhz: Long = 0,
     val governor: String = "unknown",
+    val temperature: Double = 0.0,
 )

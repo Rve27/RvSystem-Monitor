@@ -8,7 +8,7 @@
 use jni::EnvUnowned;
 use jni::errors::LogErrorAndDefault;
 use jni::objects::{JClass, JString};
-use jni::sys::{jdoubleArray, jint, jlong, jlongArray, jstring};
+use jni::sys::{jdouble, jdoubleArray, jint, jlong, jlongArray, jstring};
 
 pub mod drivers;
 pub mod kernel;
@@ -179,6 +179,41 @@ pub extern "system" fn Java_com_rve_systemmonitor_utils_CpuUtils_getCoreGovernor
         .with_env(|env| {
             let governor = kernel::cpu::get_core_governor(core_id);
             Ok::<_, jni::errors::Error>(env.new_string(governor)?.into_raw())
+        })
+        .resolve::<LogErrorAndDefault>()
+}
+
+/// JNI interface to retrieve overall CPU temperature.
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_com_rve_systemmonitor_utils_CpuUtils_getCpuTemperatureNative<'local>(
+    mut unowned_env: EnvUnowned<'local>,
+    _class: JClass<'local>,
+) -> jdouble {
+    unowned_env
+        .with_env(|_env| Ok::<_, jni::errors::Error>(kernel::cpu::get_cpu_temperature()))
+        .resolve::<LogErrorAndDefault>()
+}
+
+/// JNI interface to retrieve all core temperatures in a single call.
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_com_rve_systemmonitor_utils_CpuUtils_getAllCoreTemperaturesNative<
+    'local,
+>(
+    mut unowned_env: EnvUnowned<'local>,
+    _class: JClass<'local>,
+) -> jdoubleArray {
+    let cores = kernel::cpu::get_core_count();
+    let mut temps = Vec::with_capacity(cores as usize);
+
+    for i in 0..cores {
+        temps.push(kernel::cpu::get_core_temperature(i));
+    }
+
+    unowned_env
+        .with_env(|env| {
+            let output = env.new_double_array(cores as usize)?;
+            output.set_region(env, 0, &temps)?;
+            Ok::<_, jni::errors::Error>(output.into_raw())
         })
         .resolve::<LogErrorAndDefault>()
 }

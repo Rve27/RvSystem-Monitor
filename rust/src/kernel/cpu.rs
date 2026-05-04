@@ -63,3 +63,46 @@ pub fn get_core_governor(core_id: i32) -> String {
         .map(|s| s.trim().to_string())
         .unwrap_or_else(|_| "N/A".to_string())
 }
+
+/// Retrieves the overall CPU temperature in Celsius.
+pub fn get_cpu_temperature() -> f64 {
+    let thermal_zones = ["cpu-thermal", "soc-thermal", "cpu", "soc", "thermal-cpufreq"];
+
+    for i in 0..30 {
+        let type_path = format!("/sys/class/thermal/thermal_zone{}/type", i);
+        if let Ok(tz_type) = fs::read_to_string(type_path) {
+            let tz_type = tz_type.trim().to_lowercase();
+            if thermal_zones.iter().any(|&tz| tz_type.contains(tz)) {
+                let temp_path = format!("/sys/class/thermal/thermal_zone{}/temp", i);
+                if let Ok(temp_str) = fs::read_to_string(temp_path) {
+                    if let Ok(temp) = temp_str.trim().parse::<f64>() {
+                        return if temp > 1000.0 { temp / 1000.0 } else { temp };
+                    }
+                }
+            }
+        }
+    }
+    0.0
+}
+
+/// Retrieves the temperature for a specific core in Celsius.
+pub fn get_core_temperature(core_id: i32) -> f64 {
+    // Try core-specific thermal zone first: e.g., cpu0-thermal
+    let core_tz_type = format!("cpu{}-thermal", core_id);
+    for i in 0..30 {
+        let type_path = format!("/sys/class/thermal/thermal_zone{}/type", i);
+        if let Ok(tz_type) = fs::read_to_string(type_path) {
+            if tz_type.trim() == core_tz_type {
+                let temp_path = format!("/sys/class/thermal/thermal_zone{}/temp", i);
+                if let Ok(temp_str) = fs::read_to_string(temp_path) {
+                    if let Ok(temp) = temp_str.trim().parse::<f64>() {
+                        return if temp > 1000.0 { temp / 1000.0 } else { temp };
+                    }
+                }
+            }
+        }
+    }
+
+    // Fallback to overall CPU temperature if specific core temp is not found
+    get_cpu_temperature()
+}

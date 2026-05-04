@@ -32,6 +32,7 @@ class CpuRepositoryImpl @Inject constructor(private val settingsRepository: Sett
             hardware = CpuUtils.getHardware(),
             board = CpuUtils.getBoard(),
             architecture = CpuUtils.getArchitecture(),
+            temperature = CpuUtils.getCpuTemperature(),
         )
     }
 
@@ -63,9 +64,12 @@ class CpuRepositoryImpl @Inject constructor(private val settingsRepository: Sett
                 if (BuildConfig.DEBUG) Log.d(TAG, "CPU Stream Updated")
                 val coreDetails = mutableListOf<CoreDetail>()
                 val currentFrequenciesKhz = CpuUtils.getAllCoreFrequenciesKhz()
+                val coreTemperatures = CpuUtils.getAllCoreTemperatures()
+                val cpuTemperature = CpuUtils.getCpuTemperature()
 
                 for (i in 0 until cores) {
                     val currentKhz = currentFrequenciesKhz.getOrElse(i) { 0L }
+                    val currentTemp = coreTemperatures.getOrElse(i) { 0.0 }
                     val static = staticCoreInfo[i]
                     coreDetails.add(
                         CoreDetail(
@@ -77,6 +81,7 @@ class CpuRepositoryImpl @Inject constructor(private val settingsRepository: Sett
                             minFreqKhz = static.minFreqKhz,
                             maxFreqKhz = static.maxFreqKhz,
                             governor = static.governor,
+                            temperature = currentTemp,
                         ),
                     )
                 }
@@ -89,6 +94,7 @@ class CpuRepositoryImpl @Inject constructor(private val settingsRepository: Sett
                         hardware = hardware,
                         board = board,
                         architecture = architecture,
+                        temperature = cpuTemperature,
                         coreDetails = coreDetails,
                     ),
                 )
