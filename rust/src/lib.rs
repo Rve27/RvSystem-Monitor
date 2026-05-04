@@ -217,3 +217,29 @@ pub extern "system" fn Java_com_rve_systemmonitor_utils_CpuUtils_getAllCoreTempe
         })
         .resolve::<LogErrorAndDefault>()
 }
+
+/// JNI interface to retrieve all dynamic CPU data (temp, freqs, core temps) in a single call.
+/// Array structure: [overall_temp, core0_freq, core0_temp, core1_freq, core1_temp, ...]
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_com_rve_systemmonitor_utils_CpuUtils_getCpuDynamicDataNative<'local>(
+    mut unowned_env: EnvUnowned<'local>,
+    _class: JClass<'local>,
+) -> jdoubleArray {
+    let cores = kernel::cpu::get_core_count() as usize;
+    let mut data = Vec::with_capacity(1 + 2 * cores);
+
+    data.push(kernel::cpu::get_cpu_temperature());
+
+    for i in 0..cores {
+        data.push(kernel::cpu::get_core_frequency(i as i32, "cur") as f64);
+        data.push(kernel::cpu::get_core_temperature(i as i32));
+    }
+
+    unowned_env
+        .with_env(|env| {
+            let output = env.new_double_array(data.len())?;
+            output.set_region(env, 0, &data)?;
+            Ok::<_, jni::errors::Error>(output.into_raw())
+        })
+        .resolve::<LogErrorAndDefault>()
+}

@@ -47,12 +47,19 @@ object CpuUtils {
     @JvmStatic
     private external fun getAllCoreTemperaturesNative(): DoubleArray
 
+    @JvmStatic
+    private external fun getCpuDynamicDataNative(): DoubleArray
+
     fun getCpuTemperature(): Double = runCatching {
         getCpuTemperatureNative()
     }.getOrElse { 0.0 }
 
     fun getAllCoreTemperatures(): DoubleArray = runCatching {
         getAllCoreTemperaturesNative()
+    }.getOrElse { DoubleArray(0) }
+
+    fun getCpuDynamicData(): DoubleArray = runCatching {
+        getCpuDynamicDataNative()
     }.getOrElse { DoubleArray(0) }
 
     fun formatFrequency(freqKhz: Long): String {

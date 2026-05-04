@@ -63,13 +63,14 @@ class CpuRepositoryImpl @Inject constructor(private val settingsRepository: Sett
             while (true) {
                 if (BuildConfig.DEBUG) Log.d(TAG, "CPU Stream Updated")
                 val coreDetails = mutableListOf<CoreDetail>()
-                val currentFrequenciesKhz = CpuUtils.getAllCoreFrequenciesKhz()
-                val coreTemperatures = CpuUtils.getAllCoreTemperatures()
-                val cpuTemperature = CpuUtils.getCpuTemperature()
+                val dynamicData = CpuUtils.getCpuDynamicData()
+
+                // dynamicData structure: [overall_temp, core0_freq, core0_temp, core1_freq, core1_temp, ...]
+                val cpuTemperature = dynamicData.getOrElse(0) { 0.0 }
 
                 for (i in 0 until cores) {
-                    val currentKhz = currentFrequenciesKhz.getOrElse(i) { 0L }
-                    val currentTemp = coreTemperatures.getOrElse(i) { 0.0 }
+                    val currentKhz = dynamicData.getOrElse(1 + i * 2) { 0.0 }.toLong()
+                    val currentTemp = dynamicData.getOrElse(2 + i * 2) { 0.0 }
                     val static = staticCoreInfo[i]
                     coreDetails.add(
                         CoreDetail(
