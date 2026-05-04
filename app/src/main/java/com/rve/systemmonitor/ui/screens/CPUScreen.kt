@@ -89,11 +89,9 @@ fun CPUScreen(isActive: Boolean, viewModel: CPUViewModel = hiltViewModel()) {
 
 @Composable
 private fun CPUOverviewCard(cpu: CPU) {
-    val peakFrequency = remember(cpu.model) {
-        cpu.coreDetails.maxOfOrNull {
-            it.maxFreq.substringBefore(" ").toDoubleOrNull() ?: 0.0
-        } ?: 0.0
-    }
+    val peakFrequency = cpu.coreDetails.maxOfOrNull {
+        it.maxFreq.substringBefore(" ").toDoubleOrNull() ?: 0.0
+    } ?: 0.0
 
     val peakFreqUnit = cpu.coreDetails.firstOrNull()?.maxFreq?.substringAfter(" ") ?: "MHz"
 
