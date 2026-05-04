@@ -3,10 +3,14 @@ package com.rve.systemmonitor.ui.screens
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animate
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,12 +23,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
@@ -544,12 +550,48 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onNavigateBac
                                         style = MaterialTheme.typography.labelLarge,
                                         color = MaterialTheme.colorScheme.onSurface,
                                     )
-                                    Text(
-                                        text = "${cpuCurrentValue.toInt()}s",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.primary,
-                                    )
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = "${cpuCurrentValue.toInt()}s",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.primary,
+                                        )
+                                        AnimatedVisibility(
+                                            visible = cpuCurrentValue != 3.0f,
+                                            enter = slideInHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) { it } + expandHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) + fadeIn(
+                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                            ),
+                                            exit = slideOutHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) { it } + shrinkHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) + fadeOut(
+                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                            ),
+                                        ) {
+                                            Row {
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                IconButton(
+                                                    onClick = rememberHapticOnClick {
+                                                        viewModel.setCpuRefreshDelay(3000L)
+                                                    },
+                                                    modifier = Modifier.size(24.dp),
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.reset_settings_rounded),
+                                                        contentDescription = "Reset to default",
+                                                        modifier = Modifier.size(16.dp),
+                                                        tint = MaterialTheme.colorScheme.primary,
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
 
                                 Slider(
@@ -626,12 +668,48 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onNavigateBac
                                         style = MaterialTheme.typography.labelLarge,
                                         color = MaterialTheme.colorScheme.onSurface,
                                     )
-                                    Text(
-                                        text = "${memoryCurrentValue.toInt()}s",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.primary,
-                                    )
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = "${memoryCurrentValue.toInt()}s",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.primary,
+                                        )
+                                        AnimatedVisibility(
+                                            visible = memoryCurrentValue != 3.0f,
+                                            enter = slideInHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) { it } + expandHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) + fadeIn(
+                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                            ),
+                                            exit = slideOutHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) { it } + shrinkHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) + fadeOut(
+                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                            ),
+                                        ) {
+                                            Row {
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                IconButton(
+                                                    onClick = rememberHapticOnClick {
+                                                        viewModel.setMemoryRefreshDelay(3000L)
+                                                    },
+                                                    modifier = Modifier.size(24.dp),
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.reset_settings_rounded),
+                                                        contentDescription = "Reset to default",
+                                                        modifier = Modifier.size(16.dp),
+                                                        tint = MaterialTheme.colorScheme.primary,
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
 
                                 Slider(
@@ -708,12 +786,48 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onNavigateBac
                                         style = MaterialTheme.typography.labelLarge,
                                         color = MaterialTheme.colorScheme.onSurface,
                                     )
-                                    Text(
-                                        text = "${batteryCurrentValue.toInt()}s",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.primary,
-                                    )
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = "${batteryCurrentValue.toInt()}s",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.primary,
+                                        )
+                                        AnimatedVisibility(
+                                            visible = batteryCurrentValue != 1.0f,
+                                            enter = slideInHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) { it } + expandHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) + fadeIn(
+                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                            ),
+                                            exit = slideOutHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) { it } + shrinkHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) + fadeOut(
+                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                            ),
+                                        ) {
+                                            Row {
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                IconButton(
+                                                    onClick = rememberHapticOnClick {
+                                                        viewModel.setBatteryRefreshDelay(1000L)
+                                                    },
+                                                    modifier = Modifier.size(24.dp),
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.reset_settings_rounded),
+                                                        contentDescription = "Reset to default",
+                                                        modifier = Modifier.size(16.dp),
+                                                        tint = MaterialTheme.colorScheme.primary,
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
 
                                 Slider(
@@ -797,12 +911,48 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onNavigateBac
                                     } else {
                                         "${historyCurrentValue.toInt()}s"
                                     }
-                                    Text(
-                                        text = durationText,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.primary,
-                                    )
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = durationText,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.primary,
+                                        )
+                                        AnimatedVisibility(
+                                            visible = historyCurrentValue != 60.0f,
+                                            enter = slideInHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) { it } + expandHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) + fadeIn(
+                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                            ),
+                                            exit = slideOutHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) { it } + shrinkHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) + fadeOut(
+                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                            ),
+                                        ) {
+                                            Row {
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                IconButton(
+                                                    onClick = rememberHapticOnClick {
+                                                        viewModel.setBatteryGraphHistorySeconds(60)
+                                                    },
+                                                    modifier = Modifier.size(24.dp),
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.reset_settings_rounded),
+                                                        contentDescription = "Reset to default",
+                                                        modifier = Modifier.size(16.dp),
+                                                        tint = MaterialTheme.colorScheme.primary,
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
 
                                 Slider(

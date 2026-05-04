@@ -4,11 +4,18 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -525,24 +532,40 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                                             else
                                                 MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
                                         )
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        IconButton(
-                                            onClick = rememberHapticOnClick {
-                                                viewModel.setOverlayUpdateInterval(1000L)
-                                                if (isServiceRunning) updateService(interval = 1000L)
-                                            },
-                                            enabled = isAnyMetricEnabled,
-                                            modifier = Modifier.size(24.dp),
+                                        AnimatedVisibility(
+                                            visible = isAnyMetricEnabled && overlayCurrentValue != 1.0f,
+                                            enter = slideInHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) { it } + expandHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) + fadeIn(
+                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                            ),
+                                            exit = slideOutHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) { it } + shrinkHorizontally(
+                                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                                            ) + fadeOut(
+                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                            ),
                                         ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.reset_settings_rounded),
-                                                contentDescription = "Reset to default",
-                                                modifier = Modifier.size(16.dp),
-                                                tint = if (isAnyMetricEnabled)
-                                                    MaterialTheme.colorScheme.primary
-                                                else
-                                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
-                                            )
+                                            Row {
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                IconButton(
+                                                    onClick = rememberHapticOnClick {
+                                                        viewModel.setOverlayUpdateInterval(1000L)
+                                                        if (isServiceRunning) updateService(interval = 1000L)
+                                                    },
+                                                    modifier = Modifier.size(24.dp),
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.reset_settings_rounded),
+                                                        contentDescription = "Reset to default",
+                                                        modifier = Modifier.size(16.dp),
+                                                        tint = MaterialTheme.colorScheme.primary,
+                                                    )
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -648,6 +671,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                             AppearanceSlider(
                                 label = "Text Size",
                                 value = textSize,
+                                defaultValue = 14f,
                                 valueRange = 10f..24f,
                                 enabled = isAnyMetricEnabled,
                                 onValueChange = {
@@ -664,6 +688,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                             AppearanceSlider(
                                 label = "Background Opacity",
                                 value = bgOpacity,
+                                defaultValue = 0.5f,
                                 valueRange = 0f..1f,
                                 enabled = isAnyMetricEnabled,
                                 onValueChange = {
@@ -680,6 +705,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                             AppearanceSlider(
                                 label = "Padding",
                                 value = padding.toFloat(),
+                                defaultValue = 16f,
                                 valueRange = 0f..32f,
                                 enabled = isAnyMetricEnabled,
                                 onValueChange = {
@@ -696,6 +722,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                             AppearanceSlider(
                                 label = "Corner Radius",
                                 value = cornerRadius.toFloat(),
+                                defaultValue = 8f,
                                 valueRange = 0f..64f,
                                 enabled = isAnyMetricEnabled,
                                 onValueChange = {
@@ -721,6 +748,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
 private fun AppearanceSlider(
     label: String,
     value: Float,
+    defaultValue: Float,
     valueRange: ClosedFloatingPointRange<Float>,
     enabled: Boolean = true,
     onValueChange: (Float) -> Unit,
@@ -745,18 +773,37 @@ private fun AppearanceSlider(
                     fontWeight = FontWeight.Bold,
                     color = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                IconButton(
-                    onClick = rememberHapticOnClick(onReset),
-                    enabled = enabled,
-                    modifier = Modifier.size(24.dp),
+                AnimatedVisibility(
+                    visible = enabled && value != defaultValue,
+                    enter = slideInHorizontally(
+                        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                    ) { it } + expandHorizontally(
+                        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                    ) + fadeIn(
+                        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                    ),
+                    exit = slideOutHorizontally(
+                        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                    ) { it } + shrinkHorizontally(
+                        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+                    ) + fadeOut(
+                        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                    ),
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.reset_settings_rounded),
-                        contentDescription = "Reset to default",
-                        modifier = Modifier.size(16.dp),
-                        tint = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
-                    )
+                    Row {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        IconButton(
+                            onClick = rememberHapticOnClick(onReset),
+                            modifier = Modifier.size(24.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.reset_settings_rounded),
+                                contentDescription = "Reset to default",
+                                modifier = Modifier.size(16.dp),
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
                 }
             }
         }
