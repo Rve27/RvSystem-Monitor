@@ -159,17 +159,6 @@ private fun ChargingSpeedCard(battery: Battery, history: List<BatteryDataPoint>,
 
     val accentColor = MaterialTheme.colorScheme.primary
 
-    val infiniteTransition = rememberInfiniteTransition(label = "PulseTransition")
-    val pulseScale by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = if (battery.wattage >= 25.0) 1.05f else 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "PulseScale",
-    )
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
