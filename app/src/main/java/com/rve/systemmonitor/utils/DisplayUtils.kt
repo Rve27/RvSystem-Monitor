@@ -1,12 +1,19 @@
 package com.rve.systemmonitor.utils
 
 import android.content.Context
+import android.hardware.display.DisplayManager
 import android.util.Log
+import android.view.Display
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 object DisplayUtils {
     private const val TAG = "DisplayUtils"
+
+    private fun getDisplay(context: Context): Display? {
+        val displayManager = context.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+        return displayManager.getDisplay(Display.DEFAULT_DISPLAY)
+    }
 
     fun getResolution(context: Context): String = runCatching {
         val metrics = context.resources.displayMetrics
@@ -17,7 +24,7 @@ object DisplayUtils {
     }
 
     fun getRefreshRate(context: Context): Int = runCatching {
-        context.display.refreshRate.toInt()
+        getDisplay(context)?.refreshRate?.toInt() ?: 0
     }.getOrElse {
         Log.e(TAG, "getRefreshRate: ${it.message}", it)
         0
@@ -45,15 +52,16 @@ object DisplayUtils {
 
     fun getHdrCapabilities(context: Context): Pair<Boolean, List<String>> {
         return try {
-            val supportedTypes = context.display.mode.supportedHdrTypes
+            val display = getDisplay(context) ?: return false to emptyList()
+            val supportedTypes = display.mode.supportedHdrTypes
 
             val types = mutableListOf<String>()
             for (type in supportedTypes) {
                 when (type) {
-                    android.view.Display.HdrCapabilities.HDR_TYPE_DOLBY_VISION -> types.add("Dolby Vision")
-                    android.view.Display.HdrCapabilities.HDR_TYPE_HDR10 -> types.add("HDR10")
-                    android.view.Display.HdrCapabilities.HDR_TYPE_HLG -> types.add("HLG")
-                    android.view.Display.HdrCapabilities.HDR_TYPE_HDR10_PLUS -> types.add("HDR10+")
+                    Display.HdrCapabilities.HDR_TYPE_DOLBY_VISION -> types.add("Dolby Vision")
+                    Display.HdrCapabilities.HDR_TYPE_HDR10 -> types.add("HDR10")
+                    Display.HdrCapabilities.HDR_TYPE_HLG -> types.add("HLG")
+                    Display.HdrCapabilities.HDR_TYPE_HDR10_PLUS -> types.add("HDR10+")
                 }
             }
 
