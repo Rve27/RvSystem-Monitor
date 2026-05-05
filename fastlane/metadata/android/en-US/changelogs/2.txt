@@ -1,0 +1,11 @@
+Features:
+- Vulkan and HDR capabilities detection.
+- Battery charging speed graph and animations.
+- System-wide haptic feedback with adjustable intensity.
+- Enhanced Material 3 Expressive UI and motion.
+- Improved JNI performance and Rust backend stability.
+- Draggable system overlay for real-time FPS and RAM.
+
+Bug Fixes:
+- Fixed BottomNavBar colors in dark mode.
+- Fixed color accent issues on custom ROMs.

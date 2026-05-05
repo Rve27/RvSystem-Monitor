@@ -14,14 +14,14 @@
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="assets/screenshots/screenshot_1.jpg" width="32%" />
-  <img src="assets/screenshots/screenshot_2.jpg" width="32%" />
-  <img src="assets/screenshots/screenshot_3.jpg" width="32%" />
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_1.jpg" width="32%" />
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_2.jpg" width="32%" />
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_3.jpg" width="32%" />
 </p>
 <p align="center">
-  <img src="assets/screenshots/screenshot_4.jpg" width="32%" />
-  <img src="assets/screenshots/screenshot_5.jpg" width="32%" />
-  <img src="assets/screenshots/screenshot_6.jpg" width="32%" />
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_4.jpg" width="32%" />
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_5.jpg" width="32%" />
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_6.jpg" width="32%" />
 </p>
 
 ---

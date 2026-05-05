@@ -1,0 +1,10 @@
+RvSystem Monitor is a high-performance system monitoring solution for Android, merging the expressive power of Jetpack Compose with the raw efficiency of Rust. It provides low-level hardware insights while maintaining a modern, buttery-smooth user experience.
+
+Key Features:
+- Battery Intelligence: Live tracking of Wattage, cycle counts, health, and precise Deep Sleep vs. Uptime metrics.
+- System Overlay: Draggable, low-overhead floating monitor for real-time FPS and RAM metrics.
+- GPU & Graphics: Retrieval of GPU renderer, vendor, and supported OpenGL ES & Vulkan versions.
+- CPU Dynamics: Detailed per-core monitoring including frequencies and scaling governors.
+- Memory & ZRAM: High-precision tracking of RAM and ZRAM usage.
+- Native Performance: Optimized Rust backend that parses kernel files directly.
+- Expressive UI: Built with Material 3 Expressive, featuring adaptive layouts and sophisticated transitions.
