@@ -51,10 +51,10 @@ fn format_to_two_decimals(value: f64) -> f64 {
     (value * 100.0).round() / 100.0
 }
 
-/// Helper to parse the KB value from a meminfo line without extra allocations
-fn parse_kb(line: &str) -> f64 {
-    line.split_whitespace()
-        .nth(1)
+/// Helper to parse the KB value from the rest of a meminfo line without extra allocations
+fn parse_kb(rest: &str) -> f64 {
+    rest.split_whitespace()
+        .next()
         .and_then(|s| s.parse::<f64>().ok())
         .unwrap_or(0.0)
 }
@@ -79,24 +79,20 @@ pub fn get_memory_data() -> (RamData, ZramData) {
         let mut reader = reader;
 
         while reader.read_line(&mut line).unwrap_or(0) > 0 {
-            if line.starts_with("MemTotal:") {
-                mem_total_bytes = parse_kb(&line) * 1024.0;
-            } else if line.starts_with("MemAvailable:") {
-                mem_available_bytes = parse_kb(&line) * 1024.0;
-            } else if line.starts_with("SwapTotal:") {
-                swap_total_bytes = parse_kb(&line) * 1024.0;
-            } else if line.starts_with("SwapFree:") {
-                swap_free_bytes = parse_kb(&line) * 1024.0;
-            } else if line.starts_with("Cached:") {
-                cached_bytes = parse_kb(&line) * 1024.0;
-            } else if line.starts_with("Buffers:") {
-                buffers_bytes = parse_kb(&line) * 1024.0;
-            } else if line.starts_with("Active:") {
-                active_bytes = parse_kb(&line) * 1024.0;
-            } else if line.starts_with("Inactive:") {
-                inactive_bytes = parse_kb(&line) * 1024.0;
-            } else if line.starts_with("Slab:") {
-                slab_bytes = parse_kb(&line) * 1024.0;
+            if let Some((key, rest)) = line.split_once(':') {
+                let bytes = parse_kb(rest) * 1024.0;
+                match key {
+                    "MemTotal" => mem_total_bytes = bytes,
+                    "MemAvailable" => mem_available_bytes = bytes,
+                    "SwapTotal" => swap_total_bytes = bytes,
+                    "SwapFree" => swap_free_bytes = bytes,
+                    "Cached" => cached_bytes = bytes,
+                    "Buffers" => buffers_bytes = bytes,
+                    "Active" => active_bytes = bytes,
+                    "Inactive" => inactive_bytes = bytes,
+                    "Slab" => slab_bytes = bytes,
+                    _ => {}
+                }
             }
             line.clear();
         }
