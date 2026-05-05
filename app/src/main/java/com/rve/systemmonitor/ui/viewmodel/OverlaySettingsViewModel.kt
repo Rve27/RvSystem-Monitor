@@ -48,6 +48,13 @@ class OverlaySettingsViewModel @Inject constructor(private val overlayRepository
             initialValue = false,
         )
 
+    val isCpuTempEnabled: StateFlow<Boolean> = overlayRepository.isCpuTempEnabled
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false,
+        )
+
     val overlayUpdateInterval: StateFlow<Long> = overlayRepository.overlayUpdateInterval
         .stateIn(
             scope = viewModelScope,
@@ -124,6 +131,12 @@ class OverlaySettingsViewModel @Inject constructor(private val overlayRepository
     fun setBatteryTempEnabled(enabled: Boolean) {
         viewModelScope.launch {
             overlayRepository.setBatteryTempEnabled(enabled)
+        }
+    }
+
+    fun setCpuTempEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            overlayRepository.setCpuTempEnabled(enabled)
         }
     }
 

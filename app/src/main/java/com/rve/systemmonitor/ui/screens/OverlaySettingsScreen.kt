@@ -100,6 +100,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
     val isRamPercentageEnabled by viewModel.isRamPercentageEnabled.collectAsStateWithLifecycle()
     val isRamGbEnabled by viewModel.isRamGbEnabled.collectAsStateWithLifecycle()
     val isBatteryTempEnabled by viewModel.isBatteryTempEnabled.collectAsStateWithLifecycle()
+    val isCpuTempEnabled by viewModel.isCpuTempEnabled.collectAsStateWithLifecycle()
     val updateIntervalMillis by viewModel.overlayUpdateInterval.collectAsStateWithLifecycle()
     val textSize by viewModel.overlayTextSize.collectAsStateWithLifecycle()
     val bgOpacity by viewModel.overlayBgOpacity.collectAsStateWithLifecycle()
@@ -108,7 +109,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
     val isVerticalLayout by viewModel.isVerticalLayout.collectAsStateWithLifecycle()
     val cornerRadius by viewModel.overlayCornerRadius.collectAsStateWithLifecycle()
 
-    val isAnyMetricEnabled = isFpsEnabled || isRamPercentageEnabled || isRamGbEnabled || isBatteryTempEnabled
+    val isAnyMetricEnabled = isFpsEnabled || isRamPercentageEnabled || isRamGbEnabled || isBatteryTempEnabled || isCpuTempEnabled
     val appearanceAlpha by animateFloatAsState(
         targetValue = if (isAnyMetricEnabled) 1f else 0.5f,
         label = "Appearance Alpha Animation",
@@ -131,6 +132,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
         ramPercentage: Boolean = isRamPercentageEnabled,
         ramGb: Boolean = isRamGbEnabled,
         batteryTemp: Boolean = isBatteryTempEnabled,
+        cpuTemp: Boolean = isCpuTempEnabled,
         interval: Long = updateIntervalMillis,
         size: Float = textSize,
         opacity: Float = bgOpacity,
@@ -140,7 +142,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
         radius: Int = cornerRadius,
     ) {
         val ramEnabled = ramPercentage || ramGb
-        if (fps || ramEnabled || batteryTemp) {
+        if (fps || ramEnabled || batteryTemp || cpuTemp) {
             if (Settings.canDrawOverlays(context)) {
                 val intent = Intent(context, SystemOverlayService::class.java).apply {
                     putExtra("update_delay", interval)
@@ -149,6 +151,7 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                     putExtra("show_ram_percentage", ramPercentage)
                     putExtra("show_ram_gb", ramGb)
                     putExtra("show_battery_temp", batteryTemp)
+                    putExtra("show_cpu_temp", cpuTemp)
                     putExtra("text_size", size)
                     putExtra("bg_opacity", opacity)
                     putExtra("padding", padd)
@@ -345,6 +348,27 @@ fun OverlaySettingsScreen(viewModel: OverlaySettingsViewModel = hiltViewModel(),
                                 val nextState = !isBatteryTempEnabled
                                 viewModel.setBatteryTempEnabled(nextState)
                                 updateService(batteryTemp = nextState)
+                            }
+                        },
+                    )
+
+                    MetricToggleCard(
+                        title = "CPU Temperature",
+                        description = "Show real-time CPU temperature",
+                        icon = R.drawable.device_thermostat_filled,
+                        isEnabled = isCpuTempEnabled,
+                        hasPermission = hasOverlayPermission,
+                        onClick = rememberHapticOnClick {
+                            if (!hasOverlayPermission && !isCpuTempEnabled) {
+                                val intent = Intent(
+                                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                    "package:${context.packageName}".toUri(),
+                                )
+                                context.startActivity(intent)
+                            } else {
+                                val nextState = !isCpuTempEnabled
+                                viewModel.setCpuTempEnabled(nextState)
+                                updateService(cpuTemp = nextState)
                             }
                         },
                     )

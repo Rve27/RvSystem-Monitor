@@ -21,6 +21,7 @@ class OverlayPreferences(private val context: Context) {
         val IS_RAM_PERCENTAGE_ENABLED_KEY = booleanPreferencesKey("is_ram_percentage_enabled")
         val IS_RAM_GB_ENABLED_KEY = booleanPreferencesKey("is_ram_gb_enabled")
         val IS_BATTERY_TEMP_ENABLED_KEY = booleanPreferencesKey("is_battery_temp_enabled")
+        val IS_CPU_TEMP_ENABLED_KEY = booleanPreferencesKey("is_cpu_temp_enabled")
         val OVERLAY_UPDATE_INTERVAL_KEY = longPreferencesKey("overlay_update_interval")
         val OVERLAY_TEXT_SIZE_KEY = floatPreferencesKey("overlay_text_size")
         val OVERLAY_BG_OPACITY_KEY = floatPreferencesKey("overlay_bg_opacity")
@@ -53,6 +54,11 @@ class OverlayPreferences(private val context: Context) {
     val isBatteryTempEnabledFlow: Flow<Boolean> = context.overlayDataStore.data
         .map { preferences ->
             preferences[IS_BATTERY_TEMP_ENABLED_KEY] ?: false
+        }
+
+    val isCpuTempEnabledFlow: Flow<Boolean> = context.overlayDataStore.data
+        .map { preferences ->
+            preferences[IS_CPU_TEMP_ENABLED_KEY] ?: false
         }
 
     val overlayUpdateIntervalFlow: Flow<Long> = context.overlayDataStore.data
@@ -117,6 +123,12 @@ class OverlayPreferences(private val context: Context) {
     suspend fun saveIsBatteryTempEnabled(enabled: Boolean) {
         context.overlayDataStore.edit { preferences ->
             preferences[IS_BATTERY_TEMP_ENABLED_KEY] = enabled
+        }
+    }
+
+    suspend fun saveIsCpuTempEnabled(enabled: Boolean) {
+        context.overlayDataStore.edit { preferences ->
+            preferences[IS_CPU_TEMP_ENABLED_KEY] = enabled
         }
     }
 

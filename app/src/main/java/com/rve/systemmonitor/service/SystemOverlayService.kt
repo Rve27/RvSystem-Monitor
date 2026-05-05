@@ -18,6 +18,7 @@ import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import com.rve.systemmonitor.R
 import com.rve.systemmonitor.utils.BatteryUtils
+import com.rve.systemmonitor.utils.CpuUtils
 import com.rve.systemmonitor.utils.MemoryUtils
 import java.util.Locale
 
@@ -32,6 +33,7 @@ class SystemOverlayService : Service() {
     private var showRamPercentage = false
     private var showRamGb = false
     private var showBatteryTemp = false
+    private var showCpuTemp = false
     private var overlayTextSize = 14f
     private var overlayBgOpacity = 0.5f
     private var overlayPadding = 16
@@ -89,6 +91,14 @@ class SystemOverlayService : Service() {
                         }
                     }
 
+                    if (showCpuTemp) {
+                        val cpuData = CpuUtils.getCpuDynamicData()
+                        if (cpuData.isNotEmpty()) {
+                            val temp = cpuData[0] // overall_temp is at index 0
+                            metrics.add(String.format(Locale.US, "CPU: %.1f°C", temp))
+                        }
+                    }
+
                     val separator = if (isVerticalLayout) "\n" else " | "
                     metricsTextView?.text = if (metrics.isEmpty()) "No metrics" else metrics.joinToString(separator)
                     frameCount = 0
@@ -112,6 +122,7 @@ class SystemOverlayService : Service() {
         showRamPercentage = intent?.getBooleanExtra("show_ram_percentage", false) ?: false
         showRamGb = intent?.getBooleanExtra("show_ram_gb", false) ?: false
         showBatteryTemp = intent?.getBooleanExtra("show_battery_temp", false) ?: false
+        showCpuTemp = intent?.getBooleanExtra("show_cpu_temp", false) ?: false
 
         overlayTextSize = intent?.getFloatExtra("text_size", 14f) ?: 14f
         overlayBgOpacity = intent?.getFloatExtra("bg_opacity", 0.5f) ?: 0.5f
