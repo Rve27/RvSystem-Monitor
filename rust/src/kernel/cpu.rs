@@ -1,7 +1,6 @@
 //! # CPU Data Provider
 //!
-//! Provides functions to read and parse CPU information from sysfs.
-//! Optimized for zero-allocation hot-path polling on Android (aarch64, API 33+).
+//! Provides functions to read and parse CPU information from the system.
 
 use once_cell::sync::OnceCell;
 use std::collections::HashMap;
@@ -19,10 +18,10 @@ fn read_fd_parsed<T: std::str::FromStr>(file: &mut File, buf: &mut String) -> Op
 
 fn read_path_parsed<T: std::str::FromStr>(path: &str, buf: &mut String) -> Option<T> {
     buf.clear();
-    if let Ok(mut f) = File::open(path) {
-        if f.read_to_string(buf).is_ok() {
-            return buf.trim().parse::<T>().ok();
-        }
+    if let Ok(mut f) = File::open(path)
+        && f.read_to_string(buf).is_ok()
+    {
+        return buf.trim().parse::<T>().ok();
     }
     None
 }
@@ -40,9 +39,7 @@ fn get_cpu_fds() -> &'static Mutex<CpuFds> {
     CPU_FDS.get_or_init(|| {
         let cores = get_core_count() as usize;
 
-        let open_opt = |path: String| -> Option<File> {
-            File::open(&path).ok()
-        };
+        let open_opt = |path: String| -> Option<File> { File::open(&path).ok() };
 
         let mut cur_freq = Vec::with_capacity(cores);
         let mut max_freq = Vec::with_capacity(cores);
@@ -51,20 +48,29 @@ fn get_cpu_fds() -> &'static Mutex<CpuFds> {
 
         for i in 0..cores {
             cur_freq.push(open_opt(format!(
-                "/sys/devices/system/cpu/cpu{}/cpufreq/scaling_cur_freq", i
+                "/sys/devices/system/cpu/cpu{}/cpufreq/scaling_cur_freq",
+                i
             )));
             max_freq.push(open_opt(format!(
-                "/sys/devices/system/cpu/cpu{}/cpufreq/cpuinfo_max_freq", i
+                "/sys/devices/system/cpu/cpu{}/cpufreq/cpuinfo_max_freq",
+                i
             )));
             min_freq.push(open_opt(format!(
-                "/sys/devices/system/cpu/cpu{}/cpufreq/cpuinfo_min_freq", i
+                "/sys/devices/system/cpu/cpu{}/cpufreq/cpuinfo_min_freq",
+                i
             )));
             governor.push(open_opt(format!(
-                "/sys/devices/system/cpu/cpu{}/cpufreq/scaling_governor", i
+                "/sys/devices/system/cpu/cpu{}/cpufreq/scaling_governor",
+                i
             )));
         }
 
-        Mutex::new(CpuFds { cur_freq, max_freq, min_freq, governor })
+        Mutex::new(CpuFds {
+            cur_freq,
+            max_freq,
+            min_freq,
+            governor,
+        })
     })
 }
 
@@ -125,8 +131,8 @@ pub fn get_core_frequency(core_id: i32, freq_type: &str) -> i64 {
     let slot: Option<&mut Option<File>> = match freq_type {
         "max_info" => fds.max_freq.get_mut(core_idx),
         "min_info" => fds.min_freq.get_mut(core_idx),
-        "cur"      => fds.cur_freq.get_mut(core_idx),
-        _          => None,
+        "cur" => fds.cur_freq.get_mut(core_idx),
+        _ => None,
     };
 
     if let Some(Some(file)) = slot {
@@ -135,10 +141,13 @@ pub fn get_core_frequency(core_id: i32, freq_type: &str) -> i64 {
     let file_name = match freq_type {
         "max_info" => "cpuinfo_max_freq",
         "min_info" => "cpuinfo_min_freq",
-        "cur"      => "scaling_cur_freq",
-        _          => return 0,
+        "cur" => "scaling_cur_freq",
+        _ => return 0,
     };
-    let path = format!("/sys/devices/system/cpu/cpu{}/cpufreq/{}", core_id, file_name);
+    let path = format!(
+        "/sys/devices/system/cpu/cpu{}/cpufreq/{}",
+        core_id, file_name
+    );
     read_path_parsed::<i64>(&path, &mut buf).unwrap_or(0)
 }
 
@@ -159,32 +168,43 @@ pub fn get_core_governor(core_id: i32) -> String {
     }
 
     // Fallback
-    let path = format!("/sys/devices/system/cpu/cpu{}/cpufreq/scaling_governor", core_id);
+    let path = format!(
+        "/sys/devices/system/cpu/cpu{}/cpufreq/scaling_governor",
+        core_id
+    );
     fs::read_to_string(&path)
-        .map(|mut s| { let l = s.trim_end().len(); s.truncate(l); s })
+        .map(|mut s| {
+            let l = s.trim_end().len();
+            s.truncate(l);
+            s
+        })
         .unwrap_or_else(|_| "N/A".to_string())
 }
 
 pub fn get_cpu_temperature() -> f64 {
     let map = get_thermal_map();
     let priority = [
-        "cpu-thermal", "soc-thermal", "cpu", "soc", "thermal-cpufreq",
+        "cpu-thermal",
+        "soc-thermal",
+        "cpu",
+        "soc",
+        "thermal-cpufreq",
     ];
     let mut buf = String::with_capacity(16);
 
     for zone in priority {
-        if let Some(temp_path) = map.get(zone) {
-            if let Some(temp) = read_path_parsed::<f64>(temp_path.to_str().unwrap_or(""), &mut buf) {
-                return if temp > 1000.0 { temp / 1000.0 } else { temp };
-            }
+        if let Some(temp_path) = map.get(zone)
+            && let Some(temp) = read_path_parsed::<f64>(temp_path.to_str().unwrap_or(""), &mut buf)
+        {
+            return if temp > 1000.0 { temp / 1000.0 } else { temp };
         }
     }
 
     for (tz_type, temp_path) in map {
-        if priority.iter().any(|p| tz_type.contains(p)) {
-            if let Some(temp) = read_path_parsed::<f64>(temp_path.to_str().unwrap_or(""), &mut buf) {
-                return if temp > 1000.0 { temp / 1000.0 } else { temp };
-            }
+        if priority.iter().any(|p| tz_type.contains(p))
+            && let Some(temp) = read_path_parsed::<f64>(temp_path.to_str().unwrap_or(""), &mut buf)
+        {
+            return if temp > 1000.0 { temp / 1000.0 } else { temp };
         }
     }
     0.0
@@ -196,10 +216,10 @@ pub fn get_core_temperature(core_id: i32) -> f64 {
 
     {
         let paths = rw.read().unwrap();
-        if let Some(Some(path)) = paths.get(core_id as usize) {
-            if let Some(temp) = read_path_parsed::<f64>(path.to_str().unwrap_or(""), &mut buf) {
-                return if temp > 1000.0 { temp / 1000.0 } else { temp };
-            }
+        if let Some(Some(path)) = paths.get(core_id as usize)
+            && let Some(temp) = read_path_parsed::<f64>(path.to_str().unwrap_or(""), &mut buf)
+        {
+            return if temp > 1000.0 { temp / 1000.0 } else { temp };
         }
     }
 
@@ -217,10 +237,10 @@ pub fn get_core_temperature(core_id: i32) -> f64 {
         }
     }
 
-    if let Some(path) = found_path {
-        if let Some(temp) = read_path_parsed::<f64>(path.to_str().unwrap_or(""), &mut buf) {
-            return if temp > 1000.0 { temp / 1000.0 } else { temp };
-        }
+    if let Some(path) = found_path
+        && let Some(temp) = read_path_parsed::<f64>(path.to_str().unwrap_or(""), &mut buf)
+    {
+        return if temp > 1000.0 { temp / 1000.0 } else { temp };
     }
 
     get_cpu_temperature()

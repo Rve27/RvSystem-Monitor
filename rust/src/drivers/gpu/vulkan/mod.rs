@@ -30,28 +30,28 @@ struct VkInstanceCreateInfo {
 
 pub fn get_vulkan_version() -> String {
     unsafe {
-        let lib_name = "libvulkan.so\0";
-        let handle = dlopen(lib_name.as_ptr() as *const libc::c_char, RTLD_NOW);
+        let handle = dlopen(c"libvulkan.so".as_ptr(), RTLD_NOW);
 
         if handle.is_null() {
             return "Not Supported".to_string();
         }
 
         // Load functions with explicit null checks
-        let vk_create_instance_ptr = dlsym(handle, "vkCreateInstance\0".as_ptr() as *const _);
-        let vk_destroy_instance_ptr = dlsym(handle, "vkDestroyInstance\0".as_ptr() as *const _);
+        let vk_create_instance_ptr = dlsym(handle, c"vkCreateInstance".as_ptr());
+        let vk_destroy_instance_ptr = dlsym(handle, c"vkDestroyInstance".as_ptr());
         let vk_enumerate_physical_devices_ptr =
-            dlsym(handle, "vkEnumeratePhysicalDevices\0".as_ptr() as *const _);
-        let vk_get_physical_device_properties_ptr = dlsym(
-            handle,
-            "vkGetPhysicalDeviceProperties\0".as_ptr() as *const _,
-        );
+            dlsym(handle, c"vkEnumeratePhysicalDevices".as_ptr());
+        let vk_get_physical_device_properties_ptr =
+            dlsym(handle, c"vkGetPhysicalDeviceProperties".as_ptr());
         let vk_enumerate_instance_version_ptr =
-            dlsym(handle, "vkEnumerateInstanceVersion\0".as_ptr() as *const _);
+            dlsym(handle, c"vkEnumerateInstanceVersion".as_ptr());
 
         let vk_enumerate_instance_version: Option<extern "system" fn(*mut u32) -> i32> =
             if !vk_enumerate_instance_version_ptr.is_null() {
-                Some(std::mem::transmute(vk_enumerate_instance_version_ptr))
+                Some(std::mem::transmute::<
+                    *mut libc::c_void,
+                    extern "system" fn(*mut u32) -> i32,
+                >(vk_enumerate_instance_version_ptr))
             } else {
                 None
             };
