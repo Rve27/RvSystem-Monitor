@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.rve.systemmonitor.domain.repository.SettingsRepository
 import com.rve.systemmonitor.shizuku.ShizukuManager
 import com.rve.systemmonitor.utils.AppLanguage
+import com.rve.systemmonitor.utils.NavMode
+import com.rve.systemmonitor.utils.NavType
+import com.rve.systemmonitor.utils.SettingsPreferences
 import com.rve.systemmonitor.utils.ThemeMode
 import com.rve.systemmonitor.utils.VibrationIntensity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,6 +78,27 @@ class SettingsViewModel @Inject constructor(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = true,
+        )
+
+    val navBarCornerRadius: StateFlow<Int> = settingsRepository.navBarCornerRadius
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = SettingsPreferences.DEFAULT_NAV_BAR_CORNER_RADIUS,
+        )
+
+    val navMode: StateFlow<NavMode> = settingsRepository.navMode
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = NavMode.FLOATING,
+        )
+
+    val navType: StateFlow<NavType> = settingsRepository.navType
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = NavType.LEGACY,
         )
 
     val cpuRefreshDelay: StateFlow<Long> = settingsRepository.cpuRefreshDelay
@@ -159,6 +183,25 @@ class SettingsViewModel @Inject constructor(
     fun setBlurEffectEnabled(enabled: Boolean) {
         viewModelScope.launch {
             settingsRepository.setBlurEffectEnabled(enabled)
+        }
+    }
+
+    fun setNavBarCornerRadius(radius: Int) {
+        viewModelScope.launch {
+            settingsRepository.setNavBarCornerRadius(radius)
+        }
+    }
+
+    fun setNavMode(mode: NavMode) {
+        viewModelScope.launch {
+            settingsRepository.setNavMode(mode)
+            settingsRepository.setNavType(if (mode == NavMode.STANDARD) NavType.MODERN else NavType.LEGACY)
+        }
+    }
+
+    fun setNavType(type: NavType) {
+        viewModelScope.launch {
+            settingsRepository.setNavType(type)
         }
     }
 
