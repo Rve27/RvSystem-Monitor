@@ -8,6 +8,7 @@ import com.rve.systemmonitor.domain.repository.SettingsRepository
 import com.rve.systemmonitor.shizuku.ShizukuManager
 import com.rve.systemmonitor.utils.CpuUtils
 import com.rve.systemmonitor.utils.FlowUtils
+import com.rve.systemmonitor.utils.ThermalUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.collections.immutable.toImmutableList
@@ -56,11 +57,18 @@ class CpuRepositoryImpl @Inject constructor(
 
             FlowUtils.pollingFlow(TAG, delayMillis) {
                 val dynamicData = CpuUtils.getCpuDynamicData()
-                val cpuTemperature = dynamicData.getOrElse(0) { 0.0 }
+                val nativeTemp = dynamicData.getOrElse(0) { 0.0 }
+                val shizukuReady = useShizuku && isAvailable && hasPermission
+                val fallbackTemp = if (nativeTemp <= 0.0 && shizukuReady) {
+                    ThermalUtils.getCpuTemperature(shizukuManager)
+                } else {
+                    0.0
+                }
+                val cpuTemperature = if (nativeTemp > 0.0) nativeTemp else fallbackTemp
                 val coreDetails = ArrayList<CoreDetail>(cores)
 
                 var isShizukuSuccess = false
-                val cpuLoads = if (useShizuku && isAvailable && hasPermission) {
+                val cpuLoads = if (shizukuReady ) {
                     val procStat = shizukuManager.executeCommand("cat /proc/stat")
                     if (procStat.isNotEmpty() && !procStat.startsWith("ERROR:")) {
                         val loads = CpuUtils.calculateCpuLoad(procStat)
@@ -81,7 +89,8 @@ class CpuRepositoryImpl @Inject constructor(
 
                 for (i in 0 until cores) {
                     val currentKhz = dynamicData.getOrElse(1 + i * 2) { 0.0 }.toLong()
-                    val currentTemp = dynamicData.getOrElse(2 + i * 2) { 0.0 }
+                    val nativeCoreTemp = dynamicData.getOrElse(2 + i * 2) { 0.0 }
+                    val currentTemp = if (nativeCoreTemp > 0.0) nativeCoreTemp else fallbackTemp
                     val currentLoad = cpuLoads.getOrElse(1 + i) { if (isShizukuSuccess) -1.0 else 0.0 }
                     val static = staticCoreInfo[i]
                     coreDetails.add(
