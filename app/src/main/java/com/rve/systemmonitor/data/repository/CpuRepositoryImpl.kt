@@ -90,7 +90,7 @@ class CpuRepositoryImpl @Inject constructor(
                 for (i in 0 until cores) {
                     val currentKhz = dynamicData.getOrElse(1 + i * 2) { 0.0 }.toLong()
                     val nativeCoreTemp = dynamicData.getOrElse(2 + i * 2) { 0.0 }
-                    val currentTemp = if (nativeCoreTemp > 0.0) nativeCoreTemp else fallbackTemp
+                    val currentTemp = nativeCoreTemp
                     val currentLoad = cpuLoads.getOrElse(1 + i) { if (isShizukuSuccess) -1.0 else 0.0 }
                     val static = staticCoreInfo[i]
                     coreDetails.add(
