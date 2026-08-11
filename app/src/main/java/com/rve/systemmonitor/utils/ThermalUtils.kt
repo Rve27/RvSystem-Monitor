@@ -18,6 +18,9 @@ object ThermalUtils {
     suspend fun getCpuTemperature(shizukuManager: ShizukuManager): Double =
         pickCpuTemp(getTemps(shizukuManager))
 
+    suspend fun getGpuTemperature(shizukuManager: ShizukuManager): Double =
+        pickGpuTemp(getTemps(shizukuManager))
+
     private suspend fun getTemps(shizukuManager: ShizukuManager): Map<String, Double> {
         val now = System.currentTimeMillis()
         if (now - cachedAt < CACHE_TTL_MS) return cachedTemps
@@ -60,6 +63,16 @@ object ThermalUtils {
         }
         return temps.entries.firstOrNull { (key, _) ->
             "cpu" in key && "gpu" !in key && "battery" !in key && "npu" !in key
+        }?.value ?: 0.0
+    }
+
+    fun pickGpuTemp(temps: Map<String, Double>): Double {
+        val priority = listOf("gpu", "gpu0", "mtktsgpu", "mtkgpu", "soc_gpu")
+        for (key in priority) {
+            temps[key]?.let { return it }
+        }
+        return temps.entries.firstOrNull { (key, _) ->
+            "gpu" in key && "cpu" !in key && "battery" !in key
         }?.value ?: 0.0
     }
 }
