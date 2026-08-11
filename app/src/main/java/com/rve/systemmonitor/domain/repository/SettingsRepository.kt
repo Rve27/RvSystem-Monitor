@@ -1,6 +1,8 @@
 package com.rve.systemmonitor.domain.repository
 
 import com.rve.systemmonitor.utils.AppLanguage
+import com.rve.systemmonitor.utils.NavMode
+import com.rve.systemmonitor.utils.NavType
 import com.rve.systemmonitor.utils.ThemeMode
 import com.rve.systemmonitor.utils.VibrationIntensity
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +23,9 @@ interface SettingsRepository {
     val useShizuku: Flow<Boolean>
     val updatesPausedUntil: Flow<Long>
     val blurEffectEnabled: Flow<Boolean>
+    val navBarCornerRadius: Flow<Int>
+    val navMode: Flow<NavMode>
+    val navType: Flow<NavType>
     suspend fun setThemeMode(mode: ThemeMode)
     suspend fun setLanguage(language: AppLanguage)
     suspend fun setAmoledMode(enabled: Boolean)
@@ -36,6 +41,9 @@ interface SettingsRepository {
     suspend fun setUseShizuku(enabled: Boolean)
     suspend fun setUpdatesPausedUntil(timestampMillis: Long)
     suspend fun setBlurEffectEnabled(enabled: Boolean)
+    suspend fun setNavBarCornerRadius(radius: Int)
+    suspend fun setNavMode(mode: NavMode)
+    suspend fun setNavType(type: NavType)
     suspend fun exportSettings(): String
     suspend fun importSettings(json: String)
 }

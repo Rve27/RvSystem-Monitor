@@ -1,6 +1,9 @@
 package com.rve.systemmonitor.domain.model
 
 import com.rve.systemmonitor.utils.AppLanguage
+import com.rve.systemmonitor.utils.NavMode
+import com.rve.systemmonitor.utils.NavType
+import com.rve.systemmonitor.utils.SettingsPreferences
 import com.rve.systemmonitor.utils.ThemeMode
 import com.rve.systemmonitor.utils.VibrationIntensity
 import kotlinx.serialization.Serializable
@@ -24,6 +27,9 @@ data class AppSettings(
     val useShizuku: Boolean = false,
     val updatesPausedUntil: Long = 0L,
     val blurEffectEnabled: Boolean = true,
+    val navBarCornerRadius: Int = SettingsPreferences.DEFAULT_NAV_BAR_CORNER_RADIUS,
+    val navMode: NavMode = NavMode.FLOATING,
+    val navType: NavType = NavType.LEGACY,
 )
 
 @Serializable

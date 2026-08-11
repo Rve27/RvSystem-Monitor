@@ -11,6 +11,8 @@ import com.rve.systemmonitor.domain.model.OverlayPosition
 import com.rve.systemmonitor.domain.model.OverlaySettings
 import com.rve.systemmonitor.domain.repository.SettingsRepository
 import com.rve.systemmonitor.utils.AppLanguage
+import com.rve.systemmonitor.utils.NavMode
+import com.rve.systemmonitor.utils.NavType
 import com.rve.systemmonitor.utils.OverlayPreferences
 import com.rve.systemmonitor.utils.SettingsPreferences
 import com.rve.systemmonitor.utils.ThemeMode
@@ -63,6 +65,12 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
     override val updatesPausedUntil: Flow<Long> = settingsPreferences.updatesPausedUntilFlow
 
     override val blurEffectEnabled: Flow<Boolean> = settingsPreferences.blurEffectEnabledFlow
+
+    override val navBarCornerRadius: Flow<Int> = settingsPreferences.navBarCornerRadiusFlow
+
+    override val navMode: Flow<NavMode> = settingsPreferences.navModeFlow
+
+    override val navType: Flow<NavType> = settingsPreferences.navTypeFlow
 
     override suspend fun setThemeMode(mode: ThemeMode) {
         settingsPreferences.saveThemeMode(mode)
@@ -126,6 +134,18 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
         settingsPreferences.saveBlurEffectEnabled(enabled)
     }
 
+    override suspend fun setNavBarCornerRadius(radius: Int) {
+        settingsPreferences.saveNavBarCornerRadius(radius)
+    }
+
+    override suspend fun setNavMode(mode: NavMode) {
+        settingsPreferences.saveNavMode(mode)
+    }
+
+    override suspend fun setNavType(type: NavType) {
+        settingsPreferences.saveNavType(type)
+    }
+
     override suspend fun exportSettings(): String {
         val appPrefs = application.dataStore.data.first()
         val overlayPrefs = application.overlayDataStore.data.first()
@@ -150,6 +170,14 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
                 useShizuku = appPrefs[SettingsPreferences.USE_SHIZUKU_KEY] ?: false,
                 updatesPausedUntil = appPrefs[SettingsPreferences.UPDATES_PAUSED_UNTIL_KEY] ?: 0L,
                 blurEffectEnabled = appPrefs[SettingsPreferences.BLUR_EFFECT_ENABLED_KEY] ?: true,
+                navBarCornerRadius = appPrefs[SettingsPreferences.NAV_BAR_CORNER_RADIUS_KEY]
+                    ?: SettingsPreferences.DEFAULT_NAV_BAR_CORNER_RADIUS,
+                navMode = appPrefs[SettingsPreferences.NAV_MODE_KEY]?.let {
+                    runCatching { NavMode.valueOf(it) }.getOrNull()
+                } ?: NavMode.FLOATING,
+                navType = appPrefs[SettingsPreferences.NAV_TYPE_KEY]?.let {
+                    runCatching { NavType.valueOf(it) }.getOrNull()
+                } ?: NavType.LEGACY,
             ),
             monitoring = MonitoringSettings(
                 cpuRefreshDelay = appPrefs[SettingsPreferences.CPU_REFRESH_DELAY_KEY] ?: 3000L,
@@ -197,6 +225,9 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
             prefs[SettingsPreferences.USE_SHIZUKU_KEY] = backup.app.useShizuku
             prefs[SettingsPreferences.UPDATES_PAUSED_UNTIL_KEY] = backup.app.updatesPausedUntil
             prefs[SettingsPreferences.BLUR_EFFECT_ENABLED_KEY] = backup.app.blurEffectEnabled
+            prefs[SettingsPreferences.NAV_BAR_CORNER_RADIUS_KEY] = backup.app.navBarCornerRadius
+            prefs[SettingsPreferences.NAV_MODE_KEY] = backup.app.navMode.name
+            prefs[SettingsPreferences.NAV_TYPE_KEY] = backup.app.navType.name
 
             prefs[SettingsPreferences.CPU_REFRESH_DELAY_KEY] = backup.monitoring.cpuRefreshDelay
             prefs[SettingsPreferences.MEMORY_REFRESH_DELAY_KEY] = backup.monitoring.memoryRefreshDelay

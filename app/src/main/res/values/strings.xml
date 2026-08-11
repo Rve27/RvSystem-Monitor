@@ -235,6 +235,15 @@
     <string name="settings_vibration_intensity">Vibration Intensity</string>
     <string name="settings_blur_effect">Blur Effect</string>
     <string name="settings_blur_description">Applies a blur effect to the background during screen transitions</string>
+    <string name="settings_nav_bar_corner_radius">Corner Radius</string>
+    <string name="settings_nav_bar_corner_radius_description">Customize navigation bar rounding</string>
+    <string name="settings_nav_bar_corner_radius_value">%1$ddp</string>
+    <string name="settings_nav_bar_style">Bottom Navigation Style</string>
+    <string name="settings_nav_style_standard">Standard</string>
+    <string name="settings_nav_style_floating">Floating</string>
+    <string name="settings_nav_bar_type">Bottom Navigation Type</string>
+    <string name="settings_nav_type_legacy">Legacy</string>
+    <string name="settings_nav_type_modern">Modern</string>
     <string name="appearance_hero_subtitle">Make it pretty enough to flex in screenshots.</string>
 
     <!-- Monitoring Settings Screen -->
