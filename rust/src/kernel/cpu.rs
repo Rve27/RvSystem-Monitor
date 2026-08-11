@@ -251,6 +251,13 @@ impl CpuTicks {
     }
 }
 
+struct LoadState {
+    buf: Vec<Option<CpuTicks>>,
+    last: Vec<Option<CpuTicks>>,
+}
+
+static LOAD_STATE: std::sync::OnceLock<Mutex<LoadState>> = std::sync::OnceLock::new();
+
 pub fn calculate_cpu_load(proc_stat: &str) -> Vec<f64> {
     let cores = get_core_count() as usize;
 
@@ -258,80 +265,74 @@ pub fn calculate_cpu_load(proc_stat: &str) -> Vec<f64> {
         return Vec::new();
     }
 
-    thread_local! {
-        static TICKS_BUF: std::cell::RefCell<Vec<Option<CpuTicks>>> =
-            const { std::cell::RefCell::new(Vec::new()) };
-        static LAST_TICKS: std::cell::RefCell<Vec<Option<CpuTicks>>> =
-            const { std::cell::RefCell::new(Vec::new()) };
+    let state = LOAD_STATE.get_or_init(|| {
+        Mutex::new(LoadState {
+            buf: vec![None; cores + 1],
+            last: vec![None; cores + 1],
+        })
+    });
+    let mut state = state.lock().unwrap();
+    state.buf.clear();
+    state.buf.resize(cores + 1, None);
+    state.last.resize(cores + 1, None);
+
+    for line in proc_stat.lines() {
+        if !line.starts_with("cpu") {
+            continue;
+        }
+
+        let mut iter = line.split_whitespace();
+        let name = match iter.next() {
+            Some(n) => n,
+            None => continue,
+        };
+
+        let idx = if name == "cpu" {
+            0
+        } else if let Ok(core_id) = name[3..].parse::<usize>() {
+            core_id + 1
+        } else {
+            continue;
+        };
+
+        if idx > cores {
+            continue;
+        }
+
+        let ticks = CpuTicks {
+            user: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
+            nice: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
+            system: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
+            idle: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
+            iowait: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
+            irq: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
+            softirq: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
+            steal: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
+        };
+        state.buf[idx] = Some(ticks);
     }
 
-    TICKS_BUF.with(|buf| {
-        let mut buf = buf.borrow_mut();
-        buf.clear();
-        buf.resize(cores + 1, None);
-
-        LAST_TICKS.with(|last| {
-            let mut last = last.borrow_mut();
-            last.resize(cores + 1, None);
-
-            for line in proc_stat.lines() {
-                if !line.starts_with("cpu") {
-                    continue;
-                }
-
-                let mut iter = line.split_whitespace();
-                let name = match iter.next() {
-                    Some(n) => n,
-                    None => continue,
-                };
-
-                let idx = if name == "cpu" {
-                    0
-                } else if let Ok(core_id) = name[3..].parse::<usize>() {
-                    core_id + 1
-                } else {
-                    continue;
-                };
-
-                if idx > cores {
-                    continue;
-                }
-
-                let ticks = CpuTicks {
-                    user: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
-                    nice: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
-                    system: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
-                    idle: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
-                    iowait: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
-                    irq: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
-                    softirq: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
-                    steal: iter.next().and_then(|s| s.parse().ok()).unwrap_or(0),
-                };
-                buf[idx] = Some(ticks);
-            }
-
-            let mut results = Vec::with_capacity(cores + 1);
-            for i in 0..=cores {
-                if let Some(curr) = buf[i] {
-                    if let Some(prev) = last[i] {
-                        let total_diff = curr.total().saturating_sub(prev.total());
-                        let idle_diff = curr.idle_total().saturating_sub(prev.idle_total());
-                        if total_diff > 0 {
-                            let load = (total_diff - idle_diff) as f64 * 100.0 / total_diff as f64;
-                            results.push(load.clamp(0.0, 100.0));
-                        } else {
-                            results.push(0.0);
-                        }
-                    } else {
-                        results.push(-1.0);
-                    }
+    let mut results = Vec::with_capacity(cores + 1);
+    for i in 0..=cores {
+        if let Some(curr) = state.buf[i] {
+            if let Some(prev) = state.last[i] {
+                let total_diff = curr.total().saturating_sub(prev.total());
+                let idle_diff = curr.idle_total().saturating_sub(prev.idle_total());
+                if total_diff > 0 {
+                    let load = (total_diff - idle_diff) as f64 * 100.0 / total_diff as f64;
+                    results.push(load.clamp(0.0, 100.0));
                 } else {
                     results.push(0.0);
                 }
+            } else {
+                results.push(-1.0);
             }
+        } else {
+            results.push(0.0);
+        }
+    }
 
-            std::mem::swap(&mut *last, &mut *buf);
-            results
-        })
-    })
+    let LoadState { buf, last } = &mut *state;
+    std::mem::swap(buf, last);
+    results
 }
