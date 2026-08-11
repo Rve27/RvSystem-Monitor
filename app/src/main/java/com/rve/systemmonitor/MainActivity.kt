@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rve.systemmonitor.ui.components.UpdateDialog
@@ -58,13 +59,25 @@ class MainActivity : ComponentActivity() {
                 val hapticEnabled = successState.hapticFeedbackEnabled
                 val vibrationIntensity = successState.vibrationIntensity
                 val blurEffectEnabled = successState.blurEffectEnabled
+                val navBarCornerRadius = successState.navBarCornerRadius.dp
+                val navMode = successState.navMode
+                val navType = successState.navType
                 val darkTheme = when (themeMode) {
                     ThemeMode.LIGHT -> false
                     ThemeMode.DARK -> true
                     ThemeMode.SYSTEM -> isSystemInDarkTheme()
                 }
 
-                RvSystemMonitorTheme(darkTheme, amoledMode, hapticEnabled, vibrationIntensity, blurEffectEnabled) {
+                RvSystemMonitorTheme(
+                    darkTheme,
+                    amoledMode,
+                    hapticEnabled,
+                    vibrationIntensity,
+                    blurEffectEnabled,
+                    navBarCornerRadius,
+                    navMode,
+                    navType,
+                ) {
                     if (BuildConfig.ENABLE_UPDATER) {
                         val updateUiState by updateViewModel.uiState.collectAsStateWithLifecycle()
 

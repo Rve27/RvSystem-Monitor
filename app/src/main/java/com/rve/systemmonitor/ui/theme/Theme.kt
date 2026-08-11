@@ -18,12 +18,20 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.rve.systemmonitor.ui.components.haptic.LocalHapticEnabled
 import com.rve.systemmonitor.ui.components.haptic.LocalVibrationIntensity
+import com.rve.systemmonitor.utils.NavMode
+import com.rve.systemmonitor.utils.NavType
+import com.rve.systemmonitor.utils.SettingsPreferences
 import com.rve.systemmonitor.utils.VibrationIntensity
 
 val LocalBlurEffectEnabled = compositionLocalOf { true }
+val LocalNavBarCornerRadius = compositionLocalOf { SettingsPreferences.DEFAULT_NAV_BAR_CORNER_RADIUS.dp }
+val LocalNavMode = compositionLocalOf { NavMode.FLOATING }
+val LocalNavType = compositionLocalOf { NavType.LEGACY }
 
 @Composable
 fun RvSystemMonitorTheme(
@@ -32,6 +40,9 @@ fun RvSystemMonitorTheme(
     hapticEnabled: Boolean = true,
     vibrationIntensity: VibrationIntensity = VibrationIntensity.LIGHT,
     blurEffectEnabled: Boolean = true,
+    navBarCornerRadius: Dp = SettingsPreferences.DEFAULT_NAV_BAR_CORNER_RADIUS.dp,
+    navMode: NavMode = NavMode.FLOATING,
+    navType: NavType = NavType.LEGACY,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -65,6 +76,9 @@ fun RvSystemMonitorTheme(
                 LocalHapticEnabled provides hapticEnabled,
                 LocalVibrationIntensity provides vibrationIntensity,
                 LocalBlurEffectEnabled provides blurEffectEnabled,
+                LocalNavBarCornerRadius provides navBarCornerRadius,
+                LocalNavMode provides navMode,
+                LocalNavType provides navType,
             ) {
                 content()
             }

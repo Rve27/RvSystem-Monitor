@@ -2,8 +2,8 @@ package com.rve.systemmonitor.ui.navigation
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -46,6 +46,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.kyant.backdrop.Backdrop
@@ -55,6 +56,12 @@ import com.kyant.backdrop.effects.lens
 import com.kyant.backdrop.effects.vibrancy
 import com.rve.systemmonitor.R
 import com.rve.systemmonitor.ui.components.haptic.hapticClickable
+import com.rve.systemmonitor.ui.theme.LocalBlurEffectEnabled
+import com.rve.systemmonitor.ui.theme.LocalNavBarCornerRadius
+import com.rve.systemmonitor.ui.theme.LocalNavMode
+import com.rve.systemmonitor.ui.theme.LocalNavType
+import com.rve.systemmonitor.utils.NavMode
+import com.rve.systemmonitor.utils.NavType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -91,22 +98,56 @@ object BottomNavBar {
             )
         }
 
+        val cornerRadius = LocalNavBarCornerRadius.current
+        val navMode = LocalNavMode.current
+        val navType = LocalNavType.current
+
+        val barShape = when (navMode) {
+            NavMode.FLOATING -> RoundedCornerShape(cornerRadius)
+            // Attached to the bottom edge, so the bottom corners would be clipped off-screen anyway.
+            NavMode.STANDARD -> RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius)
+        }
+        val indicatorShape = when (navType) {
+            // Inset by the bar's 4dp padding so the indicator corners stay concentric with the bar's.
+            NavType.LEGACY -> RoundedCornerShape((cornerRadius - 4.dp).coerceAtLeast(0.dp))
+            NavType.MODERN -> RoundedCornerShape(12.dp)
+        }
+
+        // Sampling the backdrop without any effect would show the content behind the bar
+        // unblurred through a translucent fill, so opt out of drawBackdrop entirely and
+        // fall back to an opaque surface when the user disables the blur effect.
+        val blurEnabled = LocalBlurEffectEnabled.current
+        val barBackground = if (blurEnabled) {
+            Modifier.drawBackdrop(
+                backdrop = backdrop,
+                shape = { barShape },
+                effects = {
+                    vibrancy()
+                    blur(4f.dp.toPx())
+                    lens(16f.dp.toPx(), 32f.dp.toPx(), chromaticAberration = true)
+                },
+                onDrawSurface = { drawRect(backgroundColor) },
+            )
+        } else {
+            Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
+        }
+
         Box(
             modifier = modifier
-                .clip(CircleShape)
-                .drawBackdrop(
-                    backdrop = backdrop,
-                    shape = { CircleShape },
-                    effects = {
-                        vibrancy()
-                        blur(4f.dp.toPx())
-                        lens(16f.dp.toPx(), 32f.dp.toPx(), chromaticAberration = true)
-                    },
-                    onDrawSurface = { drawRect(backgroundColor) },
-                ),
+                .clip(barShape)
+                .then(barBackground),
         ) {
             Box(
-                modifier = Modifier.padding(4.dp),
+                // STANDARD draws behind the system nav bar, so inset the items to keep them tappable.
+                modifier = Modifier
+                    .then(
+                        if (navMode == NavMode.STANDARD) {
+                            Modifier.windowInsetsPadding(WindowInsets.navigationBars)
+                        } else {
+                            Modifier
+                        },
+                    )
+                    .padding(4.dp),
             ) {
                 val isDark = MaterialTheme.colorScheme.surface.luminance() < 0.5f
                 val baseSurface = MaterialTheme.colorScheme.surface
@@ -120,6 +161,23 @@ object BottomNavBar {
                     val spacing = 4.dp
                     val itemWidth = (maxWidth - spacing * (items.size - 1)) / items.size
 
+                    val indicatorBackground = if (blurEnabled) {
+                        Modifier.drawBackdrop(
+                            backdrop = backdrop,
+                            shape = { indicatorShape },
+                            effects = {
+                                blur(4f.dp.toPx())
+                                lens(10f.dp.toPx(), 14f.dp.toPx(), chromaticAberration = true)
+                            },
+                            onDrawSurface = {
+                                drawRect(indicatorBackgroundColor, blendMode = BlendMode.Hue)
+                                drawRect(indicatorBackgroundColor.copy(alpha = 0.75f))
+                            },
+                        )
+                    } else {
+                        Modifier.background(indicatorBackgroundColor)
+                    }
+
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
@@ -130,19 +188,8 @@ object BottomNavBar {
                                 val offset = pagerState.currentPage + pagerState.currentPageOffsetFraction
                                 translationX = offset * (itemWidthPx + spacingPx)
                             }
-                            .clip(CircleShape)
-                            .drawBackdrop(
-                                backdrop = backdrop,
-                                shape = { CircleShape },
-                                effects = {
-                                    blur(4f.dp.toPx())
-                                    lens(10f.dp.toPx(), 14f.dp.toPx(), chromaticAberration = true)
-                                },
-                                onDrawSurface = {
-                                    drawRect(indicatorBackgroundColor, blendMode = BlendMode.Hue)
-                                    drawRect(indicatorBackgroundColor.copy(alpha = 0.75f))
-                                },
-                            ),
+                            .clip(indicatorShape)
+                            .then(indicatorBackground),
                     )
                 }
 
@@ -180,6 +227,7 @@ object BottomNavBar {
                         BottomNavItem(
                             item = item,
                             isSelected = isSelected,
+                            navType = navType,
                             onClick = {
                                 coroutineScope.launch {
                                     pagerState.animateScrollToPage(index)
@@ -194,7 +242,13 @@ object BottomNavBar {
     }
 
     @Composable
-    private fun BottomNavItem(item: NavItem, isSelected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    private fun BottomNavItem(
+        item: NavItem,
+        isSelected: Boolean,
+        navType: NavType,
+        onClick: () -> Unit,
+        modifier: Modifier = Modifier,
+    ) {
         val contentColor by animateColorAsState(
             targetValue = if (isSelected) {
                 MaterialTheme.colorScheme.primary
@@ -204,8 +258,15 @@ object BottomNavBar {
             label = "ContentColorAnimation",
         )
 
-        val animationScope = rememberCoroutineScope()
-        val progressAnimation = remember { Animatable(0f) }
+        // MODERN grows the selected icon; LEGACY keeps every icon at its natural size.
+        val iconScale by animateFloatAsState(
+            targetValue = if (navType == NavType.MODERN && isSelected) 1.18f else 1f,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMedium,
+            ),
+            label = "IconScaleAnimation",
+        )
 
         Box(
             modifier = modifier.hapticClickable(onClick = onClick, ripple = false),
@@ -224,6 +285,10 @@ object BottomNavBar {
                         painter = painterResource(if (it) item.iconSelected else item.iconUnselected),
                         contentDescription = item.label,
                         tint = contentColor,
+                        modifier = Modifier.graphicsLayer {
+                            scaleX = iconScale
+                            scaleY = iconScale
+                        },
                     )
                 }
 
@@ -234,6 +299,7 @@ object BottomNavBar {
                     softWrap = false,
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.labelMedium,
+                    fontWeight = if (navType == NavType.MODERN && isSelected) FontWeight.Bold else null,
                 )
             }
         }
