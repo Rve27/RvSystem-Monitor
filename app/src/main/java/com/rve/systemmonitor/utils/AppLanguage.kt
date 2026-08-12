@@ -9,4 +9,5 @@ enum class AppLanguage(val languageTag: String?) {
     RUSSIAN("ru"),
     UKRAINIAN("uk"),
     CHINESE_SIMPLIFIED("zh-CN"),
+    INDONESIAN("in"),
 }

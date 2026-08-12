@@ -93,7 +93,7 @@ fun AutoToggleSettingsScreen(viewModel: AutoToggleSettingsViewModel = hiltViewMo
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             ExitUntilCollapsedMediumTopAppBar(
-                title = "Auto Toggle Apps",
+                title = stringResource(R.string.title_auto_toggle_apps),
                 onNavigateBack = onNavigateBack,
                 scrollBehavior = scrollBehavior,
             )
@@ -146,14 +146,14 @@ fun AutoToggleSettingsScreen(viewModel: AutoToggleSettingsViewModel = hiltViewMo
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = "Enable Auto-Toggle",
+                                text = stringResource(R.string.settings_enable_auto_toggle),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             if (!hasUsageStatsPermission) {
                                 Text(
-                                    text = "Requires Usage Access permission",
+                                    text = stringResource(R.string.permission_usage_access_required),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.error,
                                     modifier = Modifier.padding(top = 4.dp),

@@ -388,13 +388,13 @@ fun AppearanceSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onN
 
                                             Column {
                                                 Text(
-                                                    text = "Material You",
+                                                    text = stringResource(R.string.settings_material_you),
                                                     style = MaterialTheme.typography.titleMedium,
                                                     fontWeight = FontWeight.SemiBold,
                                                     color = MaterialTheme.colorScheme.onSurface,
                                                 )
                                                 Text(
-                                                    text = "Use wallpaper colors (Android 12+)",
+                                                    text = stringResource(R.string.settings_material_you_description),
                                                     style = MaterialTheme.typography.bodyMedium,
                                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 )
@@ -446,13 +446,13 @@ fun AppearanceSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onN
                                         ) {
                                             Column {
                                                 Text(
-                                                    text = "Theme color",
+                                                    text = stringResource(R.string.settings_theme_color),
                                                     style = MaterialTheme.typography.titleMedium,
                                                     fontWeight = FontWeight.SemiBold,
                                                     color = MaterialTheme.colorScheme.onSurface,
                                                 )
                                                 Text(
-                                                    text = "Tap a swatch to apply (turns off Material You)",
+                                                    text = stringResource(R.string.settings_theme_color_description),
                                                     style = MaterialTheme.typography.bodyMedium,
                                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 )

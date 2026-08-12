@@ -392,14 +392,14 @@ fun OverlaySettingsScreen(
 
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = "Auto-Toggle for Apps",
+                                text = stringResource(R.string.settings_auto_toggle_title),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = "Show overlay automatically when selected apps are running",
+                                text = stringResource(R.string.settings_auto_toggle_description),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )

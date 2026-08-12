@@ -649,6 +649,7 @@ private fun LanguageSetting(language: AppLanguage, onLanguageChange: (AppLanguag
         AppLanguage.RUSSIAN to R.string.language_russian,
         AppLanguage.UKRAINIAN to R.string.language_ukrainian,
         AppLanguage.CHINESE_SIMPLIFIED to R.string.language_chinese_simplified,
+        AppLanguage.INDONESIAN to R.string.language_indonesian,
     )
 
     Column(
@@ -759,4 +760,5 @@ private fun languageLabelRes(language: AppLanguage): Int = when (language) {
     AppLanguage.RUSSIAN -> R.string.language_russian
     AppLanguage.UKRAINIAN -> R.string.language_ukrainian
     AppLanguage.CHINESE_SIMPLIFIED -> R.string.language_chinese_simplified
+    AppLanguage.INDONESIAN -> R.string.language_indonesian
 }

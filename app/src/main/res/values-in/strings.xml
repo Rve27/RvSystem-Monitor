@@ -1,0 +1,417 @@
+<resources>
+    <!-- App -->
+    <string name="app_title">RvSystem Monitor</string>
+
+    <!-- Common / Shared -->
+    <string name="value_unknown">Tidak Diketahui</string>
+    <string name="label_by">Oleh %1$s</string>
+    <string name="cd_help">Bantuan</string>
+    <string name="cd_settings">Pengaturan</string>
+    <string name="cd_back">Kembali</string>
+    <string name="cd_reset_to_default">Atur ulang ke default</string>
+    <string name="cd_avatar">Avatar</string>
+    <string name="cd_update_icon">Ikon Pembaruan</string>
+    <string name="cd_setup_icon">Ikon Pengaturan</string>
+    <string name="cd_open_setup_flow">Buka alur penyiapan</string>
+    <string name="cd_theme_icon">Ikon Tema</string>
+    <string name="cd_amoled_icon">Ikon AMOLED</string>
+    <string name="cd_haptic_icon">Ikon Haptic</string>
+    <string name="cd_metric_icon">Ikon %1$s</string>
+    <string name="button_close">Tutup</string>
+    <string name="button_cancel">Batal</string>
+    <string name="button_pause">Jeda</string>
+    <string name="button_later">Nanti</string>
+    <string name="button_download">Unduh</string>
+    <string name="button_install">Instal</string>
+    <string name="button_keep">Simpan</string>
+
+    <!-- Theme -->
+    <string name="theme_light">Terang</string>
+    <string name="theme_dark">Gelap</string>
+    <string name="theme_system">Sistem</string>
+
+    <!-- Vibration Intensity -->
+    <string name="vibration_light">Ringan</string>
+    <string name="vibration_medium">Sedang</string>
+    <string name="vibration_strong">Kuat</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_label_home">Beranda</string>
+    <string name="nav_label_cpu">CPU</string>
+    <string name="nav_label_memory">Memori</string>
+    <string name="nav_label_battery">Baterai</string>
+
+    <!-- Home Screen -->
+    <string name="home_title_device">Perangkat</string>
+    <string name="home_title_os">Sistem Operasi</string>
+    <string name="home_title_display">Layar</string>
+    <string name="home_title_processor">Prosesor</string>
+    <string name="home_title_graphics">Grafis</string>
+    <string name="home_os_name_version">%1$s %2$s</string>
+    <string name="home_badge_api">API %1$s</string>
+    <string name="home_badge_patch">Patch: %1$s</string>
+    <string name="home_screen_size">Ukuran Layar %1$s\"</string>
+    <string name="home_badge_refresh_rate">%1$sHz</string>
+    <string name="home_badge_density">%1$s dpi</string>
+    <string name="home_badge_hdr">HDR</string>
+    <string name="home_cores_count">%1$s Core</string>
+    <string name="home_badge_opengl_es">OpenGL ES %1$s</string>
+    <string name="home_badge_vulkan">Vulkan %1$s</string>
+
+    <!-- Home Screen Help -->
+    <string name="home_help_device_os_title">Perangkat &amp; Sistem Operasi</string>
+    <string name="home_help_device_os_desc">Informasi seperti model, produsen, dan versi Android diekstrak dari properti Build sistem dan tingkat patch keamanan.</string>
+    <string name="home_help_display_title">Layar</string>
+    <string name="home_help_display_desc">Resolusi layar, refresh rate, dan kepadatan diperoleh melalui Android WindowManager dan API Display.</string>
+    <string name="home_help_processor_title">Prosesor (CPU)</string>
+    <string name="home_help_processor_desc">Informasi perangkat keras terperinci, termasuk jumlah core dan arsitektur, diurai dari file kernel Linux (/proc/cpuinfo) menggunakan backend Rust berkinerja tinggi.</string>
+    <string name="home_help_graphics_title">Grafis (GPU)</string>
+    <string name="home_help_graphics_desc">Renderer grafis, vendor, dan versi OpenGL ES diambil langsung dari GPU perangkat melalui konteks EGL.</string>
+
+    <!-- CPU Screen -->
+    <string name="cpu_cores_section_title">Core</string>
+    <string name="cpu_cores_count">%1$d Core</string>
+    <string name="cpu_peak_frequency">%1$s</string>
+    <string name="cpu_label_architecture">Arsitektur</string>
+    <string name="cpu_label_abi">ABI</string>
+    <string name="cpu_label_board">Board</string>
+    <string name="cpu_label_hardware">Perangkat Keras</string>
+    <string name="cpu_core_label">Core %1$d</string>
+    <string name="cpu_label_minimum">Minimum</string>
+    <string name="cpu_label_maximum">Maksimum</string>
+
+    <!-- GPU Screen -->
+    <string name="title_graphics_info">Info Grafis</string>
+    <string name="gpu_opengl_es">OpenGL ES</string>
+    <string name="gpu_label_version">Versi</string>
+    <string name="gpu_label_shader_version">Versi Shader</string>
+    <string name="gpu_label_max_texture_size">Ukuran Tekstur Maks</string>
+    <string name="gpu_label_extensions">Ekstensi</string>
+    <string name="gpu_vulkan">Vulkan</string>
+    <string name="gpu_label_api_version">Versi API</string>
+    <string name="gpu_label_driver_version">Versi Driver</string>
+    <string name="gpu_label_device_type">Tipe Perangkat</string>
+    <string name="gpu_max_texture_size_format">%1$d px</string>
+
+    <!-- Memory Screen -->
+    <string name="memory_label_ram">RAM</string>
+    <string name="memory_label_zram">ZRAM</string>
+    <string name="memory_detailed_breakdown">Rincian Terperinci</string>
+    <string name="memory_internal_storage">Penyimpanan Internal</string>
+    <string name="memory_label_cached">Cached</string>
+    <string name="memory_cached_description">Memori yang digunakan untuk cache sistem file untuk mempercepat akses file. Memori ini dapat diambil kembali oleh sistem jika diperlukan.</string>
+    <string name="memory_label_buffers">Buffer</string>
+    <string name="memory_buffers_description">Memori yang digunakan untuk blok disk mentah dan metadata. Biasanya sangat kecil di perangkat Android.</string>
+    <string name="memory_label_active">Aktif</string>
+    <string name="memory_active_description">Memori yang sedang digunakan atau baru saja digunakan. Memori ini kecil kemungkinan akan diambil kembali dalam waktu dekat.</string>
+    <string name="memory_label_inactive">Tidak Aktif</string>
+    <string name="memory_inactive_description">Memori yang sudah lama tidak digunakan. Ini adalah kandidat utama untuk dipindahkan ke Swap/ZRAM atau diambil kembali.</string>
+    <string name="memory_label_slab">Slab</string>
+    <string name="memory_slab_description">Memori yang digunakan oleh struktur data dan objek internal kernel.</string>
+    <string name="memory_label_mount_path">Jalur Mount</string>
+    <string name="memory_label_filesystem">Sistem File</string>
+
+    <!-- Battery Screen -->
+    <string name="battery_charging_speed">Kecepatan Pengisian</string>
+    <string name="battery_discharging_speed">Kecepatan Pengosongan</string>
+    <string name="battery_current_speed">Kecepatan Arus</string>
+    <string name="battery_hyper_charging">Hyper Charging</string>
+    <string name="battery_fast_charging">Fast Charging</string>
+    <string name="battery_charging">Mengisi Daya</string>
+    <string name="battery_details_title">Detail Baterai</string>
+    <string name="battery_label_voltage">Tegangan</string>
+    <string name="battery_label_temperature">Suhu</string>
+    <string name="battery_label_power_source">Sumber Daya</string>
+    <string name="battery_label_cycle_count">Jumlah Siklus</string>
+    <string name="battery_label_design_capacity">Kapasitas Desain</string>
+    <string name="battery_label_uptime">Waktu Aktif (Uptime)</string>
+    <string name="battery_label_deep_sleep">Deep Sleep</string>
+    <string name="battery_graph_max">MAKS: %1$s mA</string>
+    <string name="battery_graph_min">MIN: %1$s mA</string>
+    <string name="battery_status_charging_label">MENGISI DAYA</string>
+    <string name="battery_status_discharging_label">MENGOSONGKAN DAYA</string>
+
+    <!-- Battery Screen Help -->
+    <string name="battery_help_voltage_temp_title">Tegangan &amp; Suhu</string>
+    <string name="battery_help_voltage_temp_desc">Diperoleh dari siaran sistem waktu nyata melalui API BatteryManager Android.</string>
+    <string name="battery_help_power_source_title">Sumber Daya &amp; Status</string>
+    <string name="battery_help_power_source_desc">Dideteksi dari status pengisian daya saat ini (AC, USB, atau Nirkabel) melalui intent sistem.</string>
+    <string name="battery_help_charging_speed_title">Kecepatan Pengisian</string>
+    <string name="battery_help_charging_speed_desc">Diperkirakan berdasarkan daya waktu nyata: Pengisian Cepat (15W+) dan Pengisian Hyper (25W+).</string>
+    <string name="battery_help_wattage_title">Daya (Watt)</string>
+    <string name="battery_help_wattage_desc">Dihitung secara waktu nyata dengan mengalikan Tegangan (V) dan Arus (A).</string>
+    <string name="battery_help_current_title">Arus (mA)</string>
+    <string name="battery_help_current_desc">Pembacaan perangkat keras langsung dari properti pengitung daya baterai.</string>
+    <string name="battery_help_design_capacity_title">Kapasitas Desain</string>
+    <string name="battery_help_design_capacity_desc">Diekstrak dari PowerProfile Android. Menunjukkan kapasitas baterai terukur dari pabrik.</string>
+    <string name="battery_help_cycle_count_title">Jumlah Siklus</string>
+    <string name="battery_help_cycle_count_desc">Properti bawaan Android 14+ yang menunjukkan total siklus pengisian daya yang diselesaikan.</string>
+    <string name="battery_help_uptime_title">Uptime &amp; Deep Sleep</string>
+    <string name="battery_help_uptime_desc">Uptime adalah total waktu sejak booting. Deep Sleep adalah waktu CPU berada dalam kondisi daya rendah.</string>
+
+    <!-- Settings Screen -->
+    <string name="title_settings">Pengaturan</string>
+    <string name="settings_item_app">Aplikasi</string>
+    <string name="settings_item_app_desc">Pengaturan aplikasi umum</string>
+    <string name="settings_item_appearance">Tampilan</string>
+    <string name="settings_item_appearance_desc">Tema, haptic, dan gaya visual</string>
+    <string name="settings_item_overlay">Overlay Melayang</string>
+    <string name="settings_item_overlay_desc">Monitor sistem global dalam overlay melayang</string>
+    <string name="settings_item_monitoring">Pemantauan</string>
+    <string name="settings_item_monitoring_desc">Interval pembaruan dan riwayat grafik</string>
+    <string name="settings_item_rust_library">Pustaka Rust</string>
+    <string name="settings_item_rust_library_desc">Spesifikasi inti native dan referensi API</string>
+    <string name="settings_item_about">Tentang</string>
+    <string name="settings_item_about_desc">Informasi pengembang dan proyek</string>
+
+    <!-- About Screen -->
+    <string name="title_about">Tentang</string>
+    <string name="label_project_owner">Pemilik Proyek</string>
+    <string name="about_owner_name">Radika</string>
+    <string name="about_owner_role">Pengembang Utama &amp; Arsitek</string>
+    <string name="label_support">Dukungan</string>
+    <string name="about_sponsor_title">Donasi &amp; Sponsor</string>
+    <string name="about_sponsor_desc">Dukung pengembangan RvSystem Monitor</string>
+    <string name="label_contributors">Kontributor</string>
+    <string name="error_no_internet">Tidak ada koneksi internet</string>
+    <string name="action_try_again">Coba Lagi</string>
+    <string name="contributors_empty">Belum ada kontributor lain yang ditemukan.</string>
+    <string name="badge_free">Gratis</string>
+    <string name="badge_open_source">Open Source</string>
+    <string name="badge_rust">Rust</string>
+    <string name="badge_kotlin">Kotlin</string>
+    <string name="badge_material3_expressive">Material 3 Expressive</string>
+    <string name="about_app_description">Pemantau sistem berkinerja tinggi untuk Android</string>
+    <string name="error_no_browser">Peramban web tidak ditemukan</string>
+
+    <!-- App Settings Screen -->
+    <string name="title_app">Aplikasi</string>
+    <string name="label_language">Bahasa</string>
+    <string name="settings_language">Bahasa</string>
+    <string name="settings_language_description">Pilih bahasa yang digunakan oleh aplikasi</string>
+    <string name="language_system">Default sistem</string>
+    <string name="language_english">English</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_ukrainian">Ukraina</string>
+    <string name="language_chinese_simplified">Tionghoa Sederhana</string>
+    <string name="language_indonesian">Bahasa Indonesia</string>
+    <string name="label_updates">Pembaruan</string>
+    <string name="settings_check_for_updates">Periksa Pembaruan</string>
+    <string name="settings_check_updates_description">Periksa pembaruan secara otomatis saat memulai</string>
+    <string name="label_backup">Cadangkan &amp; Pulihkan</string>
+    <string name="settings_export_title">Ekspor Pengaturan</string>
+    <string name="settings_export_description">Simpan semua pengaturan ke file JSON</string>
+    <string name="settings_import_title">Impor Pengaturan</string>
+    <string name="settings_import_description">Pulihkan semua pengaturan dari file JSON</string>
+    <string name="backup_export_success">Pengaturan berhasil diekspor</string>
+    <string name="backup_export_failed">Gagal mengekspor pengaturan</string>
+    <string name="backup_import_success">Pengaturan berhasil diimpor</string>
+    <string name="backup_import_failed">Gagal mengimpor pengaturan</string>
+    <string name="label_testing">Pengujian</string>
+    <string name="settings_test_setup_flow">Uji Alur Penyiapan</string>
+    <string name="settings_test_setup_description">Luncurkan penyiapan tanpa mengatur ulang pengaturan aplikasi</string>
+
+    <!-- Shizuku -->
+    <string name="label_shizuku">Akses Khusus</string>
+    <string name="settings_use_shizuku">Shizuku</string>
+    <string name="settings_use_shizuku_description">Buka telemetri sistem yang lebih dalam melalui Shizuku</string>
+    <string name="shizuku_status_running_authorized">Berjalan &amp; Diizinkan</string>
+    <string name="shizuku_status_permission_required">Izin diperlukan</string>
+    <string name="shizuku_status_not_running">Tidak berjalan</string>
+    <string name="button_grant_permission">Berikan izin</string>
+    <string name="cd_shizuku_icon">Ikon Shizuku</string>
+
+    <!-- Appearance Settings Screen -->
+    <string name="title_appearance">Tampilan</string>
+    <string name="label_visual_style">Gaya Visual</string>
+    <string name="settings_app_theme">Tema Aplikasi</string>
+    <string name="settings_app_theme_description">Pilih gaya visual yang Anda sukai</string>
+    <string name="settings_amoled_mode">Mode AMOLED</string>
+    <string name="settings_amoled_description_enabled">Latar belakang hitam pekat untuk layar OLED</string>
+    <string name="settings_amoled_description_disabled">Mode gelap diperlukan untuk menggunakan mode AMOLED</string>
+    <string name="settings_haptic_feedback">Umpan Balik Haptic</string>
+    <string name="settings_haptic_description">Getaran halus saat interaksi</string>
+    <string name="settings_vibration_intensity">Intensitas Getaran</string>
+    <string name="settings_blur_effect">Efek Blur</string>
+    <string name="settings_blur_description">Terapkan efek blur pada latar belakang selama transisi layar</string>
+    <string name="settings_nav_bar_corner_radius">Radius Sudut</string>
+    <string name="settings_nav_bar_corner_radius_description">Sesuaikan kebulatan bilah navigasi</string>
+    <string name="settings_nav_bar_corner_radius_value">%1$ddp</string>
+    <string name="settings_nav_bar_style">Gaya Navigasi Bawah</string>
+    <string name="settings_nav_style_standard">Standar</string>
+    <string name="settings_nav_style_floating">Mengambang</string>
+    <string name="settings_nav_bar_type">Tipe Navigasi Bawah</string>
+    <string name="settings_nav_type_legacy">Klasik</string>
+    <string name="settings_nav_type_modern">Modern</string>
+    <string name="appearance_hero_subtitle">Buat tampilan cukup indah untuk dipamerkan dalam tangkapan layar.</string>
+
+    <!-- Monitoring Settings Screen -->
+    <string name="title_monitoring">Pemantauan</string>
+    <string name="monitoring_refresh_intervals">Interval Pemantauan</string>
+    <string name="monitoring_cpu_interval">Interval Pemantauan CPU</string>
+    <string name="monitoring_cpu_interval_desc">Sesuaikan seberapa sering statistik CPU diperbarui</string>
+    <string name="monitoring_gpu_interval">Interval Pemantauan GPU</string>
+    <string name="monitoring_gpu_interval_desc">Sesuaikan seberapa sering statistik GPU diperbarui</string>
+    <string name="monitoring_memory_interval">Interval Pemantauan Memori</string>
+    <string name="monitoring_memory_interval_desc">Sesuaikan seberapa sering statistik Memori diperbarui</string>
+    <string name="monitoring_battery_interval">Interval Pemantauan Baterai</string>
+    <string name="monitoring_battery_interval_desc">Sesuaikan seberapa sering waktu aktif dan arus (mA) diperbarui</string>
+    <string name="monitoring_battery_graph_history">Riwayat Grafik Baterai</string>
+    <string name="monitoring_battery_graph_desc">Atur berapa banyak data yang akan ditampilkan pada grafik</string>
+    <string name="monitoring_history_duration">Durasi Riwayat</string>
+
+    <!-- Overlay Settings Screen -->
+    <string name="title_floating_overlay_settings">Pengaturan Overlay Melayang</string>
+    <string name="overlay_enable_title">Aktifkan Overlay Melayang</string>
+    <string name="overlay_label_metrics">Metrik</string>
+    <string name="overlay_fps">FPS</string>
+    <string name="overlay_fps_desc">Menampilkan frame rate waktu nyata</string>
+    <string name="overlay_ram_gb">Penggunaan RAM (GB)</string>
+    <string name="overlay_ram_gb_desc">Menampilkan jumlah RAM yang digunakan dan total RAM dalam satuan GB</string>
+    <string name="overlay_ram_percentage">Persentase RAM</string>
+    <string name="overlay_ram_percentage_desc">Menampilkan persentase penggunaan RAM waktu nyata</string>
+    <string name="overlay_battery_temp">Suhu Baterai</string>
+    <string name="overlay_battery_temp_desc">Menampilkan suhu baterai waktu nyata</string>
+    <string name="overlay_cpu_temp">Suhu CPU</string>
+    <string name="overlay_cpu_temp_desc">Menampilkan suhu CPU waktu nyata</string>
+    <string name="overlay_label_layout">Tata Letak</string>
+    <string name="overlay_layout_horizontal">Horizontal</string>
+    <string name="overlay_layout_vertical">Vertikal</string>
+    <string name="overlay_label_configuration">Konfigurasi</string>
+    <string name="overlay_update_interval">Interval Pembaruan</string>
+    <string name="overlay_update_interval_desc">Sesuaikan seberapa sering metrik diperbarui pada overlay</string>
+    <string name="overlay_label_appearance">Tampilan</string>
+    <string name="overlay_text_color">Warna Teks</string>
+    <string name="overlay_text_size">Ukuran Teks</string>
+    <string name="overlay_bg_opacity">Opasitas Latar Belakang</string>
+    <string name="overlay_padding">Padding</string>
+    <string name="overlay_corner_radius">Radius Sudut</string>
+    <string name="overlay_permission_required">Memerlukan izin \'Tampilkan di atas aplikasi lain\'</string>
+
+    <!-- Rust Library Screen -->
+    <string name="title_rust_library">Pustaka Rust</string>
+    <string name="rust_library_name">librvsystem_monitor.so</string>
+    <string name="rust_library_version">Versi: v%1$s</string>
+    <string name="rust_public_methods">Metode publik</string>
+    <string name="rust_public_method_detail">Detail metode publik</string>
+    <string name="rust_method_desc_get_version">Mengembalikan versi semantik pustaka native yang didefinisikan dalam Cargo.toml.</string>
+    <string name="rust_method_desc_get_vulkan">Queries driver Vulkan sistem dan mengembalikan versi API dan Driver yang diformat.</string>
+    <string name="rust_method_desc_get_gpu_temp">Membaca sensor suhu GPU melalui node sysfs kernel.</string>
+    <string name="rust_method_desc_get_memory">Mengambil kumpulan metrik RAM dan ZRAM secara komprehensif dalam satu panggilan JNI tunggal.</string>
+    <string name="rust_method_desc_get_ram">Mengembalikan statistik RAM terperinci (Total, Tersedia, Cached, dll.).</string>
+    <string name="rust_method_desc_get_zram">Mengembalikan metrik khusus ZRAM termasuk rasio kompresi dan penggunaan swap.</string>
+    <string name="rust_method_desc_get_all_freq">Mengambil kecepatan clock saat ini untuk semua core CPU yang aktif.</string>
+    <string name="rust_method_desc_get_core_count">Mengembalikan jumlah total core CPU yang dideteksi oleh kernel.</string>
+    <string name="rust_method_desc_get_core_freq">Mengembalikan jenis frekuensi tertentu (cur, min, max) untuk ID core tertentu.</string>
+    <string name="rust_method_desc_get_governor">Mengembalikan scaling governor CPU yang aktif untuk core yang ditentukan.</string>
+    <string name="rust_method_desc_get_cpu_temp">Mengambil suhu CPU paket/komposit.</string>
+    <string name="rust_method_desc_get_all_temps">Mengembalikan array suhu untuk setiap core CPU secara individual.</string>
+    <string name="rust_method_desc_get_dynamic">Pengambilan suhu dan frekuensi secara bersamaan untuk sinkronisasi UI.</string>
+    <string name="rust_method_desc_calculate_load">Mengurai string /proc/stat dan menghitung persentase beban untuk total CPU dan setiap core dengan membandingkannya dengan status sebelumnya.</string>
+
+    <!-- Setup Screen -->
+    <string name="setup_continue">Lanjutkan</string>
+    <string name="setup_grant_permission">Berikan Izin</string>
+    <string name="setup_finish">Selesaikan Penyiapan</string>
+    <string name="setup_permission_granted_footer">Izin diberikan. Lanjutkan ke langkah berikutnya.</string>
+    <string name="setup_permission_required_footer">Diperlukan untuk menampilkan overlay monitor</string>
+    <string name="setup_updates_footer">Selalu dapatkan versi terbaru</string>
+    <string name="setup_theme_footer">Anda dapat mengubah ini nanti di Pengaturan</string>
+    <string name="setup_overlay_title">Tampilkan di Atas</string>
+    <string name="setup_overlay_description">Untuk menampilkan FPS, penggunaan RAM, dan suhu saat Anda menggunakan aplikasi lain, RvSystem Monitor memerlukan izin untuk menampilkan di atasnya.</string>
+    <string name="setup_updates_title">Periksa Pembaruan</string>
+    <string name="setup_updates_description">Periksa pembaruan aplikasi secara otomatis saat memulai untuk mendapatkan fitur terbaru.</string>
+    <string name="setup_auto_update">Pembaruan Otomatis</string>
+    <string name="setup_check_on_startup">Periksa saat memulai</string>
+    <string name="setup_theme_title">Pilih Tema</string>
+    <string name="setup_theme_description">Pilih gaya visual yang Anda sukai untuk aplikasi.</string>
+    <string name="setup_backup_title">Pulihkan Pengaturan</string>
+    <string name="setup_backup_description">Impor file cadangan yang diekspor sebelumnya untuk memulihkan konfigurasi Anda.</string>
+    <string name="setup_skip">Lewati</string>
+    <string name="setup_restore">Pulihkan Cadangan</string>
+    <string name="setup_backup_footer">Anda juga dapat mengimpor cadangan nanti di Pengaturan Aplikasi</string>
+
+    <!-- Update Dialog -->
+    <string name="update_available_title">Pembaruan tersedia</string>
+    <string name="downloading_update_title">Mengunduh pembaruan</string>
+    <string name="downloading_update_subtitle">Biarkan aplikasi tetap terbuka hingga APK siap.</string>
+    <string name="download_progress_label">Kemajuan unduhan</string>
+    <string name="update_ready_title">Pembaruan siap</string>
+    <string name="update_ready_subtitle">APK telah diunduh dan dapat diinstal sekarang.</string>
+    <string name="install_description">Android akan membuka penginstal paket untuk file ini.</string>
+    <string name="update_failed_title">Pembaruan gagal</string>
+    <string name="update_failed_subtitle">Pembaruan tidak dapat diselesaikan.</string>
+    <string name="error_details_title">Detail kesalahan</string>
+    <string name="cancel_download_dialog_title">Batalkan unduhan?</string>
+    <string name="cancel_download_dialog_message">Unduhan pembaruan masih berjalan. Jika Anda membatalkan sekarang, Anda harus memulainya lagi nanti.</string>
+    <string name="whats_new_title">Yang baru</string>
+    <string name="no_changelog_message">Tidak ada log perubahan yang disediakan untuk versi ini.</string>
+    <string name="pause_for_dialog_title">Jeda selama…</string>
+    <string name="pause_3_hours">3 jam</string>
+    <string name="pause_6_hours">6 jam</string>
+    <string name="pause_12_hours">12 jam</string>
+    <string name="pause_24_hours">24 jam</string>
+
+    <!-- SettingsSliderCard -->
+    <string name="default_value_label_refresh_rate">Refresh Rate</string>
+
+    <!-- HelpBottomSheet -->
+    <string name="help_default_title">Sumber Data</string>
+
+    <!-- SystemOverlayService -->
+    <string name="overlay_position">Posisi</string>
+    <string name="overlay_position_free">Bebas (Dapat Diseret)</string>
+    <string name="overlay_position_top_left">Kiri Atas</string>
+    <string name="overlay_position_top_center">Tengah Atas</string>
+    <string name="overlay_position_top_right">Kanan Atas</string>
+    <string name="notification_channel_overlay">Layanan Overlay Melayang</string>
+    <string name="notification_title_overlay_active">Overlay Melayang Aktif</string>
+    <string name="notification_text_overlay">Memantau kinerja sistem (FPS &amp; RAM)</string>
+    <string name="overlay_format_fps">FPS: %1$d</string>
+    <string name="overlay_format_ram_gb_percent">RAM: %1$.1f/%2$.1f GB (%3$.0f%%)</string>
+    <string name="overlay_format_ram_gb">RAM: %1$.1f/%2$.1f GB</string>
+    <string name="overlay_format_ram_percent">RAM: %1$.0f%%</string>
+    <string name="overlay_format_cpu_temp">CPU: %1$.1f°C</string>
+    <string name="overlay_format_battery_temp">BAT: %1$.1f°C</string>
+
+    <!-- BatteryUtils -->
+    <string name="battery_health_good">Baik</string>
+    <string name="battery_health_overheat">Suhu Berlebih</string>
+    <string name="battery_health_dead">Mati</string>
+    <string name="battery_health_over_voltage">Tegangan Berlebih</string>
+    <string name="battery_health_unspecified_failure">Kegagalan Tidak Ditentukan</string>
+    <string name="battery_health_cold">Dingin</string>
+    <string name="battery_status_charging">Mengisi Daya</string>
+    <string name="battery_status_discharging">Mengosongkan Daya</string>
+    <string name="battery_status_full">Penuh</string>
+    <string name="battery_status_not_charging">Tidak Mengisi Daya</string>
+    <string name="battery_power_source_ac">Pengisi Daya AC</string>
+    <string name="battery_power_source_usb">Port USB</string>
+    <string name="battery_power_source_wireless">Nirkabel</string>
+    <string name="battery_power_source_battery">Baterai</string>
+
+    <!-- DisplayUtils -->
+    <string name="hdr_type_dolby_vision">Dolby Vision</string>
+    <string name="hdr_type_hdr10">HDR10</string>
+    <string name="hdr_type_hlg">HLG</string>
+    <string name="hdr_type_hdr10_plus">HDR10+</string>
+
+    <!-- OSUtils -->
+    <string name="dessert_name_cinnamon_bun">Cinnamon Bun</string>
+    <string name="dessert_name_baklava">Baklava</string>
+    <string name="dessert_name_vanilla_ice_cream">Vanilla Ice Cream</string>
+    <string name="dessert_name_upside_down_cake">Upside Down Cake</string>
+
+    <!-- Auto Toggle -->
+    <string name="title_auto_toggle_apps">Auto Toggle Aplikasi</string>
+    <string name="settings_auto_toggle_title">Auto Toggle Aplikasi</string>
+    <string name="settings_auto_toggle_description">Tampilkan overlay secara otomatis saat aplikasi terpilih sedang berjalan</string>
+    <string name="settings_enable_auto_toggle">Aktifkan Auto Toggle</string>
+    <string name="permission_usage_access_required">Memerlukan izin Akses Penggunaan</string>
+
+    <!-- Appearance Settings - Material You & Palette -->
+    <string name="settings_material_you">Material You</string>
+    <string name="settings_material_you_description">Gunakan warna wallpaper (Android 12+)</string>
+    <string name="settings_theme_color">Warna tema</string>
+    <string name="settings_theme_color_description">Ketuk warna contoh untuk menerapkan (menonaktifkan Material You)</string>
+</resources>

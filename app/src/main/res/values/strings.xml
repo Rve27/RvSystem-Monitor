@@ -196,6 +196,7 @@
     <string name="language_russian">Русский</string>
     <string name="language_ukrainian">Українська</string>
     <string name="language_chinese_simplified">简体中文</string>
+    <string name="language_indonesian">Indonesia</string>
     <string name="label_updates">Updates</string>
     <string name="settings_check_for_updates">Check for Updates</string>
     <string name="settings_check_updates_description">Automatically check for updates on startup</string>
@@ -404,4 +405,17 @@
     <string name="dessert_name_baklava">Baklava</string>
     <string name="dessert_name_vanilla_ice_cream">Vanilla Ice Cream</string>
     <string name="dessert_name_upside_down_cake">Upside Down Cake</string>
+
+    <!-- Auto Toggle -->
+    <string name="title_auto_toggle_apps">Auto Toggle Apps</string>
+    <string name="settings_auto_toggle_title">Auto-Toggle for Apps</string>
+    <string name="settings_auto_toggle_description">Show overlay automatically when selected apps are running</string>
+    <string name="settings_enable_auto_toggle">Enable Auto-Toggle</string>
+    <string name="permission_usage_access_required">Requires Usage Access permission</string>
+
+    <!-- Appearance Settings - Material You & Palette -->
+    <string name="settings_material_you">Material You</string>
+    <string name="settings_material_you_description">Use wallpaper colors</string>
+    <string name="settings_theme_color">Theme color</string>
+    <string name="settings_theme_color_description">Tap a swatch to apply</string>
 </resources>
