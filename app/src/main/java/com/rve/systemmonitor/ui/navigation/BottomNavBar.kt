@@ -6,6 +6,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -19,8 +20,11 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.PagerState
@@ -40,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
@@ -108,9 +113,9 @@ object BottomNavBar {
             NavMode.STANDARD -> RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius)
         }
         val indicatorShape = when (navType) {
-            // Inset by the bar's 4dp padding so the indicator corners stay concentric with the bar's.
-            NavType.LEGACY -> RoundedCornerShape((cornerRadius - 4.dp).coerceAtLeast(0.dp))
-            NavType.MODERN -> RoundedCornerShape(12.dp)
+            // Perfect M3 capsule shape for a 28dp high indicator
+            NavType.LEGACY -> RoundedCornerShape(14.dp)
+            NavType.MODERN -> RoundedCornerShape(8.dp)
         }
 
         // Sampling the backdrop without any effect would show the content behind the bar
@@ -129,7 +134,7 @@ object BottomNavBar {
                 onDrawSurface = { drawRect(backgroundColor) },
             )
         } else {
-            Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
+            Modifier.background(MaterialTheme.colorScheme.surfaceContainerHighest)
         }
 
         Box(
@@ -164,10 +169,9 @@ object BottomNavBar {
                     val indicatorBackground = if (blurEnabled) {
                         Modifier.drawBackdrop(
                             backdrop = backdrop,
-                            shape = { indicatorShape },
+                            shape = { RectangleShape },
                             effects = {
                                 blur(4f.dp.toPx())
-                                lens(10f.dp.toPx(), 14f.dp.toPx(), chromaticAberration = true)
                             },
                             onDrawSurface = {
                                 drawRect(indicatorBackgroundColor, blendMode = BlendMode.Hue)
@@ -180,13 +184,14 @@ object BottomNavBar {
 
                     Box(
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .width(itemWidth)
+                            .padding(top = 6.dp)
+                            .height(28.dp)
+                            .width(56.dp)
                             .graphicsLayer {
                                 val spacingPx = spacing.toPx()
                                 val itemWidthPx = itemWidth.toPx()
                                 val offset = pagerState.currentPage + pagerState.currentPageOffsetFraction
-                                translationX = offset * (itemWidthPx + spacingPx)
+                                translationX = offset * (itemWidthPx + spacingPx) + (itemWidthPx - 56.dp.toPx()) / 2
                             }
                             .clip(indicatorShape)
                             .then(indicatorBackground),
@@ -233,7 +238,9 @@ object BottomNavBar {
                                     pagerState.animateScrollToPage(index)
                                 }
                             },
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(56.dp),
                         )
                     }
                 }
@@ -260,7 +267,7 @@ object BottomNavBar {
 
         // MODERN grows the selected icon; LEGACY keeps every icon at its natural size.
         val iconScale by animateFloatAsState(
-            targetValue = if (navType == NavType.MODERN && isSelected) 1.18f else 1f,
+            targetValue = if (navType == NavType.MODERN && isSelected) 1.12f else 1f,
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioMediumBouncy,
                 stiffness = Spring.StiffnessMedium,
@@ -274,23 +281,38 @@ object BottomNavBar {
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(top = 6.dp, bottom = 6.dp),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Crossfade(
-                    targetState = isSelected,
-                    animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                    label = "Icon Crossfade Animation",
+                // Fixed height icon container centered at the top
+                Box(
+                    modifier = Modifier
+                        .width(56.dp)
+                        .height(28.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        painter = painterResource(if (it) item.iconSelected else item.iconUnselected),
-                        contentDescription = item.label,
-                        tint = contentColor,
-                        modifier = Modifier.graphicsLayer {
-                            scaleX = iconScale
-                            scaleY = iconScale
-                        },
-                    )
+                    Crossfade(
+                        targetState = isSelected,
+                        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                        label = "Icon Crossfade Animation",
+                    ) {
+                        Icon(
+                            painter = painterResource(if (it) item.iconSelected else item.iconUnselected),
+                            contentDescription = item.label,
+                            tint = contentColor,
+                            modifier = Modifier
+                                .size(20.dp)
+                                .graphicsLayer {
+                                    scaleX = iconScale
+                                    scaleY = iconScale
+                                },
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(2.dp))
 
                 Text(
                     text = item.label,

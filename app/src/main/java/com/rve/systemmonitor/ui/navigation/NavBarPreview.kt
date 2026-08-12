@@ -146,7 +146,7 @@ fun NavBarPreview(navMode: NavMode, navType: NavType, radius: Int) {
     val indicatorShape = if (navType == NavType.MODERN) {
         RoundedCornerShape(8.dp)
     } else {
-        RoundedCornerShape(((animatedRadius - 8f).coerceAtLeast(0f) / 2).dp)
+        RoundedCornerShape(((animatedRadius - 12f).coerceAtLeast(0f) / 2).dp)
     }
 
     val shapesList = remember {
@@ -256,7 +256,7 @@ fun NavBarPreview(navMode: NavMode, navType: NavType, radius: Int) {
                     .graphicsLayer {
                         translationX = indicatorOffset * itemWidth.toPx()
                     }
-                    .padding(innerPadding)
+                    .padding(horizontal = 6.dp, vertical = 4.dp)
                     .clip(indicatorShape)
                     .background(indicatorBackgroundColor)
             )
