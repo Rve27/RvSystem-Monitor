@@ -154,13 +154,7 @@ object BottomNavBar {
                     )
                     .padding(4.dp),
             ) {
-                val isDark = MaterialTheme.colorScheme.surface.luminance() < 0.5f
-                val baseSurface = MaterialTheme.colorScheme.surface
-                val indicatorBackgroundColor = if (isDark) {
-                    androidx.compose.ui.graphics.lerp(baseSurface, Color.White, 0.16f)
-                } else {
-                    androidx.compose.ui.graphics.lerp(baseSurface, Color.Black, 0.08f)
-                }
+                val indicatorBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
 
                 BoxWithConstraints(modifier = Modifier.matchParentSize()) {
                     val spacing = 4.dp
@@ -256,13 +250,22 @@ object BottomNavBar {
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
     ) {
-        val contentColor by animateColorAsState(
+        val iconColor by animateColorAsState(
+            targetValue = if (isSelected) {
+                MaterialTheme.colorScheme.onSecondaryContainer
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            },
+            label = "IconColorAnimation",
+        )
+
+        val textColor by animateColorAsState(
             targetValue = if (isSelected) {
                 MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.onSurfaceVariant
             },
-            label = "ContentColorAnimation",
+            label = "TextColorAnimation",
         )
 
         // MODERN grows the selected icon; LEGACY keeps every icon at its natural size.
@@ -301,7 +304,7 @@ object BottomNavBar {
                         Icon(
                             painter = painterResource(if (it) item.iconSelected else item.iconUnselected),
                             contentDescription = item.label,
-                            tint = contentColor,
+                            tint = iconColor,
                             modifier = Modifier
                                 .size(20.dp)
                                 .graphicsLayer {
@@ -316,7 +319,7 @@ object BottomNavBar {
 
                 Text(
                     text = item.label,
-                    color = contentColor,
+                    color = textColor,
                     maxLines = 1,
                     softWrap = false,
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
