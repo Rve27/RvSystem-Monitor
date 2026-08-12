@@ -62,6 +62,8 @@ class MainActivity : ComponentActivity() {
                 val navBarCornerRadius = successState.navBarCornerRadius.dp
                 val navMode = successState.navMode
                 val navType = successState.navType
+                val materialYou = successState.materialYou
+                val themeSeedColor = successState.themeSeedColor
                 val darkTheme = when (themeMode) {
                     ThemeMode.LIGHT -> false
                     ThemeMode.DARK -> true
@@ -69,14 +71,16 @@ class MainActivity : ComponentActivity() {
                 }
 
                 RvSystemMonitorTheme(
-                    darkTheme,
-                    amoledMode,
-                    hapticEnabled,
-                    vibrationIntensity,
-                    blurEffectEnabled,
-                    navBarCornerRadius,
-                    navMode,
-                    navType,
+                    darkTheme = darkTheme,
+                    amoledMode = amoledMode,
+                    hapticEnabled = hapticEnabled,
+                    vibrationIntensity = vibrationIntensity,
+                    blurEffectEnabled = blurEffectEnabled,
+                    navBarCornerRadius = navBarCornerRadius,
+                    navMode = navMode,
+                    navType = navType,
+                    materialYou = materialYou,
+                    themeSeedColor = themeSeedColor,
                 ) {
                     if (BuildConfig.ENABLE_UPDATER) {
                         val updateUiState by updateViewModel.uiState.collectAsStateWithLifecycle()

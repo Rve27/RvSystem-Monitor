@@ -30,6 +30,8 @@ data class AppSettings(
     val navBarCornerRadius: Int = SettingsPreferences.DEFAULT_NAV_BAR_CORNER_RADIUS,
     val navMode: NavMode = NavMode.FLOATING,
     val navType: NavType = NavType.LEGACY,
+    val materialYou: Boolean = true,
+    val themeSeedColor: Int = 0xFFFFB68E.toInt(),
 )
 
 @Serializable

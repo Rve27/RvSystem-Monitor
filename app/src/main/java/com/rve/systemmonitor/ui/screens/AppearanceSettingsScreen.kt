@@ -76,6 +76,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -114,6 +117,8 @@ fun AppearanceSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onN
     val navType by viewModel.navType.collectAsStateWithLifecycle()
     val hapticEnabled by viewModel.hapticFeedbackEnabled.collectAsStateWithLifecycle()
     val vibrationIntensity by viewModel.vibrationIntensity.collectAsStateWithLifecycle()
+    val materialYou by viewModel.materialYou.collectAsStateWithLifecycle()
+    val themeSeedColor by viewModel.themeSeedColor.collectAsStateWithLifecycle()
 
     val darkTheme = when (currentTheme) {
         ThemeMode.LIGHT -> false
@@ -237,6 +242,138 @@ fun AppearanceSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onN
                                                 style = MaterialTheme.typography.labelLarge,
                                                 fontWeight = if (currentTheme == mode) FontWeight.Bold else FontWeight.Normal,
                                             )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(20.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .hapticClickable { viewModel.setMaterialYou(!materialYou) },
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                        modifier = Modifier.weight(1f),
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(48.dp)
+                                                .clip(RoundedCornerShape(12.dp))
+                                                .background(MaterialTheme.colorScheme.primary),
+                                            contentAlignment = Alignment.Center,
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.layers_filled),
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.onPrimary,
+                                            )
+                                        }
+
+                                        Column {
+                                            Text(
+                                                text = "Material You",
+                                                style = MaterialTheme.typography.titleMedium,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                            )
+                                            Text(
+                                                text = "Use wallpaper colors (Android 12+)",
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            )
+                                        }
+                                    }
+
+                                    Switch(
+                                        checked = materialYou,
+                                        onCheckedChange = { viewModel.setMaterialYou(it) },
+                                        colors = SwitchDefaults.colors(
+                                            checkedIconColor = MaterialTheme.colorScheme.primary,
+                                        ),
+                                        thumbContent = {
+                                            Crossfade(
+                                                targetState = materialYou,
+                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                                label = "Material You Switch Icon",
+                                            ) { enabled ->
+                                                Icon(
+                                                    painter = painterResource(
+                                                        if (enabled) R.drawable.check_rounded else R.drawable.close_rounded,
+                                                    ),
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                                                )
+                                            }
+                                        },
+                                    )
+                                }
+
+                                AnimatedVisibility(
+                                    visible = !materialYou,
+                                    enter = fadeIn() + expandVertically(),
+                                    exit = fadeOut() + shrinkVertically(),
+                                ) {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                                    ) {
+                                        Column {
+                                            Text(
+                                                text = "Theme color",
+                                                style = MaterialTheme.typography.titleMedium,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                            )
+                                            Text(
+                                                text = "Tap a swatch to apply (turns off Material You)",
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            )
+                                        }
+
+                                        val palette = listOf(
+                                            0xFFFFB68E.toInt(), // Peach (default)
+                                            0xFFFFB4AB.toInt(), // Red
+                                            0xFFFFD188.toInt(), // Amber
+                                            0xFFA7E0A2.toInt(), // Green
+                                            0xFF9ECAFF.toInt(), // Blue
+                                            0xFFD0BCFF.toInt(), // Violet
+                                            0xFFF8AFD2.toInt(), // Pink
+                                            0xFFA7D8DA.toInt(), // Teal
+                                        )
+
+                                        androidx.compose.foundation.lazy.LazyRow(
+                                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                            modifier = Modifier.fillMaxWidth(),
+                                        ) {
+                                            items(palette.size) { index ->
+                                                val colorInt = palette[index]
+                                                SwatchDot(
+                                                    seedColor = Color(colorInt),
+                                                    selected = themeSeedColor == colorInt,
+                                                    onClick = {
+                                                        viewModel.setMaterialYou(false)
+                                                        viewModel.setThemeSeedColor(colorInt)
+                                                    },
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -941,3 +1078,54 @@ private fun NavBarStyleSection(
 
 /** Half the nav bar height, past which the shape stops changing. */
 private const val MAX_NAV_BAR_CORNER_RADIUS = 32f
+
+@Composable
+private fun SwatchDot(seedColor: Color, selected: Boolean, onClick: () -> Unit) {
+    val primary = seedColor
+    val secondary = Color(android.graphics.Color.HSVToColor(FloatArray(3).apply {
+        android.graphics.Color.colorToHSV(primary.toArgb(), this)
+        this[0] = (this[0] + 30) % 360f
+        this[1] = (this[1] * 0.8f).coerceIn(0f, 1f)
+    }))
+    val tertiary = Color(android.graphics.Color.HSVToColor(FloatArray(3).apply {
+        android.graphics.Color.colorToHSV(primary.toArgb(), this)
+        this[0] = (this[0] + 120) % 360f
+        this[1] = (this[1] * 0.9f).coerceIn(0f, 1f)
+    }))
+    val neutral = Color(android.graphics.Color.HSVToColor(FloatArray(3).apply {
+        android.graphics.Color.colorToHSV(primary.toArgb(), this)
+        this[1] = (this[1] * 0.2f).coerceIn(0f, 1f)
+        this[2] = 0.5f
+    }))
+
+    Box(
+        modifier = Modifier
+            .size(44.dp)
+            .clip(CircleShape)
+            .hapticClickable(onClick = onClick, ripple = true),
+        contentAlignment = Alignment.Center,
+    ) {
+        androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+            drawArc(color = primary, startAngle = 180f, sweepAngle = 90f, useCenter = true)
+            drawArc(color = secondary, startAngle = 270f, sweepAngle = 90f, useCenter = true)
+            drawArc(color = tertiary, startAngle = 0f, sweepAngle = 90f, useCenter = true)
+            drawArc(color = neutral, startAngle = 90f, sweepAngle = 90f, useCenter = true)
+        }
+
+        if (selected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = "Selected",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+    }
+}

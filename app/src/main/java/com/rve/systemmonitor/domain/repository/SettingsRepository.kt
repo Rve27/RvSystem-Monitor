@@ -26,6 +26,8 @@ interface SettingsRepository {
     val navBarCornerRadius: Flow<Int>
     val navMode: Flow<NavMode>
     val navType: Flow<NavType>
+    val materialYou: Flow<Boolean>
+    val themeSeedColor: Flow<Int>
     suspend fun setThemeMode(mode: ThemeMode)
     suspend fun setLanguage(language: AppLanguage)
     suspend fun setAmoledMode(enabled: Boolean)
@@ -44,6 +46,8 @@ interface SettingsRepository {
     suspend fun setNavBarCornerRadius(radius: Int)
     suspend fun setNavMode(mode: NavMode)
     suspend fun setNavType(type: NavType)
+    suspend fun setMaterialYou(enabled: Boolean)
+    suspend fun setThemeSeedColor(color: Int)
     suspend fun exportSettings(): String
     suspend fun importSettings(json: String)
 }

@@ -101,6 +101,20 @@ class SettingsViewModel @Inject constructor(
             initialValue = NavType.LEGACY,
         )
 
+    val materialYou: StateFlow<Boolean> = settingsRepository.materialYou
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = true,
+        )
+
+    val themeSeedColor: StateFlow<Int> = settingsRepository.themeSeedColor
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 0xFFFFB68E.toInt(),
+        )
+
     val cpuRefreshDelay: StateFlow<Long> = settingsRepository.cpuRefreshDelay
         .stateIn(
             scope = viewModelScope,
@@ -202,6 +216,18 @@ class SettingsViewModel @Inject constructor(
     fun setNavType(type: NavType) {
         viewModelScope.launch {
             settingsRepository.setNavType(type)
+        }
+    }
+
+    fun setMaterialYou(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setMaterialYou(enabled)
+        }
+    }
+
+    fun setThemeSeedColor(color: Int) {
+        viewModelScope.launch {
+            settingsRepository.setThemeSeedColor(color)
         }
     }
 

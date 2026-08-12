@@ -33,6 +33,8 @@ class SettingsPreferences(private val context: Context) {
         val NAV_BAR_CORNER_RADIUS_KEY = intPreferencesKey("nav_bar_corner_radius")
         val NAV_MODE_KEY = stringPreferencesKey("nav_mode")
         val NAV_TYPE_KEY = stringPreferencesKey("nav_type")
+        val MATERIAL_YOU_KEY = booleanPreferencesKey("material_you")
+        val THEME_SEED_COLOR_KEY = intPreferencesKey("theme_seed_color")
 
         const val DEFAULT_NAV_BAR_CORNER_RADIUS = 32
     }
@@ -48,6 +50,8 @@ class SettingsPreferences(private val context: Context) {
         context.dataStore.getEnumFlow(NAV_MODE_KEY, NavMode.FLOATING) { NavMode.valueOf(it) }
     val navTypeFlow: Flow<NavType> =
         context.dataStore.getEnumFlow(NAV_TYPE_KEY, NavType.LEGACY) { NavType.valueOf(it) }
+    val materialYouFlow: Flow<Boolean> = context.dataStore.getValueFlow(MATERIAL_YOU_KEY, true)
+    val themeSeedColorFlow: Flow<Int> = context.dataStore.getValueFlow(THEME_SEED_COLOR_KEY, 0xFFFFB68E.toInt())
     val themeModeFlow: Flow<ThemeMode> =
         context.dataStore.getEnumFlow(THEME_MODE_KEY, ThemeMode.SYSTEM) { ThemeMode.valueOf(it) }
     val languageFlow: Flow<AppLanguage> =
@@ -95,4 +99,6 @@ class SettingsPreferences(private val context: Context) {
     suspend fun saveNavBarCornerRadius(radius: Int) = context.dataStore.setValue(NAV_BAR_CORNER_RADIUS_KEY, radius.coerceIn(12, 32))
     suspend fun saveNavMode(mode: NavMode) = context.dataStore.setEnum(NAV_MODE_KEY, mode)
     suspend fun saveNavType(type: NavType) = context.dataStore.setEnum(NAV_TYPE_KEY, type)
+    suspend fun saveMaterialYou(enabled: Boolean) = context.dataStore.setValue(MATERIAL_YOU_KEY, enabled)
+    suspend fun saveThemeSeedColor(color: Int) = context.dataStore.setValue(THEME_SEED_COLOR_KEY, color)
 }

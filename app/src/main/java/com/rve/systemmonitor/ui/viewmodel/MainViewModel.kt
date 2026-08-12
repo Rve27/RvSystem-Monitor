@@ -28,6 +28,8 @@ class MainViewModel @Inject constructor(settingsRepository: SettingsRepository) 
         settingsRepository.navBarCornerRadius,
         settingsRepository.navMode,
         settingsRepository.navType,
+        settingsRepository.materialYou,
+        settingsRepository.themeSeedColor,
     ) { args ->
         MainUiState.Success(
             themeMode = args[0] as ThemeMode,
@@ -40,6 +42,8 @@ class MainViewModel @Inject constructor(settingsRepository: SettingsRepository) 
             navBarCornerRadius = args[7] as Int,
             navMode = args[8] as NavMode,
             navType = args[9] as NavType,
+            materialYou = args[10] as Boolean,
+            themeSeedColor = args[11] as Int,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -63,5 +67,7 @@ sealed interface MainUiState {
         val navBarCornerRadius: Int,
         val navMode: NavMode,
         val navType: NavType,
+        val materialYou: Boolean,
+        val themeSeedColor: Int,
     ) : MainUiState
 }

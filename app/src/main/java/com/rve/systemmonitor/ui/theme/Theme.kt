@@ -26,6 +26,9 @@ import com.rve.systemmonitor.ui.components.haptic.LocalVibrationIntensity
 import com.rve.systemmonitor.utils.NavMode
 import com.rve.systemmonitor.utils.NavType
 import com.rve.systemmonitor.utils.SettingsPreferences
+import android.os.Build
+import com.materialkolor.PaletteStyle
+import com.materialkolor.rememberDynamicColorScheme
 import com.rve.systemmonitor.utils.VibrationIntensity
 
 val LocalBlurEffectEnabled = compositionLocalOf { true }
@@ -43,21 +46,37 @@ fun RvSystemMonitorTheme(
     navBarCornerRadius: Dp = SettingsPreferences.DEFAULT_NAV_BAR_CORNER_RADIUS.dp,
     navMode: NavMode = NavMode.FLOATING,
     navType: NavType = NavType.LEGACY,
+    materialYou: Boolean = true,
+    themeSeedColor: Int = 0xFFFFB68E.toInt(),
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
-    val targetColorScheme = if (darkTheme) {
-        val baseColorScheme = dynamicDarkColorScheme(context)
-        if (amoledMode) {
-            baseColorScheme.copy(
-                background = Color.Black,
-                surface = Color.Black,
-            )
-        } else {
-            baseColorScheme
+    val targetColorScheme = when {
+        materialYou && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val baseScheme = if (darkTheme) {
+                dynamicDarkColorScheme(context)
+            } else {
+                dynamicLightColorScheme(context)
+            }
+            if (darkTheme && amoledMode) {
+                baseScheme.copy(
+                    background = Color.Black,
+                    surface = Color.Black,
+                    surfaceContainer = Color.Black,
+                    surfaceContainerLow = Color(0xFF0F0F0F),
+                    surfaceContainerHigh = Color(0xFF1F1F1F),
+                    surfaceContainerLowest = Color.Black,
+                )
+            } else {
+                baseScheme
+            }
         }
-    } else {
-        dynamicLightColorScheme(context)
+        else -> rememberDynamicColorScheme(
+            seedColor = Color(themeSeedColor),
+            isDark = darkTheme,
+            isAmoled = darkTheme && amoledMode,
+            style = PaletteStyle.TonalSpot,
+        )
     }
     val colorScheme = animateColorScheme(targetColorScheme)
 

@@ -72,6 +72,10 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
 
     override val navType: Flow<NavType> = settingsPreferences.navTypeFlow
 
+    override val materialYou: Flow<Boolean> = settingsPreferences.materialYouFlow
+
+    override val themeSeedColor: Flow<Int> = settingsPreferences.themeSeedColorFlow
+
     override suspend fun setThemeMode(mode: ThemeMode) {
         settingsPreferences.saveThemeMode(mode)
     }
@@ -146,6 +150,14 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
         settingsPreferences.saveNavType(type)
     }
 
+    override suspend fun setMaterialYou(enabled: Boolean) {
+        settingsPreferences.saveMaterialYou(enabled)
+    }
+
+    override suspend fun setThemeSeedColor(color: Int) {
+        settingsPreferences.saveThemeSeedColor(color)
+    }
+
     override suspend fun exportSettings(): String {
         val appPrefs = application.dataStore.data.first()
         val overlayPrefs = application.overlayDataStore.data.first()
@@ -178,6 +190,8 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
                 navType = appPrefs[SettingsPreferences.NAV_TYPE_KEY]?.let {
                     runCatching { NavType.valueOf(it) }.getOrNull()
                 } ?: NavType.LEGACY,
+                materialYou = appPrefs[SettingsPreferences.MATERIAL_YOU_KEY] ?: true,
+                themeSeedColor = appPrefs[SettingsPreferences.THEME_SEED_COLOR_KEY] ?: 0xFFFFB68E.toInt(),
             ),
             monitoring = MonitoringSettings(
                 cpuRefreshDelay = appPrefs[SettingsPreferences.CPU_REFRESH_DELAY_KEY] ?: 3000L,
@@ -228,6 +242,8 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
             prefs[SettingsPreferences.NAV_BAR_CORNER_RADIUS_KEY] = backup.app.navBarCornerRadius
             prefs[SettingsPreferences.NAV_MODE_KEY] = backup.app.navMode.name
             prefs[SettingsPreferences.NAV_TYPE_KEY] = backup.app.navType.name
+            prefs[SettingsPreferences.MATERIAL_YOU_KEY] = backup.app.materialYou
+            prefs[SettingsPreferences.THEME_SEED_COLOR_KEY] = backup.app.themeSeedColor
 
             prefs[SettingsPreferences.CPU_REFRESH_DELAY_KEY] = backup.monitoring.cpuRefreshDelay
             prefs[SettingsPreferences.MEMORY_REFRESH_DELAY_KEY] = backup.monitoring.memoryRefreshDelay
