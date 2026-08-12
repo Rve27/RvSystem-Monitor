@@ -173,294 +173,321 @@ fun AppearanceSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onN
                     ) {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
+                            shape = RoundedCornerShape(24.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
                             ),
                             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                         ) {
                             Column(
-                                modifier = Modifier.padding(vertical = 20.dp),
-                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier.padding(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 20.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                // Nested Card 1: App Theme & AMOLED Mode
+                                Card(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(16.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                    ),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                                 ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(48.dp)
-                                            .clip(RoundedCornerShape(12.dp))
-                                            .background(MaterialTheme.colorScheme.primary),
-                                        contentAlignment = Alignment.Center,
+                                    Column(
+                                        modifier = Modifier.padding(16.dp),
+                                        verticalArrangement = Arrangement.spacedBy(16.dp),
                                     ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.brightness_medium_filled),
-                                            contentDescription = stringResource(R.string.cd_theme_icon),
-                                            tint = MaterialTheme.colorScheme.onPrimary,
-                                        )
-                                    }
-
-                                    Column {
-                                        Text(
-                                            text = stringResource(R.string.settings_app_theme),
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                        )
-                                        Text(
-                                            text = stringResource(R.string.settings_app_theme_description),
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        )
-                                    }
-                                }
-
-                                val themeOptions = listOf(
-                                    ThemeMode.LIGHT to R.string.theme_light,
-                                    ThemeMode.SYSTEM to R.string.theme_system,
-                                    ThemeMode.DARK to R.string.theme_dark,
-                                )
-
-                                SingleChoiceSegmentedButtonRow(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 20.dp),
-                                ) {
-                                    themeOptions.forEachIndexed { index, (mode, labelRes) ->
-                                        SegmentedButton(
-                                            shape = SegmentedButtonDefaults.itemShape(
-                                                index = index,
-                                                count = themeOptions.size,
-                                            ),
-                                            onClick = rememberHapticOnClick { viewModel.setThemeMode(mode) },
-                                            selected = currentTheme == mode,
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(16.dp),
                                         ) {
-                                            Text(
-                                                text = stringResource(labelRes),
-                                                style = MaterialTheme.typography.labelLarge,
-                                                fontWeight = if (currentTheme == mode) FontWeight.Bold else FontWeight.Normal,
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(8.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
-                            ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(20.dp),
-                                verticalArrangement = Arrangement.spacedBy(16.dp),
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .hapticClickable { viewModel.setMaterialYou(!materialYou) },
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                        modifier = Modifier.weight(1f),
-                                    ) {
-                                        Box(
-                                            modifier = Modifier
-                                                .size(48.dp)
-                                                .clip(RoundedCornerShape(12.dp))
-                                                .background(MaterialTheme.colorScheme.primary),
-                                            contentAlignment = Alignment.Center,
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.layers_filled),
-                                                contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.onPrimary,
-                                            )
-                                        }
-
-                                        Column {
-                                            Text(
-                                                text = "Material You",
-                                                style = MaterialTheme.typography.titleMedium,
-                                                fontWeight = FontWeight.SemiBold,
-                                                color = MaterialTheme.colorScheme.onSurface,
-                                            )
-                                            Text(
-                                                text = "Use wallpaper colors (Android 12+)",
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            )
-                                        }
-                                    }
-
-                                    Switch(
-                                        checked = materialYou,
-                                        onCheckedChange = { viewModel.setMaterialYou(it) },
-                                        colors = SwitchDefaults.colors(
-                                            checkedIconColor = MaterialTheme.colorScheme.primary,
-                                        ),
-                                        thumbContent = {
-                                            Crossfade(
-                                                targetState = materialYou,
-                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                                                label = "Material You Switch Icon",
-                                            ) { enabled ->
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(48.dp)
+                                                    .clip(RoundedCornerShape(12.dp))
+                                                    .background(MaterialTheme.colorScheme.primary),
+                                                contentAlignment = Alignment.Center,
+                                            ) {
                                                 Icon(
-                                                    painter = painterResource(
-                                                        if (enabled) R.drawable.check_rounded else R.drawable.close_rounded,
-                                                    ),
-                                                    contentDescription = null,
-                                                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                                                    painter = painterResource(R.drawable.brightness_medium_filled),
+                                                    contentDescription = stringResource(R.string.cd_theme_icon),
+                                                    tint = MaterialTheme.colorScheme.onPrimary,
                                                 )
                                             }
-                                        },
-                                    )
+
+                                            Column {
+                                                Text(
+                                                    text = stringResource(R.string.settings_app_theme),
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                )
+                                                Text(
+                                                    text = stringResource(R.string.settings_app_theme_description),
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                )
+                                            }
+                                        }
+
+                                        val themeLabels = listOf(
+                                            stringResource(R.string.theme_system),
+                                            stringResource(R.string.theme_light),
+                                            stringResource(R.string.theme_dark)
+                                        )
+
+                                        SegmentedControl(
+                                            items = themeLabels,
+                                            selectedIndex = when (currentTheme) {
+                                                ThemeMode.SYSTEM -> 0
+                                                ThemeMode.LIGHT -> 1
+                                                ThemeMode.DARK -> 2
+                                            },
+                                            onItemSelected = { index ->
+                                                val mode = when (index) {
+                                                    0 -> ThemeMode.SYSTEM
+                                                    1 -> ThemeMode.LIGHT
+                                                    2 -> ThemeMode.DARK
+                                                    else -> ThemeMode.SYSTEM
+                                                }
+                                                viewModel.setThemeMode(mode)
+                                            }
+                                        )
+
+                                        // Conditional AMOLED Mode inside the same card
+                                        AnimatedVisibility(
+                                            visible = darkTheme,
+                                            enter = fadeIn() + expandVertically(),
+                                            exit = fadeOut() + shrinkVertically(),
+                                        ) {
+                                            val amoledEnabled = darkTheme
+                                            Card(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .clip(RoundedCornerShape(12.dp))
+                                                    .hapticClickable(enabled = amoledEnabled) { viewModel.setAmoledMode(!amoledMode) },
+                                                shape = RoundedCornerShape(12.dp),
+                                                colors = CardDefaults.cardColors(
+                                                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                                ),
+                                                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                                            ) {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                                ) {
+                                                    Row(
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                                        modifier = Modifier.weight(1f),
+                                                    ) {
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .size(48.dp)
+                                                                .clip(RoundedCornerShape(12.dp))
+                                                                .background(
+                                                                    if (amoledEnabled) MaterialTheme.colorScheme.primary
+                                                                    else MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
+                                                                ),
+                                                            contentAlignment = Alignment.Center,
+                                                        ) {
+                                                            Icon(
+                                                                painter = painterResource(R.drawable.night_mode_filled),
+                                                                contentDescription = stringResource(R.string.cd_amoled_icon),
+                                                                tint = if (amoledEnabled) MaterialTheme.colorScheme.onPrimary
+                                                                else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.38f),
+                                                            )
+                                                        }
+
+                                                        Column {
+                                                            Text(
+                                                                text = stringResource(R.string.settings_amoled_mode),
+                                                                style = MaterialTheme.typography.titleMedium,
+                                                                fontWeight = FontWeight.SemiBold,
+                                                                color = if (amoledEnabled) MaterialTheme.colorScheme.onSurface
+                                                                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                                                            )
+                                                            Text(
+                                                                text = if (amoledEnabled) stringResource(R.string.settings_amoled_description_enabled)
+                                                                else stringResource(R.string.settings_amoled_description_disabled),
+                                                                style = MaterialTheme.typography.bodyMedium,
+                                                                color = if (amoledEnabled) MaterialTheme.colorScheme.onSurfaceVariant
+                                                                else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+                                                            )
+                                                        }
+                                                    }
+
+                                                    Switch(
+                                                        enabled = amoledEnabled,
+                                                        checked = amoledMode && amoledEnabled,
+                                                        onCheckedChange = { viewModel.setAmoledMode(it) },
+                                                        colors = SwitchDefaults.colors(
+                                                            checkedIconColor = MaterialTheme.colorScheme.primary,
+                                                        ),
+                                                        thumbContent = {
+                                                            Crossfade(
+                                                                targetState = amoledMode && amoledEnabled,
+                                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                                                label = "Amoled Switch Icon",
+                                                            ) { enabled ->
+                                                                Icon(
+                                                                    painter = painterResource(
+                                                                        if (enabled) R.drawable.check_rounded else R.drawable.close_rounded,
+                                                                    ),
+                                                                    contentDescription = null,
+                                                                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                                                                )
+                                                            }
+                                                        },
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
 
+                                // Nested Card 2: Material You
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(16.dp))
+                                        .hapticClickable { viewModel.setMaterialYou(!materialYou) },
+                                    shape = RoundedCornerShape(16.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                    ),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp, vertical = 16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                            modifier = Modifier.weight(1f),
+                                        ) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(48.dp)
+                                                    .clip(RoundedCornerShape(12.dp))
+                                                    .background(MaterialTheme.colorScheme.primary),
+                                                contentAlignment = Alignment.Center,
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.layers_filled),
+                                                    contentDescription = null,
+                                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                                )
+                                            }
+
+                                            Column {
+                                                Text(
+                                                    text = "Material You",
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                )
+                                                Text(
+                                                    text = "Use wallpaper colors (Android 12+)",
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                )
+                                            }
+                                        }
+
+                                        Switch(
+                                            checked = materialYou,
+                                            onCheckedChange = { viewModel.setMaterialYou(it) },
+                                            colors = SwitchDefaults.colors(
+                                                checkedIconColor = MaterialTheme.colorScheme.primary,
+                                            ),
+                                            thumbContent = {
+                                                Crossfade(
+                                                    targetState = materialYou,
+                                                    animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                                    label = "Material You Switch Icon",
+                                                ) { enabled ->
+                                                    Icon(
+                                                        painter = painterResource(
+                                                            if (enabled) R.drawable.check_rounded else R.drawable.close_rounded,
+                                                        ),
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                                                    )
+                                                }
+                                            },
+                                        )
+                                    }
+                                }
+
+                                // Nested Card 3: Theme Color Palette (Only visible if Material You is disabled)
                                 AnimatedVisibility(
                                     visible = !materialYou,
                                     enter = fadeIn() + expandVertically(),
                                     exit = fadeOut() + shrinkVertically(),
                                 ) {
-                                    Column(
+                                    Card(
                                         modifier = Modifier.fillMaxWidth(),
-                                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                                        shape = RoundedCornerShape(16.dp),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                        ),
+                                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                                     ) {
-                                        Column {
-                                            Text(
-                                                text = "Theme color",
-                                                style = MaterialTheme.typography.titleMedium,
-                                                fontWeight = FontWeight.SemiBold,
-                                                color = MaterialTheme.colorScheme.onSurface,
-                                            )
-                                            Text(
-                                                text = "Tap a swatch to apply (turns off Material You)",
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            )
-                                        }
-
-                                        val palette = listOf(
-                                            0xFFFFB68E.toInt(), // Peach (default)
-                                            0xFFFFB4AB.toInt(), // Red
-                                            0xFFFFD188.toInt(), // Amber
-                                            0xFFA7E0A2.toInt(), // Green
-                                            0xFF9ECAFF.toInt(), // Blue
-                                            0xFFD0BCFF.toInt(), // Violet
-                                            0xFFF8AFD2.toInt(), // Pink
-                                            0xFFA7D8DA.toInt(), // Teal
-                                        )
-
-                                        androidx.compose.foundation.lazy.LazyRow(
-                                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                            modifier = Modifier.fillMaxWidth(),
+                                        Column(
+                                            modifier = Modifier.padding(16.dp),
+                                            verticalArrangement = Arrangement.spacedBy(12.dp),
                                         ) {
-                                            items(palette.size) { index ->
-                                                val colorInt = palette[index]
-                                                SwatchDot(
-                                                    seedColor = Color(colorInt),
-                                                    selected = themeSeedColor == colorInt,
-                                                    onClick = {
-                                                        viewModel.setMaterialYou(false)
-                                                        viewModel.setThemeSeedColor(colorInt)
-                                                    },
+                                            Column {
+                                                Text(
+                                                    text = "Theme color",
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = MaterialTheme.colorScheme.onSurface,
                                                 )
+                                                Text(
+                                                    text = "Tap a swatch to apply (turns off Material You)",
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                )
+                                            }
+
+                                            val palette = listOf(
+                                                0xFFFFB68E.toInt(), // Peach (default)
+                                                0xFFFFB4AB.toInt(), // Red
+                                                0xFFFFD188.toInt(), // Amber
+                                                0xFFA7E0A2.toInt(), // Green
+                                                0xFF9ECAFF.toInt(), // Blue
+                                                0xFFD0BCFF.toInt(), // Violet
+                                                0xFFF8AFD2.toInt(), // Pink
+                                                0xFFA7D8DA.toInt(), // Teal
+                                            )
+
+                                            androidx.compose.foundation.lazy.LazyRow(
+                                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                                modifier = Modifier.fillMaxWidth(),
+                                            ) {
+                                                items(palette.size) { index ->
+                                                    val colorInt = palette[index]
+                                                    SwatchDot(
+                                                        seedColor = Color(colorInt),
+                                                        selected = themeSeedColor == colorInt,
+                                                        onClick = {
+                                                            viewModel.setMaterialYou(false)
+                                                            viewModel.setThemeSeedColor(colorInt)
+                                                        },
+                                                    )
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                        }
-
-                        val amoledEnabled = darkTheme
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 24.dp, bottomEnd = 24.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
-                            ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .hapticClickable(enabled = amoledEnabled) { viewModel.setAmoledMode(!amoledMode) }
-                                    .padding(horizontal = 20.dp, vertical = 20.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                    modifier = Modifier.weight(1f),
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(48.dp)
-                                            .clip(RoundedCornerShape(12.dp))
-                                            .background(
-                                                if (amoledEnabled) MaterialTheme.colorScheme.primary
-                                                else MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
-                                            ),
-                                        contentAlignment = Alignment.Center,
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.night_mode_filled),
-                                            contentDescription = stringResource(R.string.cd_amoled_icon),
-                                            tint = if (amoledEnabled) MaterialTheme.colorScheme.onPrimary
-                                            else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.38f),
-                                        )
-                                    }
-
-                                    Column {
-                                        Text(
-                                            text = stringResource(R.string.settings_amoled_mode),
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = if (amoledEnabled) MaterialTheme.colorScheme.onSurface
-                                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                                        )
-                                        Text(
-                                            text = if (amoledEnabled) stringResource(R.string.settings_amoled_description_enabled)
-                                            else stringResource(R.string.settings_amoled_description_disabled),
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = if (amoledEnabled) MaterialTheme.colorScheme.onSurfaceVariant
-                                            else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
-                                        )
-                                    }
-                                }
-
-                                Switch(
-                                    enabled = amoledEnabled,
-                                    checked = amoledMode && amoledEnabled,
-                                    onCheckedChange = { viewModel.setAmoledMode(it) },
-                                    colors = SwitchDefaults.colors(
-                                        checkedIconColor = MaterialTheme.colorScheme.primary,
-                                    ),
-                                    thumbContent = {
-                                        Crossfade(
-                                            targetState = amoledMode && amoledEnabled,
-                                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                                            label = "Amoled Switch Icon",
-                                        ) { enabled ->
-                                            Icon(
-                                                painter = painterResource(
-                                                    if (enabled) R.drawable.check_rounded else R.drawable.close_rounded,
-                                                ),
-                                                contentDescription = null,
-                                                modifier = Modifier.size(SwitchDefaults.IconSize),
-                                            )
-                                        }
-                                    },
-                                )
                             }
                         }
 
@@ -477,134 +504,140 @@ fun AppearanceSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onN
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(24.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
                             ),
                             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                         ) {
                             Column(
-                                modifier = Modifier.padding(vertical = 12.dp),
+                                modifier = Modifier.padding(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
-                                Row(
+                                // Nested Card 1: Haptic Feedback Switch
+                                Card(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .hapticClickable { viewModel.setHapticFeedbackEnabled(!hapticEnabled) }
-                                        .padding(horizontal = 20.dp, vertical = 8.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                        .clip(RoundedCornerShape(16.dp))
+                                        .hapticClickable { viewModel.setHapticFeedbackEnabled(!hapticEnabled) },
+                                    shape = RoundedCornerShape(16.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                    ),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                                 ) {
                                     Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp, vertical = 16.dp),
                                         verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                        modifier = Modifier.weight(1f),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
                                     ) {
-                                        Box(
-                                            modifier = Modifier
-                                                .size(48.dp)
-                                                .clip(RoundedCornerShape(12.dp))
-                                                .background(MaterialTheme.colorScheme.primary),
-                                            contentAlignment = Alignment.Center,
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                            modifier = Modifier.weight(1f),
                                         ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.mobile_vibrate_filled),
-                                                contentDescription = stringResource(R.string.cd_haptic_icon),
-                                                tint = MaterialTheme.colorScheme.onSecondary,
-                                            )
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(48.dp)
+                                                    .clip(RoundedCornerShape(12.dp))
+                                                    .background(MaterialTheme.colorScheme.primary),
+                                                contentAlignment = Alignment.Center,
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.mobile_vibrate_filled),
+                                                    contentDescription = stringResource(R.string.cd_haptic_icon),
+                                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                                )
+                                            }
+
+                                            Column {
+                                                Text(
+                                                    text = stringResource(R.string.settings_haptic_feedback),
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                )
+                                                Text(
+                                                    text = stringResource(R.string.settings_haptic_description),
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                )
+                                            }
                                         }
 
-                                        Column {
+                                        Switch(
+                                            checked = hapticEnabled,
+                                            onCheckedChange = { viewModel.setHapticFeedbackEnabled(it) },
+                                            colors = SwitchDefaults.colors(
+                                                checkedIconColor = MaterialTheme.colorScheme.primary,
+                                            ),
+                                            thumbContent = {
+                                                Crossfade(
+                                                    targetState = hapticEnabled,
+                                                    animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                                    label = "Haptic Switch Icon",
+                                                ) { enabled ->
+                                                    Icon(
+                                                        painter = painterResource(
+                                                            if (enabled) R.drawable.check_rounded else R.drawable.close_rounded,
+                                                        ),
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                                                    )
+                                                }
+                                            },
+                                        )
+                                    }
+                                }
+
+                                // Nested Card 2: Vibration Intensity Selector
+                                AnimatedVisibility(
+                                    visible = hapticEnabled,
+                                    enter = fadeIn() + expandVertically(),
+                                    exit = fadeOut() + shrinkVertically(),
+                                ) {
+                                    Card(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        shape = RoundedCornerShape(16.dp),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                        ),
+                                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                                    ) {
+                                        Column(
+                                            modifier = Modifier.padding(16.dp),
+                                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                                        ) {
                                             Text(
-                                                text = stringResource(R.string.settings_haptic_feedback),
-                                                style = MaterialTheme.typography.titleMedium,
+                                                text = stringResource(R.string.settings_vibration_intensity),
+                                                style = MaterialTheme.typography.titleSmall,
                                                 fontWeight = FontWeight.SemiBold,
                                                 color = MaterialTheme.colorScheme.onSurface,
                                             )
-                                            Text(
-                                                text = stringResource(R.string.settings_haptic_description),
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+
+                                            val intensityLabels = listOf(
+                                                stringResource(R.string.vibration_light),
+                                                stringResource(R.string.vibration_medium),
+                                                stringResource(R.string.vibration_strong)
                                             )
-                                        }
-                                    }
 
-                                    Switch(
-                                        checked = hapticEnabled,
-                                        onCheckedChange = { viewModel.setHapticFeedbackEnabled(it) },
-                                        colors = SwitchDefaults.colors(
-                                            checkedIconColor = MaterialTheme.colorScheme.primary,
-                                        ),
-                                        thumbContent = {
-                                            Crossfade(
-                                                targetState = hapticEnabled,
-                                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                                                label = "Haptic Switch Icon",
-                                            ) { enabled ->
-                                                Icon(
-                                                    painter = painterResource(
-                                                        if (enabled) R.drawable.check_rounded else R.drawable.close_rounded,
-                                                    ),
-                                                    contentDescription = null,
-                                                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                                                )
-                                            }
-                                        },
-                                    )
-                                }
-
-                                AnimatedVisibility(
-                                    visible = hapticEnabled,
-                                    enter = expandVertically(
-                                        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
-                                    ) + fadeIn(
-                                        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                                    ),
-                                    exit = shrinkVertically(
-                                        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
-                                    ) + fadeOut(
-                                        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                                    ),
-                                ) {
-                                    Column(
-                                        modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 8.dp, top = 8.dp),
-                                    ) {
-                                        Text(
-                                            text = stringResource(R.string.settings_vibration_intensity),
-                                            style = MaterialTheme.typography.titleSmall,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            modifier = Modifier.padding(bottom = 8.dp),
-                                        )
-
-                                        val intensityOptions = listOf(
-                                            VibrationIntensity.LIGHT to R.string.vibration_light,
-                                            VibrationIntensity.MEDIUM to R.string.vibration_medium,
-                                            VibrationIntensity.STRONG to R.string.vibration_strong,
-                                        )
-
-                                        SingleChoiceSegmentedButtonRow(
-                                            modifier = Modifier.fillMaxWidth(),
-                                        ) {
-                                            intensityOptions.forEachIndexed { index, (intensity, labelRes) ->
-                                                SegmentedButton(
-                                                    shape = SegmentedButtonDefaults.itemShape(
-                                                        index = index,
-                                                        count = intensityOptions.size,
-                                                    ),
-                                                    onClick = rememberHapticOnClick {
-                                                        viewModel.setVibrationIntensity(
-                                                            intensity,
-                                                        )
-                                                    },
-                                                    selected = vibrationIntensity == intensity,
-                                                ) {
-                                                    Text(
-                                                        text = stringResource(labelRes),
-                                                        style = MaterialTheme.typography.labelLarge,
-                                                        fontWeight = if (vibrationIntensity ==
-                                                            intensity
-                                                        ) FontWeight.Bold else FontWeight.Normal,
-                                                    )
+                                            SegmentedControl(
+                                                items = intensityLabels,
+                                                selectedIndex = when (vibrationIntensity) {
+                                                    VibrationIntensity.LIGHT -> 0
+                                                    VibrationIntensity.MEDIUM -> 1
+                                                    VibrationIntensity.STRONG -> 2
+                                                },
+                                                onItemSelected = { index ->
+                                                    val intensity = when (index) {
+                                                        0 -> VibrationIntensity.LIGHT
+                                                        1 -> VibrationIntensity.MEDIUM
+                                                        2 -> VibrationIntensity.STRONG
+                                                        else -> VibrationIntensity.MEDIUM
+                                                    }
+                                                    viewModel.setVibrationIntensity(intensity)
                                                 }
-                                            }
+                                            )
                                         }
                                     }
                                 }
@@ -891,13 +924,13 @@ private fun NavBarStyleSection(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(
-            modifier = Modifier.padding(vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             // Header Text
             Text(
@@ -905,17 +938,15 @@ private fun NavBarStyleSection(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(horizontal = 20.dp),
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
             )
 
             // Wrapped/Nested Card for Style and Corner Radius
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
             ) {
@@ -996,80 +1027,82 @@ private fun NavBarStyleSection(
                 }
             }
 
-            // Divider outside nested card
-            Box(
+            // 3. Blur Effect Nested Card
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(1.dp)
-                    .padding(horizontal = 20.dp)
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.12f))
-            )
-
-            // 3. Blur Effect Row
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .hapticClickable { onBlurEffectChange(!blurEffectEnabled) }
-                    .padding(horizontal = 20.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                    .clip(RoundedCornerShape(16.dp))
+                    .hapticClickable { onBlurEffectChange(!blurEffectEnabled) },
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
             ) {
                 Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(MaterialTheme.colorScheme.primary),
-                        contentAlignment = Alignment.Center,
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.weight(1f),
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.layers_filled),
-                            contentDescription = stringResource(R.string.settings_blur_effect),
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                        )
-                    }
-
-                    Column {
-                        Text(
-                            text = stringResource(R.string.settings_blur_effect),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Text(
-                            text = stringResource(R.string.settings_blur_description),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-
-                Switch(
-                    checked = blurEffectEnabled,
-                    onCheckedChange = onBlurEffectChange,
-                    colors = SwitchDefaults.colors(
-                        checkedIconColor = MaterialTheme.colorScheme.primary,
-                    ),
-                    thumbContent = {
-                        Crossfade(
-                            targetState = blurEffectEnabled,
-                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                            label = "Blur Switch Icon",
-                        ) { enabled ->
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.primary),
+                            contentAlignment = Alignment.Center,
+                        ) {
                             Icon(
-                                painter = painterResource(
-                                    if (enabled) R.drawable.check_rounded else R.drawable.close_rounded,
-                                ),
+                                painter = painterResource(R.drawable.layers_filled),
                                 contentDescription = null,
-                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                                tint = MaterialTheme.colorScheme.onPrimary,
                             )
                         }
-                    },
-                )
+
+                        Column {
+                            Text(
+                                text = stringResource(R.string.settings_blur_effect),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Text(
+                                text = stringResource(R.string.settings_blur_description),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+
+                    Switch(
+                        checked = blurEffectEnabled,
+                        onCheckedChange = onBlurEffectChange,
+                        colors = SwitchDefaults.colors(
+                            checkedIconColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        thumbContent = {
+                            Crossfade(
+                                targetState = blurEffectEnabled,
+                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                label = "Blur Switch Icon",
+                            ) { enabled ->
+                                Icon(
+                                    painter = painterResource(
+                                        if (enabled) R.drawable.check_rounded else R.drawable.close_rounded,
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                                )
+                            }
+                        },
+                    )
+                }
             }
         }
     }
@@ -1124,6 +1157,49 @@ private fun SwatchDot(seedColor: Color, selected: Boolean, onClick: () -> Unit) 
                     contentDescription = "Selected",
                     tint = Color.White,
                     modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SegmentedControl(
+    items: List<String>,
+    selectedIndex: Int,
+    onItemSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.6f),
+    activeColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    activeTextColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
+    inactiveTextColor: Color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+    cornerRadius: Int = 99,
+    itemCornerRadius: Int = 99,
+    verticalPadding: Int = 10
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(cornerRadius.dp))
+            .background(containerColor)
+            .padding(4.dp)
+    ) {
+        items.forEachIndexed { index, title ->
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(itemCornerRadius.dp))
+                    .background(if (selectedIndex == index) activeColor else Color.Transparent)
+                    .hapticClickable { onItemSelected(index) }
+                    .padding(vertical = verticalPadding.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontWeight = if (selectedIndex == index) FontWeight.Bold else FontWeight.Medium
+                    ),
+                    color = if (selectedIndex == index) activeTextColor else inactiveTextColor
                 )
             }
         }
