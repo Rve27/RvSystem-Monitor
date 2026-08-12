@@ -34,6 +34,12 @@ class AboutRepositoryImpl @Inject constructor() : AboutRepository {
                 htmlUrl = "https://github.com/theovilardo",
                 name = null,
             ),
+            GitHubContributor(
+                login = "chenlongapps",
+                avatarUrl = "https://github.com/chenlongapps.png",
+                htmlUrl = "https://github.com/chenlongapps",
+                name = "陈龙",
+            ),
         )
         return Result.success(contributors)
     }

@@ -13,6 +13,7 @@ data class CPU(
     val hardware: String = "unknown",
     val board: String = "unknown",
     val architecture: String = "unknown",
+    val abi: String = "unknown",
     val temperature: Double = 0.0,
     val load: Double = 0.0,
     val isLoadAvailable: Boolean = false,

@@ -25,11 +25,11 @@ object DisplayUtils {
         "unknown"
     }
 
-    fun getRefreshRate(context: Context): Int = runCatching {
-        getDisplay(context)?.refreshRate?.toInt() ?: 0
+    fun getSupportedRefreshRates(context: Context): List<Int> = runCatching {
+        getDisplay(context)?.supportedModes?.map { Math.round(it.refreshRate) }?.distinct()?.sorted() ?: emptyList()
     }.getOrElse {
-        Log.e(TAG, "getRefreshRate: ${it.message}", it)
-        0
+        Log.e(TAG, "getSupportedRefreshRates: ${it.message}", it)
+        emptyList()
     }
 
     fun getDensityDpi(context: Context): Int = runCatching {

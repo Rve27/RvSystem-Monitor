@@ -63,7 +63,7 @@ class HardwareRepositoryImpl @Inject constructor(
         val (isHdr, hdrTypes) = DisplayUtils.getHdrCapabilities(application)
         Display(
             resolution = DisplayUtils.getResolution(application),
-            refreshRate = DisplayUtils.getRefreshRate(application),
+            supportedRefreshRates = DisplayUtils.getSupportedRefreshRates(application).toImmutableList(),
             densityDpi = DisplayUtils.getDensityDpi(application),
             screenSizeInches = DisplayUtils.getScreenSizeInches(application),
             isHdrSupported = isHdr,

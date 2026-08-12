@@ -15,11 +15,9 @@ object ThermalUtils {
     @Volatile private var cachedTemps: Map<String, Double> = emptyMap()
     @Volatile private var cachedAt: Long = 0L
 
-    suspend fun getCpuTemperature(shizukuManager: ShizukuManager): Double =
-        pickCpuTemp(getTemps(shizukuManager))
+    suspend fun getCpuTemperature(shizukuManager: ShizukuManager): Double = pickCpuTemp(getTemps(shizukuManager))
 
-    suspend fun getGpuTemperature(shizukuManager: ShizukuManager): Double =
-        pickGpuTemp(getTemps(shizukuManager))
+    suspend fun getGpuTemperature(shizukuManager: ShizukuManager): Double = pickGpuTemp(getTemps(shizukuManager))
 
     private suspend fun getTemps(shizukuManager: ShizukuManager): Map<String, Double> {
         val now = System.currentTimeMillis()

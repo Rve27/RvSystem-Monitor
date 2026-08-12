@@ -105,7 +105,54 @@ object CpuUtils {
     fun getBoard(): String = runCatching { Build.BOARD }.getOrElse { "Unknown" }
 
     fun getArchitecture(): String = runCatching {
-        Build.SUPPORTED_ABIS.firstOrNull() ?: "Unknown"
+        val cpuInfoFile = java.io.File("/proc/cpuinfo")
+        if (cpuInfoFile.exists() && cpuInfoFile.canRead()) {
+            val cpuInfo = cpuInfoFile.readText()
+            val featuresLine = cpuInfo.lines().find { it.startsWith("Features") }
+
+            // Check for ARMv9 specific features (SVE/SVE2 are mandatory in ARMv9-A)
+            if (featuresLine != null && (featuresLine.contains("sve ") || featuresLine.contains("sve2 "))) {
+                return "ARMv9-A"
+            }
+
+            // Fallback to CPU part number mapping for known cores
+            val cpuPartLine = cpuInfo.lines().findLast { it.startsWith("CPU part") }
+            if (cpuPartLine != null) {
+                val part = cpuPartLine.split(":").lastOrNull()?.trim()?.lowercase()
+                val cpuPartToArch = mapOf(
+                    "0xd03" to "ARMv8-A", "0xd04" to "ARMv8-A", "0xd05" to "ARMv8.2-A",
+                    "0xd07" to "ARMv8-A", "0xd08" to "ARMv8-A", "0xd09" to "ARMv8-A",
+                    "0xd0a" to "ARMv8.2-A", "0xd0b" to "ARMv8.2-A", "0xd0c" to "ARMv8.2-A",
+                    "0xd0d" to "ARMv8.2-A", "0xd41" to "ARMv8.2-A", "0xd42" to "ARMv8.2-A",
+                    "0xd44" to "ARMv8.2-A", "0xd46" to "ARMv9-A", "0xd47" to "ARMv9-A",
+                    "0xd48" to "ARMv9-A", "0xd49" to "ARMv9-A", "0xd4d" to "ARMv9-A",
+                    "0xd4e" to "ARMv9-A", "0xd80" to "ARMv9-A", "0xd81" to "ARMv9-A",
+                    "0xd82" to "ARMv9-A", "0xd92" to "ARMv9-A", "0xd93" to "ARMv9-A",
+                    "0x804" to "ARMv8.2-A", "0x805" to "ARMv8.2-A",
+                )
+                if (part != null && cpuPartToArch.containsKey(part)) {
+                    return cpuPartToArch[part]!!
+                }
+            }
+
+            // Fallback to CPU architecture line
+            val archLine = cpuInfo.lines().findLast { it.startsWith("CPU architecture") }
+            if (archLine != null) {
+                val archStr = archLine.split(":").lastOrNull()?.trim()
+                if (archStr == "8" || archStr == "AArch64") {
+                    return "ARMv8-A"
+                } else if (archStr == "7" || archStr == "7I") {
+                    return "ARMv7-A"
+                }
+            }
+        }
+        "Unknown"
+    }.getOrElse { "Unknown" }
+
+    fun getAbi(): String = runCatching {
+        val abi = Build.SUPPORTED_ABIS.firstOrNull() ?: "Unknown"
+        val bitness = if (abi.contains("64")) "64-bit" else "32-bit"
+        "$abi ($bitness)"
     }.getOrElse { "Unknown" }
 
     fun getCoreCount(): Int = runCatching {

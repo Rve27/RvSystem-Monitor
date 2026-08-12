@@ -499,6 +499,7 @@ fun ContributorRow(contributor: GitHubContributor, onClick: () -> Unit) {
             "pavelc4" -> R.drawable.avatar_pavelc4
             "kugumin" -> R.drawable.avatar_kugumin
             "theovilardo" -> R.drawable.avatar_theovilardo
+            "chenlongapps" -> R.drawable.avatar_chenlongapps
             else -> contributor.avatarUrl
         }
     }

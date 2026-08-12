@@ -43,6 +43,7 @@ class CpuRepositoryImpl @Inject constructor(
             val hardware = CpuUtils.getHardware()
             val board = CpuUtils.getBoard()
             val architecture = CpuUtils.getArchitecture()
+            val abi = CpuUtils.getAbi()
 
             val staticInfo = CpuUtils.getStaticCoreInfo()
             val governors = CpuUtils.getAllCoreGovernors()
@@ -68,7 +69,7 @@ class CpuRepositoryImpl @Inject constructor(
                 val coreDetails = ArrayList<CoreDetail>(cores)
 
                 var isShizukuSuccess = false
-                val cpuLoads = if (shizukuReady ) {
+                val cpuLoads = if (shizukuReady) {
                     val procStat = shizukuManager.executeCommand("cat /proc/stat")
                     if (procStat.isNotEmpty() && !procStat.startsWith("ERROR:")) {
                         val loads = CpuUtils.calculateCpuLoad(procStat)
@@ -113,6 +114,7 @@ class CpuRepositoryImpl @Inject constructor(
                     hardware = hardware,
                     board = board,
                     architecture = architecture,
+                    abi = abi,
                     temperature = cpuTemperature,
                     load = totalLoad,
                     isLoadAvailable = isShizukuSuccess,
@@ -136,6 +138,7 @@ class CpuRepositoryImpl @Inject constructor(
             hardware = CpuUtils.getHardware(),
             board = CpuUtils.getBoard(),
             architecture = CpuUtils.getArchitecture(),
+            abi = CpuUtils.getAbi(),
             temperature = CpuUtils.getCpuTemperature(),
         )
     }

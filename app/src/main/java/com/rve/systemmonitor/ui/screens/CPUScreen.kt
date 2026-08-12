@@ -167,7 +167,12 @@ private fun CPUOverviewCard(cpu: CPU) {
                     valueColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     modifier = Modifier.weight(1f),
                 )
-                Spacer(modifier = Modifier.weight(1f))
+                InfoItem(
+                    label = stringResource(R.string.cpu_label_abi),
+                    value = cpu.abi,
+                    valueColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.weight(1f),
+                )
             }
         }
     }

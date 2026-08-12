@@ -21,7 +21,7 @@ splashscreen = "1.2.0"
 spotless = "8.9.0"
 hilt = "2.60.1"
 errorprone = "2.50.0"
-ksp = "2.3.10"
+ksp = "2.3.11"
 shizuku = "13.1.5"
 lottie = "6.7.1"
 

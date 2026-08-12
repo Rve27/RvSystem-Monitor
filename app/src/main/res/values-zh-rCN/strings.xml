@@ -72,6 +72,7 @@
     <string name="cpu_cores_count">%1$d 个核心</string>
     <string name="cpu_peak_frequency">%1$s</string>
     <string name="cpu_label_architecture">架构</string>
+    <string name="cpu_label_abi">ABI</string>
     <string name="cpu_label_board">主板</string>
     <string name="cpu_label_hardware">硬件</string>
     <string name="cpu_core_label">核心 %1$d</string>

@@ -561,7 +561,7 @@ private fun PauseUpdatesDialog(onDismiss: () -> Unit, onConfirm: (Int) -> Unit) 
                             shapes = ToggleButtonShapes(
                                 shape = shape,
                                 pressedShape = shape,
-                                checkedShape = ButtonGroupDefaults.connectedButtonCheckedShape
+                                checkedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()

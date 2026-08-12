@@ -78,18 +78,21 @@ private fun HomeScreenContent(uiState: HomeUiState, onNavigateToGPU: () -> Unit)
             InfoCardData(
                 title = context.getString(R.string.home_title_display),
                 headline = uiState.display.resolution,
-                subhead = context.getString(R.string.home_screen_size, uiState.display.screenSizeInches),
+                subhead = run {
+                    val displaySupported = uiState.display.supportedRefreshRates.joinToString(", ") { "${it}Hz" }
+                    val displaySubhead = context.getString(R.string.home_screen_size, uiState.display.screenSizeInches)
+                    if (displaySupported.isNotEmpty()) "$displaySubhead\n$displaySupported" else displaySubhead
+                },
                 iconRes = R.drawable.mobile_3_filled,
                 backgroundIconOffset = 20.dp,
                 badges = buildList {
-                    add(context.getString(R.string.home_badge_refresh_rate, uiState.display.refreshRate))
                     add(context.getString(R.string.home_badge_density, uiState.display.densityDpi))
                     if (uiState.display.isHdrSupported) {
                         add(context.getString(R.string.home_badge_hdr))
                         addAll(uiState.display.hdrTypes)
                     }
                 }.toImmutableList(),
-                secondaryBadgeIndices = (if (uiState.display.isHdrSupported) listOf(0, 1) else listOf(0)).toImmutableList(),
+                secondaryBadgeIndices = listOf(0).toImmutableList(),
             ),
             InfoCardData(
                 title = context.getString(R.string.home_title_processor),
