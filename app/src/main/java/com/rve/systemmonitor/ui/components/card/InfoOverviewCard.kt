@@ -78,9 +78,7 @@ fun InfoOverviewCard(data: InfoCardData, modifier: Modifier = Modifier) {
         null
     }
     val cardColors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = MaterialTheme.colorScheme.onSurface,
-        disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
         disabledContentColor = MaterialTheme.colorScheme.onSurface,
     )
     val cardElevation = CardDefaults.cardElevation(defaultElevation = 2.dp)

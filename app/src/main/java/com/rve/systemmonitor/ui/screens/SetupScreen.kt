@@ -434,9 +434,7 @@ private fun UpdatesContent(autoUpdateEnabled: Boolean, onAutoUpdateChanged: (Boo
                 onClick = rememberHapticOnClick { onAutoUpdateChanged(!autoUpdateEnabled) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                ),
+                colors = CardDefaults.cardColors(),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                 interactionSource = interactionSource,
             ) {
@@ -560,13 +558,13 @@ private fun ThemeContent(selectedTheme: ThemeMode, onThemeSelected: (ThemeMode) 
                             .weight(1f)
                             .height(100.dp),
                         shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = if (isSelected) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.surfaceContainerHigh
-                            },
-                        ),
+                        colors = if (isSelected) {
+                            CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                            )
+                        } else {
+                            CardDefaults.cardColors()
+                        },
                         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                     ) {
                         Column(
@@ -625,9 +623,7 @@ private fun BackupRestoreContent(onRestoreClick: () -> Unit) {
                     .fillMaxWidth()
                     .height(100.dp),
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                ),
+                colors = CardDefaults.cardColors(),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
             ) {
                 Row(
