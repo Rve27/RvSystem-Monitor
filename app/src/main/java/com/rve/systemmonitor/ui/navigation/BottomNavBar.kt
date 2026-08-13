@@ -63,6 +63,7 @@ import com.kyant.backdrop.effects.vibrancy
 import com.rve.systemmonitor.R
 import com.rve.systemmonitor.ui.components.haptic.hapticClickable
 import com.rve.systemmonitor.ui.theme.LocalBlurEffectEnabled
+import com.rve.systemmonitor.ui.theme.LocalNavBarBlurEffectEnabled
 import com.rve.systemmonitor.ui.theme.LocalNavBarCornerRadius
 import com.rve.systemmonitor.ui.theme.LocalNavMode
 import com.rve.systemmonitor.ui.theme.LocalNavType
@@ -78,7 +79,8 @@ object BottomNavBar {
     fun BottomNavigationBar(pagerState: PagerState, coroutineScope: CoroutineScope, backdrop: Backdrop, modifier: Modifier = Modifier) {
         val backgroundColor = MaterialTheme.colorScheme.background.copy(alpha = 0.5f)
         val solidBackgroundColor = MaterialTheme.colorScheme.surfaceContainer
-        val navBarBlurEffectEnabled = com.rve.systemmonitor.ui.theme.LocalNavBarBlurEffectEnabled.current
+        val solidIndicatorColor = MaterialTheme.colorScheme.secondaryContainer
+        val navBarBlurEffectEnabled = LocalNavBarBlurEffectEnabled.current
         val context = LocalContext.current
 
         val items = remember(context) {
