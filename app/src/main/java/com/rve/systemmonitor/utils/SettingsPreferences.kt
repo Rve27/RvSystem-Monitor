@@ -37,12 +37,16 @@ class SettingsPreferences(private val context: Context) {
         val THEME_SEED_COLOR_KEY = intPreferencesKey("theme_seed_color")
 
         const val DEFAULT_NAV_BAR_CORNER_RADIUS = 32
+        val NAV_BAR_BLUR_EFFECT_ENABLED_KEY = booleanPreferencesKey("nav_bar_blur_effect_enabled")
     }
 
     val autoUpdateEnabledFlow: Flow<Boolean> = context.dataStore.getValueFlow(AUTO_UPDATE_ENABLED_KEY, true)
     val useShizukuFlow: Flow<Boolean> = context.dataStore.getValueFlow(USE_SHIZUKU_KEY, false)
     val updatesPausedUntilFlow: Flow<Long> = context.dataStore.getValueFlow(UPDATES_PAUSED_UNTIL_KEY, 0L)
     val blurEffectEnabledFlow: Flow<Boolean> = context.dataStore.getValueFlow(BLUR_EFFECT_ENABLED_KEY, true)
+    val navBarBlurEffectEnabledFlow: Flow<Boolean> = context.dataStore.getValueFlow(NAV_BAR_BLUR_EFFECT_ENABLED_KEY, true)
+    val themeModeFlow: Flow<ThemeMode> = context.dataStore.getEnumFlow(THEME_MODE_KEY, ThemeMode.SYSTEM) { ThemeMode.valueOf(it) }
+    val languageFlow: Flow<AppLanguage> = context.dataStore.getEnumFlow(LANGUAGE_KEY, AppLanguage.SYSTEM) { AppLanguage.valueOf(it) }
     val navBarCornerRadiusFlow: Flow<Int> =
         context.dataStore.getValueFlow(NAV_BAR_CORNER_RADIUS_KEY, DEFAULT_NAV_BAR_CORNER_RADIUS)
             .map { it.coerceIn(12, 32) }
@@ -52,10 +56,6 @@ class SettingsPreferences(private val context: Context) {
         context.dataStore.getEnumFlow(NAV_TYPE_KEY, NavType.LEGACY) { NavType.valueOf(it) }
     val materialYouFlow: Flow<Boolean> = context.dataStore.getValueFlow(MATERIAL_YOU_KEY, true)
     val themeSeedColorFlow: Flow<Int> = context.dataStore.getValueFlow(THEME_SEED_COLOR_KEY, 0xFFFFB68E.toInt())
-    val themeModeFlow: Flow<ThemeMode> =
-        context.dataStore.getEnumFlow(THEME_MODE_KEY, ThemeMode.SYSTEM) { ThemeMode.valueOf(it) }
-    val languageFlow: Flow<AppLanguage> =
-        context.dataStore.getEnumFlow(LANGUAGE_KEY, AppLanguage.SYSTEM) { AppLanguage.valueOf(it) }
     val amoledModeFlow: Flow<Boolean> = context.dataStore.getValueFlow(AMOLED_MODE_KEY, false)
     val vibrationIntensityFlow: Flow<VibrationIntensity> = context.dataStore.getEnumFlow(
         VIBRATION_INTENSITY_KEY,
@@ -101,4 +101,5 @@ class SettingsPreferences(private val context: Context) {
     suspend fun saveNavType(type: NavType) = context.dataStore.setEnum(NAV_TYPE_KEY, type)
     suspend fun saveMaterialYou(enabled: Boolean) = context.dataStore.setValue(MATERIAL_YOU_KEY, enabled)
     suspend fun saveThemeSeedColor(color: Int) = context.dataStore.setValue(THEME_SEED_COLOR_KEY, color)
+    suspend fun saveNavBarBlurEffectEnabled(enabled: Boolean) = context.dataStore.setValue(NAV_BAR_BLUR_EFFECT_ENABLED_KEY, enabled)
 }

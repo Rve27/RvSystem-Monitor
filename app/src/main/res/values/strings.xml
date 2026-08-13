@@ -236,6 +236,9 @@
     <string name="settings_vibration_intensity">Vibration Intensity</string>
     <string name="settings_blur_effect">Blur Effect</string>
     <string name="settings_blur_description">Applies a blur effect to the background during screen transitions</string>
+    <string name="settings_nav_bar_blur_effect">NavBar Blur Effect</string>
+    <string name="settings_nav_bar_blur_description">Applies a transparent/blur effect to the bottom navigation bar</string>
+    <string name="settings_category_navigation_bar">Navigation Bar</string>
     <string name="settings_nav_bar_corner_radius">Corner Radius</string>
     <string name="settings_nav_bar_corner_radius_description">Customize navigation bar rounding</string>
     <string name="settings_nav_bar_corner_radius_value">%1$ddp</string>

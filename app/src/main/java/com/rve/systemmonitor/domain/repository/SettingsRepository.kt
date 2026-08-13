@@ -28,6 +28,7 @@ interface SettingsRepository {
     val navType: Flow<NavType>
     val materialYou: Flow<Boolean>
     val themeSeedColor: Flow<Int>
+    val navBarBlurEffectEnabled: Flow<Boolean>
     suspend fun setThemeMode(mode: ThemeMode)
     suspend fun setLanguage(language: AppLanguage)
     suspend fun setAmoledMode(enabled: Boolean)
@@ -43,6 +44,7 @@ interface SettingsRepository {
     suspend fun setUseShizuku(enabled: Boolean)
     suspend fun setUpdatesPausedUntil(timestampMillis: Long)
     suspend fun setBlurEffectEnabled(enabled: Boolean)
+    suspend fun setNavBarBlurEffectEnabled(enabled: Boolean)
     suspend fun setNavBarCornerRadius(radius: Int)
     suspend fun setNavMode(mode: NavMode)
     suspend fun setNavType(type: NavType)

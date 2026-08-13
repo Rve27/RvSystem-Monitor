@@ -30,6 +30,7 @@ class MainViewModel @Inject constructor(settingsRepository: SettingsRepository) 
         settingsRepository.navType,
         settingsRepository.materialYou,
         settingsRepository.themeSeedColor,
+        settingsRepository.navBarBlurEffectEnabled,
     ) { args ->
         MainUiState.Success(
             themeMode = args[0] as ThemeMode,
@@ -39,6 +40,7 @@ class MainViewModel @Inject constructor(settingsRepository: SettingsRepository) 
             vibrationIntensity = args[4] as VibrationIntensity,
             autoUpdateEnabled = args[5] as Boolean,
             blurEffectEnabled = args[6] as Boolean,
+            navBarBlurEffectEnabled = args[12] as Boolean,
             navBarCornerRadius = args[7] as Int,
             navMode = args[8] as NavMode,
             navType = args[9] as NavType,
@@ -64,6 +66,7 @@ sealed interface MainUiState {
         val vibrationIntensity: VibrationIntensity,
         val autoUpdateEnabled: Boolean,
         val blurEffectEnabled: Boolean,
+        val navBarBlurEffectEnabled: Boolean,
         val navBarCornerRadius: Int,
         val navMode: NavMode,
         val navType: NavType,

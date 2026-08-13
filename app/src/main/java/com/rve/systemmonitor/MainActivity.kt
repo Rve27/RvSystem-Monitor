@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
                 val hapticEnabled = successState.hapticFeedbackEnabled
                 val vibrationIntensity = successState.vibrationIntensity
                 val blurEffectEnabled = successState.blurEffectEnabled
+                val navBarBlurEffectEnabled = successState.navBarBlurEffectEnabled
                 val navBarCornerRadius = successState.navBarCornerRadius.dp
                 val navMode = successState.navMode
                 val navType = successState.navType
@@ -76,6 +77,7 @@ class MainActivity : ComponentActivity() {
                     hapticEnabled = hapticEnabled,
                     vibrationIntensity = vibrationIntensity,
                     blurEffectEnabled = blurEffectEnabled,
+                    navBarBlurEffectEnabled = navBarBlurEffectEnabled,
                     navBarCornerRadius = navBarCornerRadius,
                     navMode = navMode,
                     navType = navType,

@@ -42,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -76,6 +77,8 @@ object BottomNavBar {
     @Composable
     fun BottomNavigationBar(pagerState: PagerState, coroutineScope: CoroutineScope, backdrop: Backdrop, modifier: Modifier = Modifier) {
         val backgroundColor = MaterialTheme.colorScheme.background.copy(alpha = 0.5f)
+        val solidBackgroundColor = MaterialTheme.colorScheme.surfaceContainer
+        val navBarBlurEffectEnabled = com.rve.systemmonitor.ui.theme.LocalNavBarBlurEffectEnabled.current
         val context = LocalContext.current
 
         val items = remember(context) {
@@ -122,7 +125,8 @@ object BottomNavBar {
         // unblurred through a translucent fill, so opt out of drawBackdrop entirely and
         // fall back to an opaque surface when the user disables the blur effect.
         val blurEnabled = LocalBlurEffectEnabled.current
-        val barBackground = if (blurEnabled) {
+        val isNavBarBlurActive = blurEnabled && navBarBlurEffectEnabled
+        val barBackground = if (isNavBarBlurActive) {
             Modifier.drawBackdrop(
                 backdrop = backdrop,
                 shape = { barShape },
@@ -134,7 +138,7 @@ object BottomNavBar {
                 onDrawSurface = { drawRect(backgroundColor) },
             )
         } else {
-            Modifier.background(MaterialTheme.colorScheme.surfaceContainerHighest)
+            Modifier.background(solidBackgroundColor)
         }
 
         Box(
@@ -160,7 +164,7 @@ object BottomNavBar {
                     val spacing = 4.dp
                     val itemWidth = (maxWidth - spacing * (items.size - 1)) / items.size
 
-                    val indicatorBackground = if (blurEnabled) {
+                    val indicatorBackground = if (isNavBarBlurActive) {
                         Modifier.drawBackdrop(
                             backdrop = backdrop,
                             shape = { RectangleShape },

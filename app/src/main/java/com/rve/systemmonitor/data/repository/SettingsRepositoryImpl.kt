@@ -65,6 +65,7 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
     override val updatesPausedUntil: Flow<Long> = settingsPreferences.updatesPausedUntilFlow
 
     override val blurEffectEnabled: Flow<Boolean> = settingsPreferences.blurEffectEnabledFlow
+    override val navBarBlurEffectEnabled: Flow<Boolean> = settingsPreferences.navBarBlurEffectEnabledFlow
 
     override val navBarCornerRadius: Flow<Int> = settingsPreferences.navBarCornerRadiusFlow
 
@@ -138,6 +139,10 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
         settingsPreferences.saveBlurEffectEnabled(enabled)
     }
 
+    override suspend fun setNavBarBlurEffectEnabled(enabled: Boolean) {
+        settingsPreferences.saveNavBarBlurEffectEnabled(enabled)
+    }
+
     override suspend fun setNavBarCornerRadius(radius: Int) {
         settingsPreferences.saveNavBarCornerRadius(radius)
     }
@@ -182,6 +187,7 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
                 useShizuku = appPrefs[SettingsPreferences.USE_SHIZUKU_KEY] ?: false,
                 updatesPausedUntil = appPrefs[SettingsPreferences.UPDATES_PAUSED_UNTIL_KEY] ?: 0L,
                 blurEffectEnabled = appPrefs[SettingsPreferences.BLUR_EFFECT_ENABLED_KEY] ?: true,
+                navBarBlurEffectEnabled = appPrefs[SettingsPreferences.NAV_BAR_BLUR_EFFECT_ENABLED_KEY] ?: true,
                 navBarCornerRadius = appPrefs[SettingsPreferences.NAV_BAR_CORNER_RADIUS_KEY]
                     ?: SettingsPreferences.DEFAULT_NAV_BAR_CORNER_RADIUS,
                 navMode = appPrefs[SettingsPreferences.NAV_MODE_KEY]?.let {
@@ -239,6 +245,7 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
             prefs[SettingsPreferences.USE_SHIZUKU_KEY] = backup.app.useShizuku
             prefs[SettingsPreferences.UPDATES_PAUSED_UNTIL_KEY] = backup.app.updatesPausedUntil
             prefs[SettingsPreferences.BLUR_EFFECT_ENABLED_KEY] = backup.app.blurEffectEnabled
+            prefs[SettingsPreferences.NAV_BAR_BLUR_EFFECT_ENABLED_KEY] = backup.app.navBarBlurEffectEnabled
             prefs[SettingsPreferences.NAV_BAR_CORNER_RADIUS_KEY] = backup.app.navBarCornerRadius
             prefs[SettingsPreferences.NAV_MODE_KEY] = backup.app.navMode.name
             prefs[SettingsPreferences.NAV_TYPE_KEY] = backup.app.navType.name

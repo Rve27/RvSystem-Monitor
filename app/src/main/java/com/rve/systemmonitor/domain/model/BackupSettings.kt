@@ -32,6 +32,7 @@ data class AppSettings(
     val navType: NavType = NavType.LEGACY,
     val materialYou: Boolean = true,
     val themeSeedColor: Int = 0xFFFFB68E.toInt(),
+    val navBarBlurEffectEnabled: Boolean = true,
 )
 
 @Serializable

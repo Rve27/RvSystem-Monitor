@@ -32,6 +32,7 @@ import com.materialkolor.rememberDynamicColorScheme
 import com.rve.systemmonitor.utils.VibrationIntensity
 
 val LocalBlurEffectEnabled = compositionLocalOf { true }
+val LocalNavBarBlurEffectEnabled = compositionLocalOf { true }
 val LocalNavBarCornerRadius = compositionLocalOf { SettingsPreferences.DEFAULT_NAV_BAR_CORNER_RADIUS.dp }
 val LocalNavMode = compositionLocalOf { NavMode.FLOATING }
 val LocalNavType = compositionLocalOf { NavType.LEGACY }
@@ -48,6 +49,7 @@ fun RvSystemMonitorTheme(
     navType: NavType = NavType.LEGACY,
     materialYou: Boolean = true,
     themeSeedColor: Int = 0xFFFFB68E.toInt(),
+    navBarBlurEffectEnabled: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -95,6 +97,7 @@ fun RvSystemMonitorTheme(
                 LocalHapticEnabled provides hapticEnabled,
                 LocalVibrationIntensity provides vibrationIntensity,
                 LocalBlurEffectEnabled provides blurEffectEnabled,
+                LocalNavBarBlurEffectEnabled provides navBarBlurEffectEnabled,
                 LocalNavBarCornerRadius provides navBarCornerRadius,
                 LocalNavMode provides navMode,
                 LocalNavType provides navType,
