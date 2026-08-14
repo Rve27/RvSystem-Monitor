@@ -11,6 +11,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -125,7 +127,12 @@ private val OvalShape = MaterialShapes.Oval.toShape()
 private val ArrowShape = MaterialShapes.Arrow.toShape()
 
 @Composable
-fun NavBarPreview(navMode: NavMode, navType: NavType, radius: Int) {
+fun NavBarPreview(
+    navMode: NavMode,
+    navType: NavType,
+    radius: Int,
+    shapeOffset: Int = 0,
+) {
     val animatedRadius by animateFloatAsState(
         targetValue = radius.toFloat(),
         animationSpec = spring(stiffness = Spring.StiffnessLow),
@@ -144,9 +151,9 @@ fun NavBarPreview(navMode: NavMode, navType: NavType, radius: Int) {
     )
 
     val indicatorShape = if (navType == NavType.MODERN) {
-        RoundedCornerShape(8.dp)
+        RoundedCornerShape(6.dp)
     } else {
-        RoundedCornerShape(((animatedRadius - 12f).coerceAtLeast(0f) / 2).dp)
+        CircleShape
     }
 
     val shapesList = remember {
@@ -167,8 +174,8 @@ fun NavBarPreview(navMode: NavMode, navType: NavType, radius: Int) {
         )
     }
 
-    var selectedIndex by remember { mutableIntStateOf(1) }
-    var shapeCycleOffset by remember { mutableIntStateOf(0) }
+    var selectedIndex by remember { mutableIntStateOf((shapeOffset + 1) % 3) }
+    var shapeCycleOffset by remember { mutableIntStateOf(shapeOffset) }
     LaunchedEffect(Unit) {
         while (true) {
             delay(2500)
@@ -219,7 +226,7 @@ fun NavBarPreview(navMode: NavMode, navType: NavType, radius: Int) {
             .fillMaxWidth()
             .height(64.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.BottomCenter,
     ) {
         BoxWithConstraints(
@@ -231,7 +238,12 @@ fun NavBarPreview(navMode: NavMode, navType: NavType, radius: Int) {
                     scaleY = barScale.value
                 }
                 .clip(barShape)
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                .border(
+                    width = 0.5.dp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                    shape = barShape
+                )
                 .fillMaxWidth()
                 .height(animatedHeight),
             contentAlignment = Alignment.CenterStart
@@ -249,14 +261,31 @@ fun NavBarPreview(navMode: NavMode, navType: NavType, radius: Int) {
                 }
             }
 
+            val indicatorModifier = when (navType) {
+                NavType.LEGACY -> {
+                    Modifier
+                        .align(Alignment.CenterStart)
+                        .height(30.dp)
+                        .width(42.dp)
+                        .graphicsLayer {
+                            val itemWidthPx = itemWidth.toPx()
+                            translationX = indicatorOffset * itemWidthPx + (itemWidthPx - 42.dp.toPx()) / 2
+                        }
+                }
+                NavType.MODERN -> {
+                    Modifier
+                        .align(Alignment.CenterStart)
+                        .height(20.dp)
+                        .width(36.dp)
+                        .graphicsLayer {
+                            val itemWidthPx = itemWidth.toPx()
+                            translationX = indicatorOffset * itemWidthPx + (itemWidthPx - 36.dp.toPx()) / 2
+                        }
+                }
+            }
+
             Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(itemWidth)
-                    .graphicsLayer {
-                        translationX = indicatorOffset * itemWidth.toPx()
-                    }
-                    .padding(horizontal = 6.dp, vertical = 4.dp)
+                modifier = indicatorModifier
                     .clip(indicatorShape)
                     .background(indicatorBackgroundColor)
             )
@@ -333,7 +362,7 @@ fun NavPreviewCard(
         modifier = modifier.hapticClickable(ripple = false, onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         ),
         border = BorderStroke(2.dp, borderColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),

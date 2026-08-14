@@ -238,6 +238,8 @@
     <string name="settings_nav_bar_corner_radius_description">Sesuaikan kebulatan bilah navigasi</string>
     <string name="settings_nav_bar_corner_radius_value">%1$ddp</string>
     <string name="settings_nav_bar_style">Gaya Navigasi Bawah</string>
+    <string name="settings_nav_bar_blur_effect">Efek Blur Navbar</string>
+    <string name="settings_nav_bar_blur_description">Terapkan efek transparan/blur pada bilah navigasi</string>
     <string name="settings_nav_style_standard">Standar</string>
     <string name="settings_nav_style_floating">Mengambang</string>
     <string name="settings_nav_bar_type">Tipe Navigasi Bawah</string>

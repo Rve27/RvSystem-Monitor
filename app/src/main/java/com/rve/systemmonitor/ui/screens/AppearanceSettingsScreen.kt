@@ -354,7 +354,13 @@ fun AppearanceSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onN
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clip(RoundedCornerShape(16.dp))
-                                        .hapticClickable { viewModel.setMaterialYou(!materialYou) },
+                                        .hapticClickable {
+                                            val target = !materialYou
+                                            viewModel.setMaterialYou(target)
+                                            if (!target) {
+                                                viewModel.setThemeSeedColor(0xFFFFB68E.toInt())
+                                            }
+                                        },
                                     shape = RoundedCornerShape(16.dp),
                                     colors = CardDefaults.cardColors(
                                         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -404,7 +410,12 @@ fun AppearanceSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onN
 
                                         Switch(
                                             checked = materialYou,
-                                            onCheckedChange = { viewModel.setMaterialYou(it) },
+                                            onCheckedChange = { checked ->
+                                                viewModel.setMaterialYou(checked)
+                                                if (!checked) {
+                                                    viewModel.setThemeSeedColor(0xFFFFB68E.toInt())
+                                                }
+                                            },
                                             colors = SwitchDefaults.colors(
                                                 checkedIconColor = MaterialTheme.colorScheme.primary,
                                             ),
@@ -489,12 +500,91 @@ fun AppearanceSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onN
                                         }
                                     }
                                 }
+
+                                // Nested Card: Transition Blur Effect
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(16.dp))
+                                        .hapticClickable { viewModel.setBlurEffectEnabled(!blurEffectEnabled) },
+                                    shape = RoundedCornerShape(16.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                    ),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp, vertical = 16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                            modifier = Modifier.weight(1f),
+                                        ) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(48.dp)
+                                                    .clip(RoundedCornerShape(12.dp))
+                                                    .background(MaterialTheme.colorScheme.primary),
+                                                contentAlignment = Alignment.Center,
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.lens_blur),
+                                                    contentDescription = stringResource(R.string.settings_blur_effect),
+                                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                                )
+                                            }
+
+                                            Column {
+                                                Text(
+                                                    text = stringResource(R.string.settings_blur_effect),
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                )
+                                                Text(
+                                                    text = stringResource(R.string.settings_blur_description),
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                )
+                                            }
+                                        }
+
+                                        Switch(
+                                            checked = blurEffectEnabled,
+                                            onCheckedChange = { viewModel.setBlurEffectEnabled(it) },
+                                            colors = SwitchDefaults.colors(
+                                                checkedIconColor = MaterialTheme.colorScheme.primary,
+                                            ),
+                                            thumbContent = {
+                                                Crossfade(
+                                                    targetState = blurEffectEnabled,
+                                                    animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                                    label = "Blur Switch Icon",
+                                                ) { enabled ->
+                                                    Icon(
+                                                        painter = painterResource(
+                                                            if (enabled) R.drawable.check_rounded else R.drawable.close_rounded,
+                                                        ),
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                                                    )
+                                                }
+                                            },
+                                        )
+                                    }
+                                }
                             }
                         }
 
                         NavBarStyleSection(
                             blurEffectEnabled = blurEffectEnabled,
-                            onBlurEffectChange = { viewModel.setBlurEffectEnabled(it) },
+                            navBarBlurEffectEnabled = navBarBlurEffectEnabled,
+                            onNavBarBlurChange = { viewModel.setNavBarBlurEffectEnabled(it) },
                             navMode = navMode,
                             radius = navBarCornerRadius,
                             onNavModeChange = { viewModel.setNavMode(it) },
@@ -647,99 +737,7 @@ fun AppearanceSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onN
                     }
                 }
             }
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(
-                        text = stringResource(R.string.settings_category_navigation_bar),
-                        style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 12.dp, start = 8.dp),
-                    )
 
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(24.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
-                            ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .hapticClickable { viewModel.setNavBarBlurEffectEnabled(!navBarBlurEffectEnabled) }
-                                    .padding(horizontal = 20.dp, vertical = 20.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                    modifier = Modifier.weight(1f),
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(48.dp)
-                                            .clip(RoundedCornerShape(12.dp))
-                                            .background(MaterialTheme.colorScheme.primary),
-                                        contentAlignment = Alignment.Center,
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.lens_blur),
-                                            contentDescription = stringResource(R.string.settings_nav_bar_blur_effect),
-                                            tint = MaterialTheme.colorScheme.onPrimary,
-                                        )
-                                    }
-
-                                    Column {
-                                        Text(
-                                            text = stringResource(R.string.settings_nav_bar_blur_effect),
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                        )
-                                        Text(
-                                            text = stringResource(R.string.settings_nav_bar_blur_description),
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        )
-                                    }
-                                }
-
-                                Switch(
-                                    checked = navBarBlurEffectEnabled,
-                                    onCheckedChange = { viewModel.setNavBarBlurEffectEnabled(it) },
-                                    colors = SwitchDefaults.colors(
-                                        checkedIconColor = MaterialTheme.colorScheme.primary,
-                                    ),
-                                    thumbContent = {
-                                        Crossfade(
-                                            targetState = navBarBlurEffectEnabled,
-                                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                                            label = "NavBar Blur Switch Icon",
-                                        ) { enabled ->
-                                            Icon(
-                                                painter = painterResource(
-                                                    if (enabled) R.drawable.check_rounded else R.drawable.close_rounded,
-                                                ),
-                                                contentDescription = null,
-                                                modifier = Modifier.size(SwitchDefaults.IconSize),
-                                            )
-                                        }
-                                    },
-                                )
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }
@@ -1008,7 +1006,8 @@ private fun AppearanceHero(hapticEnabled: Boolean, vibrationIntensity: Vibration
 @Composable
 private fun NavBarStyleSection(
     blurEffectEnabled: Boolean,
-    onBlurEffectChange: (Boolean) -> Unit,
+    navBarBlurEffectEnabled: Boolean,
+    onNavBarBlurChange: (Boolean) -> Unit,
     navMode: NavMode,
     radius: Int,
     onNavModeChange: (NavMode) -> Unit,
@@ -1063,7 +1062,8 @@ private fun NavBarStyleSection(
                                 onClick = { onNavModeChange(NavMode.STANDARD) },
                                 modifier = Modifier.weight(1f),
                             ) {
-                                NavBarPreview(navMode = NavMode.STANDARD, navType = NavType.MODERN, radius = radius)
+                                val resolvedNavType = if (blurEffectEnabled && navBarBlurEffectEnabled) NavType.LEGACY else NavType.MODERN
+                                NavBarPreview(navMode = NavMode.STANDARD, navType = resolvedNavType, radius = radius, shapeOffset = 0)
                             }
                             NavPreviewCard(
                                 label = stringResource(R.string.settings_nav_style_floating),
@@ -1071,7 +1071,7 @@ private fun NavBarStyleSection(
                                 onClick = { onNavModeChange(NavMode.FLOATING) },
                                 modifier = Modifier.weight(1f),
                             ) {
-                                NavBarPreview(navMode = NavMode.FLOATING, navType = NavType.LEGACY, radius = radius)
+                                NavBarPreview(navMode = NavMode.FLOATING, navType = NavType.LEGACY, radius = radius, shapeOffset = 5)
                             }
                         }
                     }
@@ -1121,12 +1121,12 @@ private fun NavBarStyleSection(
                 }
             }
 
-            // 3. Blur Effect Nested Card
+            // 3. NavBar Blur Effect Nested Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
-                    .hapticClickable { onBlurEffectChange(!blurEffectEnabled) },
+                    .hapticClickable { onNavBarBlurChange(!navBarBlurEffectEnabled) },
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -1154,20 +1154,20 @@ private fun NavBarStyleSection(
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.lens_blur),
-                                contentDescription = null,
+                                contentDescription = stringResource(R.string.settings_nav_bar_blur_effect),
                                 tint = MaterialTheme.colorScheme.onPrimary,
                             )
                         }
 
                         Column {
                             Text(
-                                text = stringResource(R.string.settings_blur_effect),
+                                text = stringResource(R.string.settings_nav_bar_blur_effect),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
-                                text = stringResource(R.string.settings_blur_description),
+                                text = stringResource(R.string.settings_nav_bar_blur_description),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -1175,16 +1175,16 @@ private fun NavBarStyleSection(
                     }
 
                     Switch(
-                        checked = blurEffectEnabled,
-                        onCheckedChange = onBlurEffectChange,
+                        checked = navBarBlurEffectEnabled,
+                        onCheckedChange = onNavBarBlurChange,
                         colors = SwitchDefaults.colors(
                             checkedIconColor = MaterialTheme.colorScheme.primary,
                         ),
                         thumbContent = {
                             Crossfade(
-                                targetState = blurEffectEnabled,
+                                targetState = navBarBlurEffectEnabled,
                                 animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                                label = "Blur Switch Icon",
+                                label = "NavBar Blur Switch Icon",
                             ) { enabled ->
                                 Icon(
                                     painter = painterResource(
