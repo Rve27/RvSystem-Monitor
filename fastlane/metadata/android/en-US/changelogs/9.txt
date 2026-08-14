@@ -1,0 +1,8 @@
+- Added detailed rust library info, ABI, bitness, and detailed ARM arch
+- Added multi-language support (app settings)
+- Hardware info: GPU and CPU temp fallback via Shizuku
+- GPU info: Extract and display various Vulkan limits and extensions
+- CPU info: Add overall temp badge, keep load delta across io threads
+- Performance improvements in CPU/thermal parsing and JNI benchmarks
+- UI enhancements: Refresh rates, toggle button shapes, language selection
+- Various bug fixes and refactorings

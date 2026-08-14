@@ -1,5 +1,54 @@
 # Changelog
 
+## [0.9-beta] - 2026-08-12
+
+### Feat
+- **ui**: Add detailed rust library information section
+- **ui**: Add navigation to cpu screen from processor card
+- **cpu**: Add ABI and bitness info to CPU overview card
+- **cpu**: Detect detailed ARM architecture from cpuinfo
+- **about**: Add chenlongapps to contributors list
+- **ui**: Show all supported refresh rates in display card
+- **hardware**: Gpu temp fallback via shizuku
+- **cpu**: Fallback temp via shizuku
+- **settings**: Add language selection feature and support for multiple languages
+- **about**: Add sponsor card and funding integration
+- **overlay**: Add auto-toggle for selected apps
+- **cpu**: Add overall cpu temperature badge to overview card
+- **gpu**: Extract and display various vulkan limits and properties
+- **gpu**: Add opengl and vulkan extensions bottom sheet
+
+### Fix
+- **cpu**: Keep load delta across io threads
+- **ui**: Hide per-core temp and governor when absent
+- **cpu**: Stop faking per-core temp from shizuku
+- **ui**: Update ToggleButton shapes for material3 alpha25
+- **ui**: Always display frequency in GHz format
+- **cpu**: Prevent selection of invalid thermal zones and support decidegree units
+- **cpu**: Add fallback paths for cpu frequency sysfs reading
+
+### Perf
+- **cpu**: Flatten nested if-let in thermal parsing
+- **cpu**: Avoid Vec alloc in freq fallback path
+- **cpu**: Inline /proc/stat parsing — no collect()
+- **cpu**: Reuse Vec buffers in calculate_cpu_load
+- **cpu**: Add get_all_core_temperatures() — single Mutex lock
+
+### Refactor
+- **settings**: Replace language icon with translate
+- **settings**: Remove current language indicator
+- **build**: Remove unnecessary ProGuard rules and Kotlin compiler parameters
+- **about**: Remove total contributions from about screen and models
+- **cpu**: Split cpu.rs into cpu+thermal modules, add cached file descriptors, add JNI benchmark
+- **gpu**: Remove memory information and its unused resources
+- **gpu**: Extract vulkan limits into new card
+
+### Style
+- **code**: Format codebase and optimize imports
+- **ui**: Rename "CPU Core" to "Core" in cpu screen
+- **ui**: Remove icon from cpu core cards
+- **ui**: Append px suffix to vulkan image limits
+
 ## [0.8-beta] - 2026-07-24
 
 ### Feat

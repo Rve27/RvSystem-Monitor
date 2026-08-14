@@ -320,7 +320,7 @@ object BottomNavBar {
                         MaterialTheme.colorScheme.onSecondaryContainer
                     }
                 } else {
-                    MaterialTheme.colorScheme.onSecondaryContainer
+                    MaterialTheme.colorScheme.primary
                 }
             } else {
                 MaterialTheme.colorScheme.onSurfaceVariant

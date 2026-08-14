@@ -66,7 +66,6 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
 
     override val blurEffectEnabled: Flow<Boolean> = settingsPreferences.blurEffectEnabledFlow
     override val navBarBlurEffectEnabled: Flow<Boolean> = settingsPreferences.navBarBlurEffectEnabledFlow
-
     override val navBarCornerRadius: Flow<Int> = settingsPreferences.navBarCornerRadiusFlow
 
     override val navMode: Flow<NavMode> = settingsPreferences.navModeFlow
@@ -162,7 +161,6 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
     override suspend fun setThemeSeedColor(color: Int) {
         settingsPreferences.saveThemeSeedColor(color)
     }
-
     override suspend fun exportSettings(): String {
         val appPrefs = application.dataStore.data.first()
         val overlayPrefs = application.overlayDataStore.data.first()

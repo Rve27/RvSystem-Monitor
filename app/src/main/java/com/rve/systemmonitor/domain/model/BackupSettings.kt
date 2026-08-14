@@ -27,12 +27,12 @@ data class AppSettings(
     val useShizuku: Boolean = false,
     val updatesPausedUntil: Long = 0L,
     val blurEffectEnabled: Boolean = true,
+    val navBarBlurEffectEnabled: Boolean = true,
     val navBarCornerRadius: Int = SettingsPreferences.DEFAULT_NAV_BAR_CORNER_RADIUS,
     val navMode: NavMode = NavMode.FLOATING,
     val navType: NavType = NavType.LEGACY,
     val materialYou: Boolean = true,
     val themeSeedColor: Int = 0xFFFFB68E.toInt(),
-    val navBarBlurEffectEnabled: Boolean = true,
 )
 
 @Serializable

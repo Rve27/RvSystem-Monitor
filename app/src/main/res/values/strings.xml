@@ -65,7 +65,7 @@
     <string name="home_help_processor_title">Processor (CPU)</string>
     <string name="home_help_processor_desc">Detailed hardware info, including core count and architecture, is parsed from Linux kernel files (/proc/cpuinfo) using the high-performance Rust backend.</string>
     <string name="home_help_graphics_title">Graphics (GPU)</string>
-    <string name="home_help_graphics_desc">The graphics renderer, vendor, and OpenGL ES version are retrieved directly from the device\'s GPU through the EGL context.</string>
+    <string name="home_help_graphics_desc">The graphics renderer, vendor, and OpenGL ES version are retrieved directly from the device\'s GPU through the EGL context. For Vulkan, detailed hardware specifications—including API version, driver, device type, hardware limits, and supported extensions—are extracted by dynamically loading the native libvulkan.so shared library and directly invoking Vulkan C APIs.</string>
 
     <!-- CPU Screen -->
     <string name="cpu_cores_section_title">Cores</string>
@@ -314,6 +314,14 @@
     <string name="rust_method_desc_get_all_temps">Returns an array of temperatures for each individual CPU core.</string>
     <string name="rust_method_desc_get_dynamic">Batched retrieval of temperatures and frequencies for UI synchronization.</string>
     <string name="rust_method_desc_calculate_load">Parses /proc/stat string and calculates the load percentage for total CPU and each core by comparing with the previous state.</string>
+    <string name="rust_method_desc_get_all_governors">Retrieves governors for all cores in a single call.</string>
+    <string name="rust_method_desc_get_static_core_info">Retrieves static info (min/max freq) for all cores in a single call.</string>
+    <string name="rust_library_info_title">Library Details</string>
+    <string name="rust_library_info_edition">Edition</string>
+    <string name="rust_library_info_toolchain">Toolchain</string>
+    <string name="rust_library_info_crate_type">Crate Type</string>
+    <string name="rust_library_info_optimization">Optimization</string>
+    <string name="rust_library_info_description">High-performance native backend for parsing Linux kernel files (/proc, /sys) with minimal overhead and context-switching. Written in Rust for memory safety and zero-cost abstractions.</string>
 
     <!-- Setup Screen -->
     <string name="setup_continue">Continue</string>

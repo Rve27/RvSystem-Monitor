@@ -44,12 +44,12 @@ fun RvSystemMonitorTheme(
     hapticEnabled: Boolean = true,
     vibrationIntensity: VibrationIntensity = VibrationIntensity.LIGHT,
     blurEffectEnabled: Boolean = true,
+    navBarBlurEffectEnabled: Boolean = true,
     navBarCornerRadius: Dp = SettingsPreferences.DEFAULT_NAV_BAR_CORNER_RADIUS.dp,
     navMode: NavMode = NavMode.FLOATING,
     navType: NavType = NavType.LEGACY,
     materialYou: Boolean = true,
     themeSeedColor: Int = 0xFFFFB68E.toInt(),
-    navBarBlurEffectEnabled: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current

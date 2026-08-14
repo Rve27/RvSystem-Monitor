@@ -78,7 +78,6 @@ class SettingsViewModel @Inject constructor(
 
     val navBarBlurEffectEnabled: StateFlow<Boolean> = settingsRepository.navBarBlurEffectEnabled
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
-
     val navBarCornerRadius: StateFlow<Int> = settingsRepository.navBarCornerRadius
         .stateIn(
             scope = viewModelScope,
@@ -229,7 +228,6 @@ class SettingsViewModel @Inject constructor(
             settingsRepository.setThemeSeedColor(color)
         }
     }
-
     fun setNavBarBlurEffectEnabled(enabled: Boolean) {
         viewModelScope.launch {
             settingsRepository.setNavBarBlurEffectEnabled(enabled)

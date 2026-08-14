@@ -27,14 +27,14 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
-fun HomeScreen(isActive: Boolean, onNavigateToGPU: () -> Unit, viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(isActive: Boolean, onNavigateToCPU: () -> Unit, onNavigateToGPU: () -> Unit, viewModel: HomeViewModel = hiltViewModel()) {
     val uiState by rememberLifecycleAwareState(isActive, viewModel.uiState)
-    HomeScreenContent(uiState = uiState, onNavigateToGPU = onNavigateToGPU)
+    HomeScreenContent(uiState = uiState, onNavigateToCPU = onNavigateToCPU, onNavigateToGPU = onNavigateToGPU)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeScreenContent(uiState: HomeUiState, onNavigateToGPU: () -> Unit) {
+private fun HomeScreenContent(uiState: HomeUiState, onNavigateToCPU: () -> Unit, onNavigateToGPU: () -> Unit) {
     var showHelpSheet by remember { mutableStateOf(false) }
     val sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
     val context = LocalContext.current
@@ -100,6 +100,7 @@ private fun HomeScreenContent(uiState: HomeUiState, onNavigateToGPU: () -> Unit)
                 subhead = context.getString(R.string.label_by, uiState.cpu.manufacturer),
                 iconRes = R.drawable.memory_filled,
                 badges = listOf(context.getString(R.string.home_cores_count, uiState.cpu.cores)).toImmutableList(),
+                onClick = onNavigateToCPU,
             ),
             InfoCardData(
                 title = context.getString(R.string.home_title_graphics),

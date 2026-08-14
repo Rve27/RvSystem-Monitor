@@ -116,6 +116,11 @@ fun RvSystemMonitorApp(onNavigateToSettings: () -> Unit, onNavigateToGPU: () -> 
                     when (page) {
                         0 -> HomeScreen(
                             isActive = pagerState.settledPage == 0,
+                            onNavigateToCPU = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(1)
+                                }
+                            },
                             onNavigateToGPU = onNavigateToGPU,
                         )
 

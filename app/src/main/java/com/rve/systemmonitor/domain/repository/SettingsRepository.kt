@@ -23,12 +23,12 @@ interface SettingsRepository {
     val useShizuku: Flow<Boolean>
     val updatesPausedUntil: Flow<Long>
     val blurEffectEnabled: Flow<Boolean>
+    val navBarBlurEffectEnabled: Flow<Boolean>
     val navBarCornerRadius: Flow<Int>
     val navMode: Flow<NavMode>
     val navType: Flow<NavType>
     val materialYou: Flow<Boolean>
     val themeSeedColor: Flow<Int>
-    val navBarBlurEffectEnabled: Flow<Boolean>
     suspend fun setThemeMode(mode: ThemeMode)
     suspend fun setLanguage(language: AppLanguage)
     suspend fun setAmoledMode(enabled: Boolean)

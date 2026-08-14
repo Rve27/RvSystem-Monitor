@@ -117,7 +117,7 @@ fun RustLibraryScreen(onNavigateBack: () -> Unit) {
             JniMethod(
                 "getAllCoreGovernorsNative",
                 "jobjectArray",
-                description = "Retrieves governors for all cores in a single call.",
+                description = context.getString(R.string.rust_method_desc_get_all_governors),
             ),
             JniMethod(
                 "getAllCoreTemperaturesNative",
@@ -127,7 +127,7 @@ fun RustLibraryScreen(onNavigateBack: () -> Unit) {
             JniMethod(
                 "getStaticCoreInfoNative",
                 "jlongArray",
-                description = "Retrieves static info (min/max freq) for all cores in a single call.",
+                description = context.getString(R.string.rust_method_desc_get_static_core_info),
             ),
             JniMethod(
                 "getCpuDynamicDataNative",
@@ -197,6 +197,9 @@ fun RustLibraryScreen(onNavigateBack: () -> Unit) {
                         )
                     }
                 }
+
+                LibraryInfoSection()
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
                     text = stringResource(R.string.rust_public_methods),
@@ -298,5 +301,84 @@ private fun MethodDetailItem(method: JniMethod) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+@Composable
+private fun LibraryInfoSection() {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Text(
+            text = stringResource(R.string.rust_library_info_title),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+        )
+        HorizontalDivider(modifier = Modifier.padding(bottom = 8.dp))
+
+        Text(
+            text = stringResource(R.string.rust_library_info_description),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            InfoChip(
+                modifier = Modifier.weight(1f),
+                label = stringResource(R.string.rust_library_info_toolchain),
+                value = "Rust 1.96.0",
+            )
+            InfoChip(
+                modifier = Modifier.weight(1f),
+                label = stringResource(R.string.rust_library_info_edition),
+                value = "2024",
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            InfoChip(
+                modifier = Modifier.weight(1f),
+                label = stringResource(R.string.rust_library_info_crate_type),
+                value = "cdylib",
+            )
+            InfoChip(
+                modifier = Modifier.weight(1f),
+                label = stringResource(R.string.rust_library_info_optimization),
+                value = "opt-level = \"z\", LTO",
+            )
+        }
+    }
+}
+
+@Composable
+private fun InfoChip(modifier: Modifier = Modifier, label: String, value: String) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
     }
 }
