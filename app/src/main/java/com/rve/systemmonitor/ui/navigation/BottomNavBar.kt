@@ -79,7 +79,7 @@ object BottomNavBar {
     @Composable
     fun BottomNavigationBar(pagerState: PagerState, coroutineScope: CoroutineScope, backdrop: Backdrop, modifier: Modifier = Modifier) {
         val backgroundColor = MaterialTheme.colorScheme.background.copy(alpha = 0.5f)
-        val solidBackgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest
+        val solidBackgroundColor = MaterialTheme.colorScheme.surfaceContainer
         val solidIndicatorColor = MaterialTheme.colorScheme.secondaryContainer
         val navBarBlurEffectEnabled = LocalNavBarBlurEffectEnabled.current
         val context = LocalContext.current
@@ -146,10 +146,14 @@ object BottomNavBar {
             Modifier.background(solidBackgroundColor)
         }
 
-        val barBorder = if (isNavBarBlurActive && navMode == NavMode.FLOATING) {
+        val barBorder = if (navMode == NavMode.FLOATING) {
             Modifier.border(
                 width = 0.5.dp,
-                color = Color.White.copy(alpha = 0.12f),
+                color = if (isNavBarBlurActive) {
+                    Color.White.copy(alpha = 0.12f)
+                } else {
+                    MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+                },
                 shape = barShape
             )
         } else {
@@ -162,6 +166,22 @@ object BottomNavBar {
                 .then(barBackground)
                 .then(barBorder),
         ) {
+            if (navMode == NavMode.STANDARD) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(0.5.dp)
+                        .background(
+                            color = if (isNavBarBlurActive) {
+                                Color.White.copy(alpha = 0.12f)
+                            } else {
+                                MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+                            }
+                        )
+                        .align(Alignment.TopCenter)
+                )
+            }
+
             Box(
                 // STANDARD draws behind the system nav bar, so inset the items to keep them tappable.
                 modifier = Modifier
