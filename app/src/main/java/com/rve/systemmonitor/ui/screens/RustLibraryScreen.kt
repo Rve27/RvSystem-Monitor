@@ -330,7 +330,7 @@ private fun LibraryInfoSection() {
             InfoChip(
                 modifier = Modifier.weight(1f),
                 label = stringResource(R.string.rust_library_info_toolchain),
-                value = "Rust 1.96.0",
+                value = "Rust 1.97.1",
             )
             InfoChip(
                 modifier = Modifier.weight(1f),

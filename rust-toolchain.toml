@@ -1,4 +1,4 @@
 [toolchain]
-channel = "1.96.0"
+channel = "1.97.1"
 components = ["rustfmt", "clippy"]
 targets = ["aarch64-linux-android", "armv7-linux-androideabi"]
