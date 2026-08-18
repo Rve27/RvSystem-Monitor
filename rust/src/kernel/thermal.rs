@@ -161,7 +161,11 @@ fn get_core_thermal_fds() -> &'static Mutex<Vec<Option<File>>> {
                 let is_little = key.starts_with("cpu_little");
                 let is_big = key.starts_with("cpu_big");
                 if is_little || is_big {
-                    let prefix_len = if is_little { "cpu_little".len() } else { "cpu_big".len() };
+                    let prefix_len = if is_little {
+                        "cpu_little".len()
+                    } else {
+                        "cpu_big".len()
+                    };
                     if let Ok(n) = key[prefix_len..].parse::<i32>() {
                         let c = if is_little { 0 } else { 1 };
                         qc_zones.push((c, n - 1, key));
@@ -178,8 +182,17 @@ fn get_core_thermal_fds() -> &'static Mutex<Vec<Option<File>>> {
                     };
                     qc_zones.push((c, n, key));
                 }
-            } else if let Some(n) = key.strip_prefix("tsens_tz_sensor").and_then(|s| s.parse().ok()) {
-                let core_idx = if (1..=8).contains(&n) { n - 1 } else if n == 0 { 99 } else { n };
+            } else if let Some(n) = key
+                .strip_prefix("tsens_tz_sensor")
+                .and_then(|s| s.parse().ok())
+            {
+                let core_idx = if (1..=8).contains(&n) {
+                    n - 1
+                } else if n == 0 {
+                    99
+                } else {
+                    n
+                };
                 qc_zones.push((99, core_idx, key));
             }
         }

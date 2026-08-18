@@ -66,7 +66,15 @@ class MainActivity : ComponentActivity() {
                     ThemeMode.SYSTEM -> isSystemInDarkTheme()
                 }
 
-                RvSystemMonitorTheme(darkTheme, amoledMode, hapticEnabled, vibrationIntensity, blurEffectEnabled, navBarBlurEffectEnabled, navBarIsFloating) {
+                RvSystemMonitorTheme(
+                    darkTheme,
+                    amoledMode,
+                    hapticEnabled,
+                    vibrationIntensity,
+                    blurEffectEnabled,
+                    navBarBlurEffectEnabled,
+                    navBarIsFloating,
+                ) {
                     if (BuildConfig.ENABLE_UPDATER) {
                         val updateUiState by updateViewModel.uiState.collectAsStateWithLifecycle()
 

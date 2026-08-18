@@ -613,7 +613,8 @@ fun AppearanceSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onN
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 24.dp, bottomEnd = 24.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = if (navBarBlurEffectEnabled) 0.3f else 0.7f),
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                                    .copy(alpha = if (navBarBlurEffectEnabled) 0.3f else 0.7f),
                             ),
                             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                         ) {

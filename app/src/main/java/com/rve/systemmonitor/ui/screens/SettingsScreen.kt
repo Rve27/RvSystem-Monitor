@@ -55,7 +55,15 @@ fun SettingsScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val context = LocalContext.current
 
-    val settingsItems = remember(context, onNavigateToApp, onNavigateToAppearance, onNavigateToMonitoring, onNavigateToOverlay, onNavigateToRustLibrary, onNavigateToAbout) {
+    val settingsItems = remember(
+        context,
+        onNavigateToApp,
+        onNavigateToAppearance,
+        onNavigateToMonitoring,
+        onNavigateToOverlay,
+        onNavigateToRustLibrary,
+        onNavigateToAbout,
+    ) {
         listOf(
             SettingsItem(
                 title = context.getString(R.string.settings_item_app),
