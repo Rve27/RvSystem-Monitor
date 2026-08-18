@@ -9,6 +9,9 @@ import com.rve.systemmonitor.domain.repository.OverlayRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,6 +21,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@androidx.compose.runtime.Immutable
 data class AppInfo(val packageName: String, val name: String)
 
 @HiltViewModel
@@ -47,8 +51,8 @@ class AutoToggleSettingsViewModel @Inject constructor(
             initialValue = emptySet(),
         )
 
-    private val _installedApps = MutableStateFlow<List<AppInfo>>(emptyList())
-    val installedApps: StateFlow<List<AppInfo>> = _installedApps.asStateFlow()
+    private val _installedApps = MutableStateFlow<ImmutableList<AppInfo>>(persistentListOf())
+    val installedApps: StateFlow<ImmutableList<AppInfo>> = _installedApps.asStateFlow()
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -72,7 +76,7 @@ class AutoToggleSettingsViewModel @Inject constructor(
                     }
                     .sortedBy { it.name.lowercase() }
             }
-            _installedApps.value = apps
+            _installedApps.value = apps.toImmutableList()
             _isLoading.value = false
         }
     }

@@ -229,7 +229,7 @@ private fun AboutScreenContent(
                             }
 
                             else -> {
-                                val otherContributors = list.filter { it.login.lowercase() != "rve27" }
+                                val otherContributors = remember(list) { list.filter { it.login.lowercase() != "rve27" } }
 
                                 if (otherContributors.isEmpty() && !loading) {
                                     Text(
