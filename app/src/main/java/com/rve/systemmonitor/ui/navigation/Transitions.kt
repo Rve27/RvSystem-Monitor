@@ -123,7 +123,7 @@ fun popExitTransition() = slideOutHorizontally(
     animationSpec = tween(TRANSITION_DURATION / 2, easing = EmphasizedAccelerateEasing),
 )
 
-fun isMainRootRoute(route: String?): Boolean = route?.contains("Main") == true
+fun isMainRootRoute(route: Any?): Boolean = route is Route.Main
 
 enum class MainRootDirection {
     FORWARD,
@@ -136,19 +136,19 @@ private val MAIN_ROOT_TRANSITION_SPEC =
 private val MAIN_ROOT_FADE_SPEC =
     tween<Float>(durationMillis = 400, easing = EmphasizedEasing)
 
-fun mainRootDirection(fromRoute: String?, toRoute: String?): MainRootDirection? {
+fun mainRootDirection(fromRoute: Any?, toRoute: Any?): MainRootDirection? {
     val fromIndex = mainRootRouteIndex(fromRoute) ?: return null
     val toIndex = mainRootRouteIndex(toRoute) ?: return null
     if (fromIndex == toIndex) return null
     return if (toIndex > fromIndex) MainRootDirection.FORWARD else MainRootDirection.BACKWARD
 }
 
-private fun mainRootRouteIndex(route: String?): Int? = when {
-    route?.contains("Main") == true -> 0
+private fun mainRootRouteIndex(route: Any?): Int? = when (route) {
+    is Route.Main -> 0
     else -> null
 }
 
-fun mainRootEnterTransition(fromRoute: String?, toRoute: String?, fallback: EnterTransition): EnterTransition =
+fun mainRootEnterTransition(fromRoute: Any?, toRoute: Any?, fallback: EnterTransition): EnterTransition =
     when (mainRootDirection(fromRoute, toRoute)) {
         MainRootDirection.FORWARD -> {
             slideInHorizontally(
@@ -167,7 +167,7 @@ fun mainRootEnterTransition(fromRoute: String?, toRoute: String?, fallback: Ente
         null -> fallback
     }
 
-fun mainRootExitTransition(fromRoute: String?, toRoute: String?, fallback: ExitTransition): ExitTransition =
+fun mainRootExitTransition(fromRoute: Any?, toRoute: Any?, fallback: ExitTransition): ExitTransition =
     when (mainRootDirection(fromRoute, toRoute)) {
         MainRootDirection.FORWARD -> {
             slideOutHorizontally(

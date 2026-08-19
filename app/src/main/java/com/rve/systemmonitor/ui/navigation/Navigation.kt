@@ -1,14 +1,17 @@
 package com.rve.systemmonitor.ui.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.rve.systemmonitor.RvSystemMonitorApp
 import com.rve.systemmonitor.ui.components.ScreenWrapper
 import com.rve.systemmonitor.ui.screens.AboutScreen
@@ -24,155 +27,129 @@ import com.rve.systemmonitor.ui.screens.SetupScreen
 
 @Composable
 fun AppNavigation(isSetupCompleted: Boolean) {
-    val navController = rememberNavController()
-    val startDestination = remember {
+    val startDestination: NavKey = remember {
         if (isSetupCompleted) Route.Main else Route.Setup(isTestFlow = false)
     }
 
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        enterTransition = { aospSharedAxisEnter() },
-        exitTransition = { aospSharedAxisExit() },
-        popEnterTransition = { aospSharedAxisPopEnter() },
-        popExitTransition = { aospSharedAxisPopExit() },
-        modifier = Modifier.background(MaterialTheme.colorScheme.background),
-    ) {
-        composable<Route.Setup>(
-            enterTransition = { enterTransition() },
-            exitTransition = { exitTransition() },
-            popEnterTransition = { popEnterTransition() },
-            popExitTransition = { popExitTransition() },
-        ) { backStackEntry ->
-            val setup: Route.Setup = backStackEntry.toRoute()
+    val backStack = rememberNavBackStack(startDestination)
+
+    val entryProvider = entryProvider<NavKey> {
+        entry<Route.Setup> { setup ->
             SetupScreen(
                 onSetupCompleted = {
                     if (setup.isTestFlow) {
-                        navController.popBackStack()
+                        backStack.removeLastOrNull()
                     } else {
-                        navController.navigateSafely(Route.Main) {
-                            popUpTo(Route.Setup(isTestFlow = false)) { inclusive = true }
-                        }
+                        backStack.clear()
+                        backStack.add(Route.Main)
                     }
                 },
             )
         }
 
-        composable<Route.Main>(
-            enterTransition = {
-                mainRootEnterTransition(
-                    fromRoute = initialState.destination.route,
-                    toRoute = targetState.destination.route,
-                    fallback = enterTransition(),
-                )
-            },
-            exitTransition = {
-                mainRootExitTransition(
-                    fromRoute = initialState.destination.route,
-                    toRoute = targetState.destination.route,
-                    fallback = exitTransition(),
-                )
-            },
-            popEnterTransition = {
-                mainRootEnterTransition(
-                    fromRoute = initialState.destination.route,
-                    toRoute = targetState.destination.route,
-                    fallback = popEnterTransition(),
-                )
-            },
-            popExitTransition = {
-                mainRootExitTransition(
-                    fromRoute = initialState.destination.route,
-                    toRoute = targetState.destination.route,
-                    fallback = popExitTransition(),
-                )
-            },
-        ) {
-            ScreenWrapper(navController = navController, animatedVisibilityScope = this) {
+        entry<Route.Main> { mainRoute ->
+            ScreenWrapper(backStack = backStack, myRoute = mainRoute) {
                 RvSystemMonitorApp(
-                    onNavigateToSettings = { navController.navigateSafely(Route.Settings) },
-                    onNavigateToGPU = { navController.navigateSafely(Route.GPU) },
+                    onNavigateToSettings = { backStack.add(Route.Settings) },
+                    onNavigateToGPU = { backStack.add(Route.GPU) },
                 )
             }
         }
 
-        composable<Route.GPU> {
-            GPUScreen(
-                navController = navController,
-                onNavigateBack = { navController.popBackStack() },
-            )
+        entry<Route.GPU> { route ->
+            ScreenWrapper(backStack = backStack, myRoute = route) {
+                GPUScreen(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                )
+            }
         }
 
-        composable<Route.Settings> {
-            ScreenWrapper(navController = navController, animatedVisibilityScope = this) {
+        entry<Route.Settings> { settingsRoute ->
+            ScreenWrapper(backStack = backStack, myRoute = settingsRoute) {
                 SettingsScreen(
-                    onNavigateBack = { navController.popBackStack() },
-                    onNavigateToApp = { navController.navigateSafely(Route.AppSettings) },
-                    onNavigateToAppearance = { navController.navigateSafely(Route.AppearanceSettings) },
-                    onNavigateToMonitoring = { navController.navigateSafely(Route.MonitoringSettings) },
-                    onNavigateToOverlay = { navController.navigateSafely(Route.OverlaySettings) },
-                    onNavigateToRustLibrary = { navController.navigateSafely(Route.RustLibrary) },
-                    onNavigateToAbout = { navController.navigateSafely(Route.About) },
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToApp = { backStack.add(Route.AppSettings) },
+                    onNavigateToAppearance = { backStack.add(Route.AppearanceSettings) },
+                    onNavigateToMonitoring = { backStack.add(Route.MonitoringSettings) },
+                    onNavigateToOverlay = { backStack.add(Route.OverlaySettings) },
+                    onNavigateToRustLibrary = { backStack.add(Route.RustLibrary) },
+                    onNavigateToAbout = { backStack.add(Route.About) },
                 )
             }
         }
 
-        composable<Route.RustLibrary> {
-            ScreenWrapper(navController = navController, animatedVisibilityScope = this) {
+        entry<Route.RustLibrary> { route ->
+            ScreenWrapper(backStack = backStack, myRoute = route) {
                 RustLibraryScreen(
-                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateBack = { backStack.removeLastOrNull() },
                 )
             }
         }
 
-        composable<Route.AppSettings> {
-            ScreenWrapper(navController = navController, animatedVisibilityScope = this) {
+        entry<Route.AppSettings> { route ->
+            ScreenWrapper(backStack = backStack, myRoute = route) {
                 AppSettingsScreen(
-                    onNavigateBack = { navController.popBackStack() },
-                    onNavigateToSetup = { navController.navigateSafely(Route.Setup(isTestFlow = true)) },
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToSetup = { backStack.add(Route.Setup(isTestFlow = true)) },
                 )
             }
         }
 
-        composable<Route.About> {
-            ScreenWrapper(navController = navController, animatedVisibilityScope = this) {
+        entry<Route.About> { route ->
+            ScreenWrapper(backStack = backStack, myRoute = route) {
                 AboutScreen(
-                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateBack = { backStack.removeLastOrNull() },
                 )
             }
         }
 
-        composable<Route.AppearanceSettings> {
-            ScreenWrapper(navController = navController, animatedVisibilityScope = this) {
+        entry<Route.AppearanceSettings> { route ->
+            ScreenWrapper(backStack = backStack, myRoute = route) {
                 AppearanceSettingsScreen(
-                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateBack = { backStack.removeLastOrNull() },
                 )
             }
         }
 
-        composable<Route.MonitoringSettings> {
-            ScreenWrapper(navController = navController, animatedVisibilityScope = this) {
+        entry<Route.MonitoringSettings> { route ->
+            ScreenWrapper(backStack = backStack, myRoute = route) {
                 MonitoringSettingsScreen(
-                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateBack = { backStack.removeLastOrNull() },
                 )
             }
         }
 
-        composable<Route.OverlaySettings> {
-            ScreenWrapper(navController = navController, animatedVisibilityScope = this) {
+        entry<Route.OverlaySettings> { route ->
+            ScreenWrapper(backStack = backStack, myRoute = route) {
                 OverlaySettingsScreen(
-                    onNavigateBack = { navController.popBackStack() },
-                    onNavigateToAutoToggle = { navController.navigateSafely(Route.AutoToggleSettings) },
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToAutoToggle = { backStack.add(Route.AutoToggleSettings) },
                 )
             }
         }
 
-        composable<Route.AutoToggleSettings> {
-            ScreenWrapper(navController = navController, animatedVisibilityScope = this) {
+        entry<Route.AutoToggleSettings> { route ->
+            ScreenWrapper(backStack = backStack, myRoute = route) {
                 AutoToggleSettingsScreen(
-                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateBack = { backStack.removeLastOrNull() },
                 )
             }
         }
     }
+
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        entryProvider = entryProvider,
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+        transitionSpec = {
+            aospSharedAxisEnter() togetherWith aospSharedAxisExit()
+        },
+        popTransitionSpec = {
+            aospSharedAxisPopEnter() togetherWith aospSharedAxisPopExit()
+        },
+        predictivePopTransitionSpec = {
+            aospSharedAxisPopEnter() togetherWith aospSharedAxisPopExit()
+        },
+    )
 }

@@ -32,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.rve.systemmonitor.R
 import com.rve.systemmonitor.domain.model.GPU
 import com.rve.systemmonitor.ui.components.ExitUntilCollapsedMediumTopAppBar
@@ -49,27 +48,23 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GPUScreen(navController: NavController, onNavigateBack: () -> Unit, viewModel: GPUViewModel = hiltViewModel()) {
+fun GPUScreen(onNavigateBack: () -> Unit, viewModel: GPUViewModel = hiltViewModel()) {
     val gpuInfo by viewModel.gpuInfo.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    ScreenWrapper(
-        navController = navController,
-    ) {
-        Scaffold(
-            topBar = {
-                ExitUntilCollapsedMediumTopAppBar(
-                    title = stringResource(R.string.title_graphics_info),
-                    onNavigateBack = onNavigateBack,
-                    scrollBehavior = scrollBehavior,
-                )
-            },
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            containerColor = MaterialTheme.colorScheme.background,
-        ) { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
-                GPUScreenContent(gpuInfo = gpuInfo)
-            }
+    Scaffold(
+        topBar = {
+            ExitUntilCollapsedMediumTopAppBar(
+                title = stringResource(R.string.title_graphics_info),
+                onNavigateBack = onNavigateBack,
+                scrollBehavior = scrollBehavior,
+            )
+        },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.background,
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            GPUScreenContent(gpuInfo = gpuInfo)
         }
     }
 }
