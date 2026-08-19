@@ -147,13 +147,24 @@ private fun ChargingSpeedCard(battery: Battery, history: ImmutableList<BatteryDa
 
     val accentColor = MaterialTheme.colorScheme.primary
 
-    StandardCard {
+    val currentSessionHistory = remember(history, battery.status) {
+        history.takeLastWhile { it.status == battery.status }
+    }
+    val isGraphVisible = currentSessionHistory.size >= 2
+
+    StandardCard(contentPadding = 0.dp) {
         Column(
             modifier = Modifier.animateContentSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 20.dp,
+                        top = 20.dp,
+                        end = 20.dp,
+                        bottom = if (isGraphVisible) 16.dp else 20.dp
+                    ),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -179,10 +190,6 @@ private fun ChargingSpeedCard(battery: Battery, history: ImmutableList<BatteryDa
                 )
             }
 
-            val currentSessionHistory = remember(history, battery.status) {
-                history.takeLastWhile { it.status == battery.status }
-            }
-
             val actualMax = remember(currentSessionHistory) {
                 if (currentSessionHistory.isNotEmpty()) currentSessionHistory.maxOf { abs(it.mA) }.toFloat() else 0f
             }
@@ -196,7 +203,7 @@ private fun ChargingSpeedCard(battery: Battery, history: ImmutableList<BatteryDa
             val enterTransition = if (hasAnimated) EnterTransition.None else fadeIn(animationSpec = tween(1000))
 
             AnimatedVisibility(
-                visible = currentSessionHistory.size >= 2,
+                visible = isGraphVisible,
                 enter = enterTransition,
                 exit = fadeOut(),
             ) {
@@ -283,7 +290,7 @@ private fun ChargingSpeedCard(battery: Battery, history: ImmutableList<BatteryDa
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                             modifier = Modifier
                                 .align(Alignment.TopStart)
-                                .padding(top = 4.dp, start = 4.dp),
+                                .padding(top = 4.dp, start = 20.dp),
                         )
                         Text(
                             text = stringResource(R.string.battery_graph_min, "$sign${minValInHistory.toInt()}"),
@@ -291,7 +298,7 @@ private fun ChargingSpeedCard(battery: Battery, history: ImmutableList<BatteryDa
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                             modifier = Modifier
                                 .align(Alignment.BottomStart)
-                                .padding(bottom = 4.dp, start = 4.dp),
+                                .padding(bottom = 4.dp, start = 20.dp),
                         )
 
                         currentSessionHistory.forEachIndexed { index, point ->
