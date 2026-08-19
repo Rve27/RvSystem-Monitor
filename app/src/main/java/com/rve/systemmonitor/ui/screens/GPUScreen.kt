@@ -127,19 +127,11 @@ private fun GPUScreenContent(gpuInfo: GPU) {
 
                 TwoColumnInfoRow {
                     InfoItem(
-                        label = stringResource(R.string.gpu_label_max_texture_size),
-                        value = if (gpuInfo.maxTextureSize > 0) {
-                            stringResource(R.string.gpu_max_texture_size_format, gpuInfo.maxTextureSize)
-                        } else {
-                            stringResource(R.string.value_unknown)
-                        },
-                        modifier = Modifier.weight(1f),
-                    )
-                    InfoItem(
                         label = stringResource(R.string.gpu_label_extensions),
                         value = "${gpuInfo.extensionsCount}",
                         modifier = Modifier.weight(1f),
                     )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
 
                 if (gpuInfo.openGlExtensions.isNotEmpty()) {
@@ -155,6 +147,31 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                     ) {
                         Text("Show all extensions")
                     }
+                }
+            }
+        }
+
+        item {
+            StandardCard {
+                Text(
+                    text = "OpenGL ES Limits",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(bottom = 16.dp),
+                )
+
+                TwoColumnInfoRow {
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_max_texture_size),
+                        value = if (gpuInfo.maxTextureSize > 0) {
+                            stringResource(R.string.gpu_max_texture_size_format, gpuInfo.maxTextureSize)
+                        } else {
+                            stringResource(R.string.value_unknown)
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
