@@ -266,11 +266,32 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                     )
                 }
 
-                TwoColumnInfoRow {
+                TwoColumnInfoRow(modifier = Modifier.padding(bottom = 16.dp)) {
                     InfoItem(
                         label = stringResource(R.string.gpu_label_max_vertex_texture_image_units),
                         value = if (gpuInfo.maxVertexTextureImageUnits > 0) {
                             "${gpuInfo.maxVertexTextureImageUnits}"
+                        } else {
+                            stringResource(R.string.value_unknown)
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_max_combined_texture_image_units),
+                        value = if (gpuInfo.maxCombinedTextureImageUnits > 0) {
+                            "${gpuInfo.maxCombinedTextureImageUnits}"
+                        } else {
+                            stringResource(R.string.value_unknown)
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+
+                TwoColumnInfoRow {
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_max_viewport_dims),
+                        value = if (gpuInfo.maxViewportDims.first > 0 && gpuInfo.maxViewportDims.second > 0) {
+                            "${gpuInfo.maxViewportDims.first} x ${gpuInfo.maxViewportDims.second}"
                         } else {
                             stringResource(R.string.value_unknown)
                         },

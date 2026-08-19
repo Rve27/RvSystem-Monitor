@@ -24,6 +24,8 @@ data class GPU(
     val maxFragmentUniformVectors: Int = 0,
     val maxTextureImageUnits: Int = 0,
     val maxVertexTextureImageUnits: Int = 0,
+    val maxCombinedTextureImageUnits: Int = 0,
+    val maxViewportDims: Pair<Int, Int> = Pair(0, 0),
     val extensionsCount: Int = 0,
     val openGlExtensions: ImmutableList<String> = persistentListOf(),
     val vulkanExtensionsCount: Int = 0,
