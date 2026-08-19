@@ -51,6 +51,7 @@ object GpuUtils {
     private var cachedMaxCubeMapSize: Int? = null
     private var cachedMax3DTextureSize: Int? = null
     private var cachedMaxRenderbufferSize: Int? = null
+    private var cachedMaxMsaaSamples: Int? = null
 
     fun getGpuDetails(): Triple<String, String, Pair<Int, Int>> {
         cachedGpuDetails?.let { return it }
@@ -106,6 +107,10 @@ object GpuUtils {
             val maxRenderbufferSize = IntArray(1)
             GLES20.glGetIntegerv(GLES20.GL_MAX_RENDERBUFFER_SIZE, maxRenderbufferSize, 0)
             cachedMaxRenderbufferSize = maxRenderbufferSize[0]
+
+            val maxMsaaSamples = IntArray(1)
+            GLES30.glGetIntegerv(GLES30.GL_MAX_SAMPLES, maxMsaaSamples, 0)
+            cachedMaxMsaaSamples = maxMsaaSamples[0]
 
             val extensions = GLES20.glGetString(GLES20.GL_EXTENSIONS) ?: ""
             val extList = if (extensions.isEmpty()) emptyList() else extensions.split(" ")
@@ -258,6 +263,12 @@ object GpuUtils {
         cachedMaxRenderbufferSize?.let { return it }
         getGpuDetails()
         return cachedMaxRenderbufferSize ?: 0
+    }
+
+    fun getMaxMsaaSamples(): Int {
+        cachedMaxMsaaSamples?.let { return it }
+        getGpuDetails()
+        return cachedMaxMsaaSamples ?: 0
     }
 
     fun getOpenGlExtensions(): List<String> {

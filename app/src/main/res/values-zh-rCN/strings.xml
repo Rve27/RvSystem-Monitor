@@ -88,6 +88,7 @@
     <string name="gpu_label_max_cube_map_size">最大立方体贴图尺寸</string>
     <string name="gpu_label_max_3d_texture_size">最大3D纹理尺寸</string>
     <string name="gpu_label_max_renderbuffer_size">最大渲染缓冲区尺寸</string>
+    <string name="gpu_label_max_msaa_samples">最大MSAA采样数</string>
     <string name="gpu_label_extensions">扩展</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">API 版本</string>
