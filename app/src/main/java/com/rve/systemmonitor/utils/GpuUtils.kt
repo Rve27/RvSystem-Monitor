@@ -5,6 +5,7 @@ import android.content.Context
 import android.opengl.EGL14
 import android.opengl.EGLConfig
 import android.opengl.GLES20
+import android.opengl.GLES30
 import android.util.Log
 
 object GpuUtils {
@@ -48,6 +49,7 @@ object GpuUtils {
     private var cachedShadingLanguageVersion: String? = null
     private var cachedOpenGlExtensions: List<String>? = null
     private var cachedMaxCubeMapSize: Int? = null
+    private var cachedMax3DTextureSize: Int? = null
 
     fun getGpuDetails(): Triple<String, String, Pair<Int, Int>> {
         cachedGpuDetails?.let { return it }
@@ -94,6 +96,11 @@ object GpuUtils {
             val maxCubeMapSize = IntArray(1)
             GLES20.glGetIntegerv(GLES20.GL_MAX_CUBE_MAP_TEXTURE_SIZE, maxCubeMapSize, 0)
             cachedMaxCubeMapSize = maxCubeMapSize[0]
+
+            val max3DTextureSize = IntArray(1)
+            // Try fetching from GLES30 (or GLES20 with OES_texture_3D)
+            GLES30.glGetIntegerv(GLES30.GL_MAX_3D_TEXTURE_SIZE, max3DTextureSize, 0)
+            cachedMax3DTextureSize = max3DTextureSize[0]
 
             val extensions = GLES20.glGetString(GLES20.GL_EXTENSIONS) ?: ""
             val extList = if (extensions.isEmpty()) emptyList() else extensions.split(" ")
@@ -234,6 +241,12 @@ object GpuUtils {
         cachedMaxCubeMapSize?.let { return it }
         getGpuDetails()
         return cachedMaxCubeMapSize ?: 0
+    }
+
+    fun getMax3DTextureSize(): Int {
+        cachedMax3DTextureSize?.let { return it }
+        getGpuDetails()
+        return cachedMax3DTextureSize ?: 0
     }
 
     fun getOpenGlExtensions(): List<String> {

@@ -86,6 +86,7 @@
     <string name="gpu_label_shader_version">Shader Version</string>
     <string name="gpu_label_max_texture_size">Max Texture Size</string>
     <string name="gpu_label_max_cube_map_size">Max Cube Map Size</string>
+    <string name="gpu_label_max_3d_texture_size">Max 3D Texture Size</string>
     <string name="gpu_label_extensions">Extensions</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">API Version</string>

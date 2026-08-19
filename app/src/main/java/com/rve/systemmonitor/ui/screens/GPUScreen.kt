@@ -161,7 +161,7 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                     modifier = Modifier.padding(bottom = 16.dp),
                 )
 
-                TwoColumnInfoRow {
+                TwoColumnInfoRow(modifier = Modifier.padding(bottom = 16.dp)) {
                     InfoItem(
                         label = stringResource(R.string.gpu_label_max_texture_size),
                         value = if (gpuInfo.maxTextureSize > 0) {
@@ -180,6 +180,19 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         },
                         modifier = Modifier.weight(1f),
                     )
+                }
+
+                TwoColumnInfoRow {
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_max_3d_texture_size),
+                        value = if (gpuInfo.max3DTextureSize > 0) {
+                            stringResource(R.string.gpu_max_texture_size_format, gpuInfo.max3DTextureSize)
+                        } else {
+                            stringResource(R.string.value_unknown)
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
