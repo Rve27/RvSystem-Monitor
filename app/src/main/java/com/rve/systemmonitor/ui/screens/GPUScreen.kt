@@ -192,7 +192,15 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         },
                         modifier = Modifier.weight(1f),
                     )
-                    Spacer(modifier = Modifier.weight(1f))
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_max_renderbuffer_size),
+                        value = if (gpuInfo.maxRenderbufferSize > 0) {
+                            stringResource(R.string.gpu_max_texture_size_format, gpuInfo.maxRenderbufferSize)
+                        } else {
+                            stringResource(R.string.value_unknown)
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
                 }
             }
         }

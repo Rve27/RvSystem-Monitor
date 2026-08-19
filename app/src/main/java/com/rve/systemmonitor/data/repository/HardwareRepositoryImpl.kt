@@ -84,6 +84,7 @@ class HardwareRepositoryImpl @Inject constructor(
             maxTextureSize = maxTexSize,
             maxCubeMapSize = GpuUtils.getMaxCubeMapTextureSize(),
             max3DTextureSize = GpuUtils.getMax3DTextureSize(),
+            maxRenderbufferSize = GpuUtils.getMaxRenderbufferSize(),
             extensionsCount = extCount,
             openGlExtensions = GpuUtils.getOpenGlExtensions().toImmutableList(),
             vulkanExtensionsCount = GpuUtils.getVulkanExtensionsCount(),
