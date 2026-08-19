@@ -14,6 +14,7 @@ data class GPU(
     val vulkanDriverVersion: String = "unknown",
     val temperature: Double = 0.0,
     val maxTextureSize: Int = 0,
+    val maxCubeMapSize: Int = 0,
     val extensionsCount: Int = 0,
     val openGlExtensions: ImmutableList<String> = persistentListOf(),
     val vulkanExtensionsCount: Int = 0,

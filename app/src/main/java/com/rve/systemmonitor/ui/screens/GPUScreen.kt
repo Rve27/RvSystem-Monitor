@@ -171,7 +171,15 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         },
                         modifier = Modifier.weight(1f),
                     )
-                    Spacer(modifier = Modifier.weight(1f))
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_max_cube_map_size),
+                        value = if (gpuInfo.maxCubeMapSize > 0) {
+                            stringResource(R.string.gpu_max_texture_size_format, gpuInfo.maxCubeMapSize)
+                        } else {
+                            stringResource(R.string.value_unknown)
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
                 }
             }
         }

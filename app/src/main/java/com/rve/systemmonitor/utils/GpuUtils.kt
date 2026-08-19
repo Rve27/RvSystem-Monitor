@@ -47,6 +47,7 @@ object GpuUtils {
     private var cachedVulkanMaxFramebufferDepthSamples: Int? = null
     private var cachedShadingLanguageVersion: String? = null
     private var cachedOpenGlExtensions: List<String>? = null
+    private var cachedMaxCubeMapSize: Int? = null
 
     fun getGpuDetails(): Triple<String, String, Pair<Int, Int>> {
         cachedGpuDetails?.let { return it }
@@ -89,6 +90,10 @@ object GpuUtils {
 
             val maxTexSize = IntArray(1)
             GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxTexSize, 0)
+
+            val maxCubeMapSize = IntArray(1)
+            GLES20.glGetIntegerv(GLES20.GL_MAX_CUBE_MAP_TEXTURE_SIZE, maxCubeMapSize, 0)
+            cachedMaxCubeMapSize = maxCubeMapSize[0]
 
             val extensions = GLES20.glGetString(GLES20.GL_EXTENSIONS) ?: ""
             val extList = if (extensions.isEmpty()) emptyList() else extensions.split(" ")
@@ -223,6 +228,12 @@ object GpuUtils {
         cachedVulkanMaxFramebufferDepthSamples?.let { return it }
         updateVulkanInfo()
         return cachedVulkanMaxFramebufferDepthSamples ?: 0
+    }
+
+    fun getMaxCubeMapTextureSize(): Int {
+        cachedMaxCubeMapSize?.let { return it }
+        getGpuDetails()
+        return cachedMaxCubeMapSize ?: 0
     }
 
     fun getOpenGlExtensions(): List<String> {
