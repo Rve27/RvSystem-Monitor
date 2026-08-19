@@ -93,6 +93,7 @@
     <string name="gpu_label_max_varying_vectors">Max Varying (Components/Vectors)</string>
     <string name="gpu_label_max_vertex_uniform_vectors">Max Vertex Uniform Vectors</string>
     <string name="gpu_label_max_fragment_uniform_vectors">Max Fragment Uniform Vectors</string>
+    <string name="gpu_label_max_texture_image_units">Max Texture Image Units</string>
     <string name="gpu_label_extensions">Extensions</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">API Version</string>
