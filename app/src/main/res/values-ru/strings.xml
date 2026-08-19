@@ -92,6 +92,7 @@
     <string name="gpu_label_max_vertex_attribs">Макс. вершинных атрибутов</string>
     <string name="gpu_label_max_varying_vectors">Макс. varying (компонентов/векторов)</string>
     <string name="gpu_label_max_vertex_uniform_vectors">Макс. uniform-векторов вершин</string>
+    <string name="gpu_label_max_fragment_uniform_vectors">Макс. uniform-векторов фрагментов</string>
     <string name="gpu_label_extensions">Расширения</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">Версия API</string>

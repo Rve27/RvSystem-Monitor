@@ -89,6 +89,7 @@ class HardwareRepositoryImpl @Inject constructor(
             maxVertexAttribs = GpuUtils.getMaxVertexAttribs(),
             maxVaryingVectors = GpuUtils.getMaxVaryingVectors(),
             maxVertexUniformVectors = GpuUtils.getMaxVertexUniformVectors(),
+            maxFragmentUniformVectors = GpuUtils.getMaxFragmentUniformVectors(),
             extensionsCount = extCount,
             openGlExtensions = GpuUtils.getOpenGlExtensions().toImmutableList(),
             vulkanExtensionsCount = GpuUtils.getVulkanExtensionsCount(),

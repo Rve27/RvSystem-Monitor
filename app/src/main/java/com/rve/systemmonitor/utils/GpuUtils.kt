@@ -55,6 +55,7 @@ object GpuUtils {
     private var cachedMaxVertexAttribs: Int? = null
     private var cachedMaxVaryingVectors: Int? = null
     private var cachedMaxVertexUniformVectors: Int? = null
+    private var cachedMaxFragmentUniformVectors: Int? = null
 
     fun getGpuDetails(): Triple<String, String, Pair<Int, Int>> {
         cachedGpuDetails?.let { return it }
@@ -126,6 +127,10 @@ object GpuUtils {
             val maxVertexUniformVectors = IntArray(1)
             GLES20.glGetIntegerv(GLES20.GL_MAX_VERTEX_UNIFORM_VECTORS, maxVertexUniformVectors, 0)
             cachedMaxVertexUniformVectors = maxVertexUniformVectors[0]
+
+            val maxFragmentUniformVectors = IntArray(1)
+            GLES20.glGetIntegerv(GLES20.GL_MAX_FRAGMENT_UNIFORM_VECTORS, maxFragmentUniformVectors, 0)
+            cachedMaxFragmentUniformVectors = maxFragmentUniformVectors[0]
 
             val extensions = GLES20.glGetString(GLES20.GL_EXTENSIONS) ?: ""
             val extList = if (extensions.isEmpty()) emptyList() else extensions.split(" ")
@@ -302,6 +307,12 @@ object GpuUtils {
         cachedMaxVertexUniformVectors?.let { return it }
         getGpuDetails()
         return cachedMaxVertexUniformVectors ?: 0
+    }
+
+    fun getMaxFragmentUniformVectors(): Int {
+        cachedMaxFragmentUniformVectors?.let { return it }
+        getGpuDetails()
+        return cachedMaxFragmentUniformVectors ?: 0
     }
 
     fun getOpenGlExtensions(): List<String> {
