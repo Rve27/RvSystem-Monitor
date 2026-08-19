@@ -18,6 +18,7 @@ data class GPU(
     val max3DTextureSize: Int = 0,
     val maxRenderbufferSize: Int = 0,
     val maxMsaaSamples: Int = 0,
+    val maxVertexAttribs: Int = 0,
     val extensionsCount: Int = 0,
     val openGlExtensions: ImmutableList<String> = persistentListOf(),
     val vulkanExtensionsCount: Int = 0,
