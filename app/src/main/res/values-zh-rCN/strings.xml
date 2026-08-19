@@ -90,6 +90,7 @@
     <string name="gpu_label_max_renderbuffer_size">最大渲染缓冲区尺寸</string>
     <string name="gpu_label_max_msaa_samples">最大MSAA采样数</string>
     <string name="gpu_label_max_vertex_attribs">最大顶点属性数</string>
+    <string name="gpu_label_max_varying_vectors">最大Varying (组件/向量)</string>
     <string name="gpu_label_extensions">扩展</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">API 版本</string>
