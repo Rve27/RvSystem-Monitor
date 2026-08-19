@@ -245,7 +245,7 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                     )
                 }
 
-                TwoColumnInfoRow {
+                TwoColumnInfoRow(modifier = Modifier.padding(bottom = 16.dp)) {
                     InfoItem(
                         label = stringResource(R.string.gpu_label_max_fragment_uniform_vectors),
                         value = if (gpuInfo.maxFragmentUniformVectors > 0) {
@@ -264,6 +264,19 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         },
                         modifier = Modifier.weight(1f),
                     )
+                }
+
+                TwoColumnInfoRow {
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_max_vertex_texture_image_units),
+                        value = if (gpuInfo.maxVertexTextureImageUnits > 0) {
+                            "${gpuInfo.maxVertexTextureImageUnits}"
+                        } else {
+                            stringResource(R.string.value_unknown)
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
