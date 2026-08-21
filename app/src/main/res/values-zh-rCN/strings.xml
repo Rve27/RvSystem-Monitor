@@ -99,6 +99,7 @@
     <string name="gpu_label_max_viewport_dims">最大视口尺寸 (Viewport Dims)</string>
     <string name="gpu_label_max_array_texture_layers">最大数组纹理层数</string>
     <string name="gpu_label_max_color_attachments">最大帧缓冲颜色附件数</string>
+    <string name="gpu_label_max_vertex_uniform_blocks">最大顶点一致块 (Vertex Uniform Blocks)</string>
     <string name="gpu_label_extensions">扩展</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">API 版本</string>

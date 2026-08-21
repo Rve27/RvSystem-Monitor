@@ -96,6 +96,7 @@ class HardwareRepositoryImpl @Inject constructor(
             maxViewportDims = GpuUtils.getMaxViewportDims(),
             maxArrayTextureLayers = GpuUtils.getMaxArrayTextureLayers(),
             maxColorAttachments = GpuUtils.getMaxColorAttachments(),
+            maxVertexUniformBlocks = GpuUtils.getMaxVertexUniformBlocks(),
             extensionsCount = extCount,
             openGlExtensions = GpuUtils.getOpenGlExtensions().toImmutableList(),
             vulkanExtensionsCount = GpuUtils.getVulkanExtensionsCount(),
