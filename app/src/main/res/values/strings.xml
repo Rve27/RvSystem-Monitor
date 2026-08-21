@@ -119,7 +119,7 @@
     <string name="gpu_btn_show_all_extensions">Show all extensions</string>
     <string name="gpu_btn_show_device_extensions">Show device extensions</string>
     <string name="gpu_vulkan">Vulkan</string>
-    <string name="gpu_label_api_version">API Version</string>
+    <string name="gpu_label_api_version">Device API</string>
     <string name="gpu_label_driver_version">Driver Version</string>
     <string name="gpu_label_device_type">Device Type</string>
 

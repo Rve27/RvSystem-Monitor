@@ -119,7 +119,7 @@
     <string name="gpu_btn_show_all_extensions">Показати всі розширення</string>
     <string name="gpu_btn_show_device_extensions">Показати розширення пристрою</string>
     <string name="gpu_vulkan">Vulkan</string>
-    <string name="gpu_label_api_version">Версія API</string>
+    <string name="gpu_label_api_version">API пристрою</string>
     <string name="gpu_label_driver_version">Версія драйвера</string>
     <string name="gpu_label_device_type">Тип пристрою</string>
 
