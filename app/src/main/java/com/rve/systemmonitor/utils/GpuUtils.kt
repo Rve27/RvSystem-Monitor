@@ -111,8 +111,7 @@ object GpuUtils {
                 cachedDetailedGlesVersion = fullVersion.removePrefix("OpenGL ES ").trim()
             }
 
-            cachedShadingLanguageVersion = GLES20.glGetString(GLES20.GL_SHADING_LANGUAGE_VERSION)
-                ?.removePrefix("OpenGL ES GLSL ES ")?.trim()
+            cachedShadingLanguageVersion = GLES20.glGetString(GLES20.GL_SHADING_LANGUAGE_VERSION)?.trim()
 
             val maxTexSize = IntArray(1)
             GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxTexSize, 0)
