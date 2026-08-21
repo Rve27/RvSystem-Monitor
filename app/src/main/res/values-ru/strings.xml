@@ -105,6 +105,7 @@
     <string name="gpu_label_max_compute_uniform_blocks">Макс. вычислительных uniform-блоков</string>
     <string name="gpu_label_max_geometry_uniform_blocks">Макс. геометрических uniform-блоков</string>
     <string name="gpu_label_max_tess_control_uniform_blocks">Макс. uniform-блоков управления тесселяцией</string>
+    <string name="gpu_label_max_tess_evaluation_uniform_blocks">Макс. uniform-блоков вычисления тесселяции</string>
     <string name="gpu_label_extensions">Расширения</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">Версия API</string>

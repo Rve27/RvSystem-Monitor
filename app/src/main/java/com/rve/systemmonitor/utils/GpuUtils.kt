@@ -70,6 +70,7 @@ object GpuUtils {
     private var cachedMaxComputeUniformBlocks: Int? = null
     private var cachedMaxGeometryUniformBlocks: Int? = null
     private var cachedMaxTessControlUniformBlocks: Int? = null
+    private var cachedMaxTessEvaluationUniformBlocks: Int? = null
 
     fun getGpuDetails(): Triple<String, String, Pair<Int, Int>> {
         cachedGpuDetails?.let { return it }
@@ -193,6 +194,10 @@ object GpuUtils {
             val maxTessControlUniformBlocks = IntArray(1)
             GLES32.glGetIntegerv(GLES32.GL_MAX_TESS_CONTROL_UNIFORM_BLOCKS, maxTessControlUniformBlocks, 0)
             cachedMaxTessControlUniformBlocks = maxTessControlUniformBlocks[0]
+
+            val maxTessEvaluationUniformBlocks = IntArray(1)
+            GLES32.glGetIntegerv(GLES32.GL_MAX_TESS_EVALUATION_UNIFORM_BLOCKS, maxTessEvaluationUniformBlocks, 0)
+            cachedMaxTessEvaluationUniformBlocks = maxTessEvaluationUniformBlocks[0]
 
             val extensions = GLES20.glGetString(GLES20.GL_EXTENSIONS) ?: ""
             val extList = if (extensions.isEmpty()) emptyList() else extensions.split(" ")
@@ -447,6 +452,12 @@ object GpuUtils {
         cachedMaxTessControlUniformBlocks?.let { return it }
         getGpuDetails()
         return cachedMaxTessControlUniformBlocks ?: 0
+    }
+
+    fun getMaxTessEvaluationUniformBlocks(): Int {
+        cachedMaxTessEvaluationUniformBlocks?.let { return it }
+        getGpuDetails()
+        return cachedMaxTessEvaluationUniformBlocks ?: 0
     }
 
     fun getOpenGlExtensions(): List<String> {
