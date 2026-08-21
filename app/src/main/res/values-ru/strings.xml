@@ -108,6 +108,7 @@
     <string name="gpu_label_max_tess_evaluation_uniform_blocks">Макс. uniform-блоков вычисления тесселяции</string>
     <string name="gpu_label_subpixel_bits">Субпиксельные биты</string>
     <string name="gpu_label_aliased_line_width">Ширина aliased-линии</string>
+    <string name="gpu_label_compressed_texture_formats">Форматы сжатых текстур</string>
     <string name="gpu_label_extensions">Расширения</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">Версия API</string>

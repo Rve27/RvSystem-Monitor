@@ -37,6 +37,7 @@ data class GPU(
     val maxTessEvaluationUniformBlocks: Int = 0,
     val subpixelBits: Int = 0,
     val aliasedLineWidthRange: Pair<Float, Float> = Pair(0f, 0f),
+    val numCompressedTextureFormats: Int = 0,
     val extensionsCount: Int = 0,
     val openGlExtensions: ImmutableList<String> = persistentListOf(),
     val vulkanExtensionsCount: Int = 0,

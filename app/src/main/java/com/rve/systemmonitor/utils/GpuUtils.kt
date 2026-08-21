@@ -73,6 +73,7 @@ object GpuUtils {
     private var cachedMaxTessEvaluationUniformBlocks: Int? = null
     private var cachedSubpixelBits: Int? = null
     private var cachedAliasedLineWidthRange: Pair<Float, Float>? = null
+    private var cachedNumCompressedTextureFormats: Int? = null
 
     fun getGpuDetails(): Triple<String, String, Pair<Int, Int>> {
         cachedGpuDetails?.let { return it }
@@ -208,6 +209,10 @@ object GpuUtils {
             val aliasedLineWidthRange = FloatArray(2)
             GLES20.glGetFloatv(GLES20.GL_ALIASED_LINE_WIDTH_RANGE, aliasedLineWidthRange, 0)
             cachedAliasedLineWidthRange = Pair(aliasedLineWidthRange[0], aliasedLineWidthRange[1])
+
+            val numCompressedTextureFormats = IntArray(1)
+            GLES20.glGetIntegerv(GLES20.GL_NUM_COMPRESSED_TEXTURE_FORMATS, numCompressedTextureFormats, 0)
+            cachedNumCompressedTextureFormats = numCompressedTextureFormats[0]
 
             val extensions = GLES20.glGetString(GLES20.GL_EXTENSIONS) ?: ""
             val extList = if (extensions.isEmpty()) emptyList() else extensions.split(" ")
@@ -480,6 +485,12 @@ object GpuUtils {
         cachedAliasedLineWidthRange?.let { return it }
         getGpuDetails()
         return cachedAliasedLineWidthRange ?: Pair(0f, 0f)
+    }
+
+    fun getNumCompressedTextureFormats(): Int {
+        cachedNumCompressedTextureFormats?.let { return it }
+        getGpuDetails()
+        return cachedNumCompressedTextureFormats ?: 0
     }
 
     fun getOpenGlExtensions(): List<String> {
