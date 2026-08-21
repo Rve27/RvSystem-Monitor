@@ -83,6 +83,7 @@
     <string name="title_graphics_info">Инфо о графике</string>
     <string name="gpu_opengl_es">OpenGL ES</string>
     <string name="gpu_label_version">Версия</string>
+    <string name="gpu_label_es_level">Уровень ES</string>
     <string name="gpu_label_glsl_version">Версия GLSL</string>
     <string name="gpu_label_max_texture_size">Макс. размер текстуры</string>
     <string name="gpu_label_max_cube_map_size">Макс. размер кубической текстуры</string>
