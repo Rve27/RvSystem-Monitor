@@ -98,6 +98,7 @@
     <string name="gpu_label_max_combined_texture_image_units">Макс. комбінованих текстурних блоків</string>
     <string name="gpu_label_max_viewport_dims">Макс. розмір Viewport</string>
     <string name="gpu_label_max_array_texture_layers">Макс. шарів масиву текстур</string>
+    <string name="gpu_label_max_color_attachments">Макс. колірних вкладень фреймбуфера</string>
     <string name="gpu_label_extensions">Розширення</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">Версія API</string>
