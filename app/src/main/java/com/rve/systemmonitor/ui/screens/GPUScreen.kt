@@ -339,7 +339,15 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         },
                         modifier = Modifier.weight(1f),
                     )
-                    Spacer(modifier = Modifier.weight(1f))
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_max_combined_uniform_blocks),
+                        value = if (gpuInfo.maxCombinedUniformBlocks > 0) {
+                            "${gpuInfo.maxCombinedUniformBlocks}"
+                        } else {
+                            stringResource(R.string.value_unknown)
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
                 }
             }
         }

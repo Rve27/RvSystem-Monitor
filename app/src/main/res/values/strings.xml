@@ -101,6 +101,7 @@
     <string name="gpu_label_max_color_attachments">Max Framebuffer Color Attachments</string>
     <string name="gpu_label_max_vertex_uniform_blocks">Max Vertex Uniform Blocks</string>
     <string name="gpu_label_max_fragment_uniform_blocks">Max Fragment Uniform Blocks</string>
+    <string name="gpu_label_max_combined_uniform_blocks">Max Combined Uniform Blocks</string>
     <string name="gpu_label_extensions">Extensions</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">API Version</string>

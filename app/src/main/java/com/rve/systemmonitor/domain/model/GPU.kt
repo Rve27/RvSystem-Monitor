@@ -30,6 +30,7 @@ data class GPU(
     val maxColorAttachments: Int = 0,
     val maxVertexUniformBlocks: Int = 0,
     val maxFragmentUniformBlocks: Int = 0,
+    val maxCombinedUniformBlocks: Int = 0,
     val extensionsCount: Int = 0,
     val openGlExtensions: ImmutableList<String> = persistentListOf(),
     val vulkanExtensionsCount: Int = 0,
