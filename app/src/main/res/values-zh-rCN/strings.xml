@@ -85,6 +85,7 @@
     <string name="gpu_label_gl_version">GL 版本</string>
     <string name="gpu_label_es_level">ES 级别 (ES Level)</string>
     <string name="gpu_label_egl_version">EGL 版本 (EGL Version)</string>
+    <string name="gpu_label_egl_vendor">EGL 供应商 (EGL Vendor)</string>
     <string name="gpu_label_glsl_version">GLSL 版本</string>
     <string name="gpu_label_max_texture_size">最大纹理尺寸</string>
     <string name="gpu_label_max_cube_map_size">最大立方体贴图尺寸</string>

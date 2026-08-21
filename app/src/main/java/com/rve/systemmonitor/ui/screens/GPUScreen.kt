@@ -137,7 +137,11 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         value = gpuInfo.shadingLanguageVersion,
                         modifier = Modifier.weight(1f),
                     )
-                    Spacer(modifier = Modifier.weight(1f))
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_egl_vendor),
+                        value = gpuInfo.eglVendor,
+                        modifier = Modifier.weight(1f),
+                    )
                 }
 
                 TwoColumnInfoRow {

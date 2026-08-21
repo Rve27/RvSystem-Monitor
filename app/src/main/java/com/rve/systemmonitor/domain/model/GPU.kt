@@ -10,6 +10,7 @@ data class GPU(
     val vendor: String = "unknown",
     val glesVersion: String = "unknown",
     val eglVersion: String = "unknown",
+    val eglVendor: String = "unknown",
     val detailedGlesVersion: String = "unknown",
     val vulkanVersion: String = "unknown",
     val vulkanDriverVersion: String = "unknown",

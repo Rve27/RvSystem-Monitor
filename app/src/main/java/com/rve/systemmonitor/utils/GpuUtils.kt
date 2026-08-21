@@ -34,6 +34,7 @@ object GpuUtils {
     private var cachedGlesVersion: String? = null
     private var cachedDetailedGlesVersion: String? = null
     private var cachedEglVersion: String? = null
+    private var cachedEglVendor: String? = null
     private var cachedVulkanVersion: String? = null
     private var cachedVulkanDriverVersion: String? = null
     private var cachedVulkanDeviceType: String? = null
@@ -83,6 +84,7 @@ object GpuUtils {
             val version = IntArray(2)
             EGL14.eglInitialize(display, version, 0, version, 1)
             cachedEglVersion = EGL14.eglQueryString(display, EGL14.EGL_VERSION)?.trim()
+            cachedEglVendor = EGL14.eglQueryString(display, EGL14.EGL_VENDOR)?.trim()
 
             val configAttribs = intArrayOf(
                 EGL14.EGL_RENDERABLE_TYPE, EGL14.EGL_OPENGL_ES2_BIT,
@@ -256,6 +258,12 @@ object GpuUtils {
         cachedEglVersion?.let { return it }
         getGpuDetails()
         return cachedEglVersion ?: "Unknown"
+    }
+
+    fun getEglVendor(): String {
+        cachedEglVendor?.let { return it }
+        getGpuDetails()
+        return cachedEglVendor ?: "Unknown"
     }
 
     fun getGlesVersion(context: Context): String {
