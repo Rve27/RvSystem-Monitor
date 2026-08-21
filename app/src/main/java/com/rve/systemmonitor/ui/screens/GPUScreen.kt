@@ -329,7 +329,7 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                     )
                 }
 
-                TwoColumnInfoRow {
+                TwoColumnInfoRow(modifier = Modifier.padding(bottom = 16.dp)) {
                     InfoItem(
                         label = stringResource(R.string.gpu_label_max_fragment_uniform_blocks),
                         value = if (gpuInfo.maxFragmentUniformBlocks > 0) {
@@ -348,6 +348,19 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         },
                         modifier = Modifier.weight(1f),
                     )
+                }
+
+                TwoColumnInfoRow {
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_max_compute_uniform_blocks),
+                        value = if (gpuInfo.maxComputeUniformBlocks > 0) {
+                            "${gpuInfo.maxComputeUniformBlocks}"
+                        } else {
+                            stringResource(R.string.value_unknown)
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }

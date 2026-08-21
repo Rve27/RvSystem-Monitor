@@ -102,6 +102,7 @@
     <string name="gpu_label_max_vertex_uniform_blocks">Макс. uniform-блоков вершин</string>
     <string name="gpu_label_max_fragment_uniform_blocks">Макс. uniform-блоков фрагментов</string>
     <string name="gpu_label_max_combined_uniform_blocks">Макс. комбинированных uniform-блоков</string>
+    <string name="gpu_label_max_compute_uniform_blocks">Макс. вычислительных uniform-блоков</string>
     <string name="gpu_label_extensions">Расширения</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">Версия API</string>
