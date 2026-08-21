@@ -108,7 +108,7 @@ object GpuUtils {
             val vendor = GLES20.glGetString(GLES20.GL_VENDOR) ?: "Unknown"
             val fullVersion = GLES20.glGetString(GLES20.GL_VERSION)
             if (fullVersion != null) {
-                cachedDetailedGlesVersion = fullVersion.removePrefix("OpenGL ES ").trim()
+                cachedDetailedGlesVersion = fullVersion.trim()
             }
 
             cachedShadingLanguageVersion = GLES20.glGetString(GLES20.GL_SHADING_LANGUAGE_VERSION)?.trim()

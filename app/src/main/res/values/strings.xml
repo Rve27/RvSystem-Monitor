@@ -82,7 +82,7 @@
     <!-- GPU Screen -->
     <string name="title_graphics_info">Graphics Info</string>
     <string name="gpu_opengl_es">OpenGL ES</string>
-    <string name="gpu_label_version">Version</string>
+    <string name="gpu_label_gl_version">GL Version</string>
     <string name="gpu_label_es_level">ES Level</string>
     <string name="gpu_label_glsl_version">GLSL Version</string>
     <string name="gpu_label_max_texture_size">Max Texture Size</string>

@@ -112,6 +112,12 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                     modifier = Modifier.padding(bottom = 16.dp),
                 )
 
+                InfoItem(
+                    label = stringResource(R.string.gpu_label_gl_version),
+                    value = gpuInfo.detailedGlesVersion,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                )
+
                 TwoColumnInfoRow(modifier = Modifier.padding(bottom = 16.dp)) {
                     InfoItem(
                         label = stringResource(R.string.gpu_label_es_level),
@@ -119,19 +125,10 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         modifier = Modifier.weight(1f),
                     )
                     InfoItem(
-                        label = stringResource(R.string.gpu_label_version),
-                        value = gpuInfo.detailedGlesVersion,
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-
-                TwoColumnInfoRow(modifier = Modifier.padding(bottom = 16.dp)) {
-                    InfoItem(
                         label = stringResource(R.string.gpu_label_glsl_version),
                         value = gpuInfo.shadingLanguageVersion,
                         modifier = Modifier.weight(1f),
                     )
-                    Spacer(modifier = Modifier.weight(1f))
                 }
 
                 TwoColumnInfoRow {
