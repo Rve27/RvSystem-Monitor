@@ -106,6 +106,7 @@
     <string name="gpu_label_max_geometry_uniform_blocks">Макс. геометричних uniform-блоків</string>
     <string name="gpu_label_max_tess_control_uniform_blocks">Макс. uniform-блоків керування теселяцією</string>
     <string name="gpu_label_max_tess_evaluation_uniform_blocks">Макс. uniform-блоків обчислення теселяції</string>
+    <string name="gpu_label_subpixel_bits">Субпіксельні біти</string>
     <string name="gpu_label_extensions">Розширення</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">Версія API</string>

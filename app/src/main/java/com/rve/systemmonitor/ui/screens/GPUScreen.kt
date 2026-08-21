@@ -371,7 +371,7 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                     )
                 }
 
-                TwoColumnInfoRow {
+                TwoColumnInfoRow(modifier = Modifier.padding(bottom = 16.dp)) {
                     InfoItem(
                         label = stringResource(R.string.gpu_label_max_tess_control_uniform_blocks),
                         value = if (gpuInfo.maxTessControlUniformBlocks > 0) {
@@ -390,6 +390,19 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         },
                         modifier = Modifier.weight(1f),
                     )
+                }
+
+                TwoColumnInfoRow {
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_subpixel_bits),
+                        value = if (gpuInfo.subpixelBits > 0) {
+                            "${gpuInfo.subpixelBits}"
+                        } else {
+                            stringResource(R.string.value_unknown)
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }

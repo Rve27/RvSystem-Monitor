@@ -71,6 +71,7 @@ object GpuUtils {
     private var cachedMaxGeometryUniformBlocks: Int? = null
     private var cachedMaxTessControlUniformBlocks: Int? = null
     private var cachedMaxTessEvaluationUniformBlocks: Int? = null
+    private var cachedSubpixelBits: Int? = null
 
     fun getGpuDetails(): Triple<String, String, Pair<Int, Int>> {
         cachedGpuDetails?.let { return it }
@@ -198,6 +199,10 @@ object GpuUtils {
             val maxTessEvaluationUniformBlocks = IntArray(1)
             GLES32.glGetIntegerv(GLES32.GL_MAX_TESS_EVALUATION_UNIFORM_BLOCKS, maxTessEvaluationUniformBlocks, 0)
             cachedMaxTessEvaluationUniformBlocks = maxTessEvaluationUniformBlocks[0]
+
+            val subpixelBits = IntArray(1)
+            GLES20.glGetIntegerv(GLES20.GL_SUBPIXEL_BITS, subpixelBits, 0)
+            cachedSubpixelBits = subpixelBits[0]
 
             val extensions = GLES20.glGetString(GLES20.GL_EXTENSIONS) ?: ""
             val extList = if (extensions.isEmpty()) emptyList() else extensions.split(" ")
@@ -458,6 +463,12 @@ object GpuUtils {
         cachedMaxTessEvaluationUniformBlocks?.let { return it }
         getGpuDetails()
         return cachedMaxTessEvaluationUniformBlocks ?: 0
+    }
+
+    fun getSubpixelBits(): Int {
+        cachedSubpixelBits?.let { return it }
+        getGpuDetails()
+        return cachedSubpixelBits ?: 0
     }
 
     fun getOpenGlExtensions(): List<String> {

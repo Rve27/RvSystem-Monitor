@@ -106,6 +106,7 @@
     <string name="gpu_label_max_geometry_uniform_blocks">最大几何一致块 (Geometry Uniform Blocks)</string>
     <string name="gpu_label_max_tess_control_uniform_blocks">最大细分控制一致块 (Tess Control Uniform Blocks)</string>
     <string name="gpu_label_max_tess_evaluation_uniform_blocks">最大细分评估一致块 (Tess Evaluation Uniform Blocks)</string>
+    <string name="gpu_label_subpixel_bits">子像素位数 (Subpixel Bits)</string>
     <string name="gpu_label_extensions">扩展</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">API 版本</string>
