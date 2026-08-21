@@ -402,7 +402,15 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         },
                         modifier = Modifier.weight(1f),
                     )
-                    Spacer(modifier = Modifier.weight(1f))
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_aliased_line_width),
+                        value = if (gpuInfo.aliasedLineWidthRange.first > 0f || gpuInfo.aliasedLineWidthRange.second > 0f) {
+                            "${gpuInfo.aliasedLineWidthRange.first} - ${gpuInfo.aliasedLineWidthRange.second}"
+                        } else {
+                            stringResource(R.string.value_unknown)
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
                 }
             }
         }
