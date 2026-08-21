@@ -40,6 +40,8 @@ object GpuUtils {
     private var cachedVulkanDeviceType: String? = null
     private var cachedVulkanExtensionsCount: Int? = null
     private var cachedVulkanExtensions: List<String>? = null
+    private var cachedVulkanInstanceExtensionsCount: Int? = null
+    private var cachedVulkanInstanceExtensions: List<String>? = null
     private var cachedVulkanMaxImage1D: Int? = null
     private var cachedVulkanMaxImage2D: Int? = null
     private var cachedVulkanMaxImage3D: Int? = null
@@ -298,6 +300,18 @@ object GpuUtils {
         return cachedVulkanExtensionsCount ?: 0
     }
 
+    fun getVulkanInstanceExtensionsCount(): Int {
+        cachedVulkanInstanceExtensionsCount?.let { return it }
+        updateVulkanInfo()
+        return cachedVulkanInstanceExtensionsCount ?: 0
+    }
+
+    fun getVulkanInstanceExtensions(): List<String> {
+        cachedVulkanInstanceExtensions?.let { return it }
+        updateVulkanInfo()
+        return cachedVulkanInstanceExtensions ?: emptyList()
+    }
+
     fun getVulkanExtensions(): List<String> {
         cachedVulkanExtensions?.let { return it }
         updateVulkanInfo()
@@ -534,6 +548,9 @@ object GpuUtils {
             cachedVulkanMaxSamplerAnisotropy = parts.getOrNull(12)?.toFloatOrNull() ?: 0f
             cachedVulkanMaxFramebufferColorSamples = parts.getOrNull(13)?.toIntOrNull() ?: 0
             cachedVulkanMaxFramebufferDepthSamples = parts.getOrNull(14)?.toIntOrNull() ?: 0
+            cachedVulkanInstanceExtensionsCount = parts.getOrNull(15)?.toIntOrNull() ?: 0
+            val instExtensionsStr = parts.getOrNull(16) ?: ""
+            cachedVulkanInstanceExtensions = if (instExtensionsStr.isNotEmpty()) instExtensionsStr.split(",") else emptyList()
         }.onFailure {
             Log.e(TAG, "updateVulkanInfo error: ${it.message}", it)
             cachedVulkanVersion = "Unknown"
@@ -541,6 +558,8 @@ object GpuUtils {
             cachedVulkanDeviceType = "Unknown"
             cachedVulkanExtensionsCount = 0
             cachedVulkanExtensions = emptyList()
+            cachedVulkanInstanceExtensionsCount = 0
+            cachedVulkanInstanceExtensions = emptyList()
             cachedVulkanMaxImage1D = 0
             cachedVulkanMaxImage2D = 0
             cachedVulkanMaxImage3D = 0

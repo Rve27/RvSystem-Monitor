@@ -73,6 +73,7 @@ fun GPUScreen(onNavigateBack: () -> Unit, viewModel: GPUViewModel = hiltViewMode
 @Composable
 private fun GPUScreenContent(gpuInfo: GPU) {
     var showVulkanExtensions by remember { mutableStateOf(false) }
+    var showVulkanInstanceExtensions by remember { mutableStateOf(false) }
     var showOpenGlExtensions by remember { mutableStateOf(false) }
 
     ScreenLazyColumn {
@@ -476,9 +477,18 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         value = gpuInfo.deviceType,
                         modifier = Modifier.weight(1f),
                     )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+
+                TwoColumnInfoRow(modifier = Modifier.padding(bottom = 16.dp)) {
                     InfoItem(
                         label = stringResource(R.string.gpu_label_device_extensions),
                         value = "${gpuInfo.vulkanExtensionsCount}",
+                        modifier = Modifier.weight(1f),
+                    )
+                    InfoItem(
+                        label = stringResource(R.string.gpu_label_instance_extensions),
+                        value = "${gpuInfo.vulkanInstanceExtensionsCount}",
                         modifier = Modifier.weight(1f),
                     )
                 }
@@ -486,7 +496,7 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                 if (gpuInfo.vulkanExtensions.isNotEmpty()) {
                     OutlinedButton(
                         onClick = { showVulkanExtensions = true },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                         shapes = ButtonDefaults.shapes(),
                         colors = ButtonDefaults.outlinedButtonColors(
@@ -494,6 +504,20 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         ),
                     ) {
                         Text(stringResource(R.string.gpu_btn_show_device_extensions))
+                    }
+                }
+
+                if (gpuInfo.vulkanInstanceExtensions.isNotEmpty()) {
+                    OutlinedButton(
+                        onClick = { showVulkanInstanceExtensions = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                        shapes = ButtonDefaults.shapes(),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.primary,
+                        ),
+                    ) {
+                        Text(stringResource(R.string.gpu_btn_show_instance_extensions))
                     }
                 }
             }
@@ -604,6 +628,43 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         ) "${gpuInfo.vulkanMaxFramebufferDepthSamples}x" else stringResource(R.string.value_unknown),
                         modifier = Modifier.weight(1f),
                     )
+                }
+            }
+        }
+    }
+
+    if (showVulkanInstanceExtensions) {
+        val sheetState = androidx.compose.material3.rememberBottomSheetState(initialValue = SheetValue.Hidden)
+        ModalBottomSheet(
+            onDismissRequest = { showVulkanInstanceExtensions = false },
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.surface,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 24.dp),
+            ) {
+                Text(
+                    text = "Vulkan Instance Extensions",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(bottom = 16.dp),
+                )
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(gpuInfo.vulkanInstanceExtensions) { extension ->
+                        Text(
+                            text = extension,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
             }
         }

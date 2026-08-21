@@ -114,6 +114,8 @@
     <string name="gpu_label_compressed_texture_formats">压缩纹理格式 (Compressed Texture Formats)</string>
     <string name="gpu_label_extensions">扩展</string>
     <string name="gpu_label_device_extensions">设备扩展 (Device Extensions)</string>
+    <string name="gpu_label_instance_extensions">实例扩展 (Instance Extensions)</string>
+    <string name="gpu_btn_show_instance_extensions">显示实例扩展</string>
     <string name="gpu_btn_show_all_extensions">显示所有扩展</string>
     <string name="gpu_btn_show_device_extensions">显示设备扩展</string>
     <string name="gpu_vulkan">Vulkan</string>

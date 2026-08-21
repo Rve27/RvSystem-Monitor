@@ -44,6 +44,8 @@ data class GPU(
     val openGlExtensions: ImmutableList<String> = persistentListOf(),
     val vulkanExtensionsCount: Int = 0,
     val vulkanExtensions: ImmutableList<String> = persistentListOf(),
+    val vulkanInstanceExtensionsCount: Int = 0,
+    val vulkanInstanceExtensions: ImmutableList<String> = persistentListOf(),
     val vulkanMaxImage1D: Int = 0,
     val vulkanMaxImage2D: Int = 0,
     val vulkanMaxImage3D: Int = 0,

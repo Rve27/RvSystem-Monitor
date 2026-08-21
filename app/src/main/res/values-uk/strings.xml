@@ -114,6 +114,8 @@
     <string name="gpu_label_compressed_texture_formats">Формати стиснених текстур</string>
     <string name="gpu_label_extensions">Розширення</string>
     <string name="gpu_label_device_extensions">Розширення пристрою</string>
+    <string name="gpu_label_instance_extensions">Розширення екземпляра</string>
+    <string name="gpu_btn_show_instance_extensions">Показати розширення екземпляра</string>
     <string name="gpu_btn_show_all_extensions">Показати всі розширення</string>
     <string name="gpu_btn_show_device_extensions">Показати розширення пристрою</string>
     <string name="gpu_vulkan">Vulkan</string>

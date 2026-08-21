@@ -112,6 +112,8 @@ class HardwareRepositoryImpl @Inject constructor(
             openGlExtensions = GpuUtils.getOpenGlExtensions().toImmutableList(),
             vulkanExtensionsCount = GpuUtils.getVulkanExtensionsCount(),
             vulkanExtensions = GpuUtils.getVulkanExtensions().toImmutableList(),
+            vulkanInstanceExtensionsCount = GpuUtils.getVulkanInstanceExtensionsCount(),
+            vulkanInstanceExtensions = GpuUtils.getVulkanInstanceExtensions().toImmutableList(),
             vulkanMaxImage1D = GpuUtils.getVulkanMaxImage1D(),
             vulkanMaxImage2D = GpuUtils.getVulkanMaxImage2D(),
             vulkanMaxImage3D = GpuUtils.getVulkanMaxImage3D(),

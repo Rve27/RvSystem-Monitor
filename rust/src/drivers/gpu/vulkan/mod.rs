@@ -65,6 +65,8 @@ pub fn get_vulkan_version() -> String {
 
         let vk_enumerate_device_extension_properties_ptr =
             dlsym(handle, c"vkEnumerateDeviceExtensionProperties".as_ptr());
+        let vk_enumerate_instance_extension_properties_ptr =
+            dlsym(handle, c"vkEnumerateInstanceExtensionProperties".as_ptr());
 
         if vk_create_instance_ptr.is_null()
             || vk_destroy_instance_ptr.is_null()
@@ -109,6 +111,60 @@ pub fn get_vulkan_version() -> String {
         } else {
             None
         };
+
+
+        let vk_enumerate_instance_extension_properties: Option<
+            extern "system" fn(
+                *const i8,
+                *mut u32,
+                *mut std::ffi::c_void,
+            ) -> VkResult,
+        > = if !vk_enumerate_instance_extension_properties_ptr.is_null() {
+            Some(std::mem::transmute::<
+                *mut libc::c_void,
+                extern "system" fn(
+                    *const i8,
+                    *mut u32,
+                    *mut std::ffi::c_void,
+                ) -> VkResult,
+            >(vk_enumerate_instance_extension_properties_ptr))
+        } else {
+            None
+        };
+
+
+        let mut inst_extension_count: u32 = 0;
+        let mut inst_extensions_str = String::new();
+        if let Some(vk_enum_inst_ext_props) = vk_enumerate_instance_extension_properties {
+            vk_enum_inst_ext_props(
+                ptr::null(),
+                &mut inst_extension_count,
+                ptr::null_mut(),
+            );
+            if inst_extension_count > 0 {
+                let mut extensions = vec![
+                    VkExtensionProperties {
+                        extension_name: [0; 256],
+                        spec_version: 0,
+                    };
+                    inst_extension_count as usize
+                ];
+                if vk_enum_inst_ext_props(
+                    ptr::null(),
+                    &mut inst_extension_count,
+                    extensions.as_mut_ptr() as *mut std::ffi::c_void,
+                ) == 0 {
+                    let names: Vec<String> = extensions
+                        .iter()
+                        .map(|ext| {
+                            let c_str = std::ffi::CStr::from_ptr(ext.extension_name.as_ptr());
+                            c_str.to_string_lossy().into_owned()
+                        })
+                        .collect();
+                    inst_extensions_str = names.join(",");
+                }
+            }
+        }
 
         // Create a minimal instance
         let app_info = VkApplicationInfo {
@@ -245,7 +301,7 @@ pub fn get_vulkan_version() -> String {
 
                     vk_destroy_instance(instance, ptr::null());
                     return format!(
-                        "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}",
+                        "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}",
                         format_version(api_version),
                         format_version(driver_version),
                         format_device_type(device_type),
@@ -260,7 +316,9 @@ pub fn get_vulkan_version() -> String {
                         max_storage_buffer_range,
                         max_sampler_anisotropy,
                         max_color_samples,
-                        max_depth_samples
+                        max_depth_samples,
+                        inst_extension_count,
+                        inst_extensions_str
                     );
                 }
             }
@@ -270,8 +328,10 @@ pub fn get_vulkan_version() -> String {
         }
 
         format!(
-            "{}|Unknown|Unknown|0||0|0|0|0|0|0|0|0|0|0",
-            query_instance_version(vk_enumerate_instance_version)
+            "{}|Unknown|Unknown|0||0|0|0|0|0|0|0|0|0|0|{}|{}",
+            query_instance_version(vk_enumerate_instance_version),
+            inst_extension_count,
+            inst_extensions_str
         )
     }
 }
