@@ -113,6 +113,9 @@
     <string name="gpu_label_aliased_line_width">Aliased Line Width</string>
     <string name="gpu_label_compressed_texture_formats">Compressed Texture Formats</string>
     <string name="gpu_label_extensions">Extensions</string>
+    <string name="gpu_label_device_extensions">Device Extensions</string>
+    <string name="gpu_btn_show_all_extensions">Show all extensions</string>
+    <string name="gpu_btn_show_device_extensions">Show device extensions</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">API Version</string>
     <string name="gpu_label_driver_version">Driver Version</string>

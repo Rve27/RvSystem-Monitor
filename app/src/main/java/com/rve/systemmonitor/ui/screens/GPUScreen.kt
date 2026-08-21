@@ -164,7 +164,7 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                             contentColor = MaterialTheme.colorScheme.primary,
                         ),
                     ) {
-                        Text("Show all extensions")
+                        Text(stringResource(R.string.gpu_btn_show_all_extensions))
                     }
                 }
             }
@@ -477,7 +477,7 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                         modifier = Modifier.weight(1f),
                     )
                     InfoItem(
-                        label = stringResource(R.string.gpu_label_extensions),
+                        label = stringResource(R.string.gpu_label_device_extensions),
                         value = "${gpuInfo.vulkanExtensionsCount}",
                         modifier = Modifier.weight(1f),
                     )
@@ -493,7 +493,7 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                             contentColor = MaterialTheme.colorScheme.primary,
                         ),
                     ) {
-                        Text("Show all extensions")
+                        Text(stringResource(R.string.gpu_btn_show_device_extensions))
                     }
                 }
             }
@@ -623,7 +623,7 @@ private fun GPUScreenContent(gpuInfo: GPU) {
                     .padding(bottom = 24.dp),
             ) {
                 Text(
-                    text = "Vulkan Extensions",
+                    text = "Vulkan Device Extensions",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
