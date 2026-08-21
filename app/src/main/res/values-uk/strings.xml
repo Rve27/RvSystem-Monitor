@@ -84,6 +84,7 @@
     <string name="gpu_opengl_es">OpenGL ES</string>
     <string name="gpu_label_gl_version">Версія GL</string>
     <string name="gpu_label_es_level">Рівень ES</string>
+    <string name="gpu_label_egl_version">Версія EGL</string>
     <string name="gpu_label_glsl_version">Версія GLSL</string>
     <string name="gpu_label_max_texture_size">Макс. розмір текстури</string>
     <string name="gpu_label_max_cube_map_size">Макс. розмір кубічної текстури</string>

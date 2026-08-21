@@ -78,6 +78,7 @@ class HardwareRepositoryImpl @Inject constructor(
             renderer = renderer,
             vendor = vendor,
             glesVersion = GpuUtils.getGlesVersion(application),
+            eglVersion = GpuUtils.getEglVersion(),
             detailedGlesVersion = GpuUtils.getDetailedGlesVersion(),
             vulkanVersion = GpuUtils.getVulkanVersion(application),
             vulkanDriverVersion = GpuUtils.getVulkanDriverVersion(),
