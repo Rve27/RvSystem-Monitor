@@ -97,6 +97,7 @@
     <string name="gpu_label_max_vertex_texture_image_units">Max Vertex Texture Image Units</string>
     <string name="gpu_label_max_combined_texture_image_units">Max Combined Texture Image Units</string>
     <string name="gpu_label_max_viewport_dims">Max Viewport Dims</string>
+    <string name="gpu_label_max_array_texture_layers">Max Array Texture Layers</string>
     <string name="gpu_label_extensions">Extensions</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">API Version</string>

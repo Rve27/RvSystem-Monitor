@@ -60,6 +60,7 @@ object GpuUtils {
     private var cachedMaxVertexTextureImageUnits: Int? = null
     private var cachedMaxCombinedTextureImageUnits: Int? = null
     private var cachedMaxViewportDims: Pair<Int, Int>? = null
+    private var cachedMaxArrayTextureLayers: Int? = null
 
     fun getGpuDetails(): Triple<String, String, Pair<Int, Int>> {
         cachedGpuDetails?.let { return it }
@@ -151,6 +152,10 @@ object GpuUtils {
             val maxViewportDims = IntArray(2)
             GLES20.glGetIntegerv(GLES20.GL_MAX_VIEWPORT_DIMS, maxViewportDims, 0)
             cachedMaxViewportDims = Pair(maxViewportDims[0], maxViewportDims[1])
+
+            val maxArrayTextureLayers = IntArray(1)
+            GLES30.glGetIntegerv(GLES30.GL_MAX_ARRAY_TEXTURE_LAYERS, maxArrayTextureLayers, 0)
+            cachedMaxArrayTextureLayers = maxArrayTextureLayers[0]
 
             val extensions = GLES20.glGetString(GLES20.GL_EXTENSIONS) ?: ""
             val extList = if (extensions.isEmpty()) emptyList() else extensions.split(" ")
@@ -357,6 +362,12 @@ object GpuUtils {
         cachedMaxViewportDims?.let { return it }
         getGpuDetails()
         return cachedMaxViewportDims ?: Pair(0, 0)
+    }
+
+    fun getMaxArrayTextureLayers(): Int {
+        cachedMaxArrayTextureLayers?.let { return it }
+        getGpuDetails()
+        return cachedMaxArrayTextureLayers ?: 0
     }
 
     fun getOpenGlExtensions(): List<String> {
