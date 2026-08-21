@@ -101,6 +101,7 @@ class HardwareRepositoryImpl @Inject constructor(
             maxCombinedUniformBlocks = GpuUtils.getMaxCombinedUniformBlocks(),
             maxComputeUniformBlocks = GpuUtils.getMaxComputeUniformBlocks(),
             maxGeometryUniformBlocks = GpuUtils.getMaxGeometryUniformBlocks(),
+            maxTessControlUniformBlocks = GpuUtils.getMaxTessControlUniformBlocks(),
             extensionsCount = extCount,
             openGlExtensions = GpuUtils.getOpenGlExtensions().toImmutableList(),
             vulkanExtensionsCount = GpuUtils.getVulkanExtensionsCount(),
