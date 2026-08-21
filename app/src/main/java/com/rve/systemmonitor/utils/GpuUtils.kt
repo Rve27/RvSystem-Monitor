@@ -7,6 +7,7 @@ import android.opengl.EGLConfig
 import android.opengl.GLES20
 import android.opengl.GLES30
 import android.opengl.GLES31
+import android.opengl.GLES32
 import android.util.Log
 
 object GpuUtils {
@@ -67,6 +68,7 @@ object GpuUtils {
     private var cachedMaxFragmentUniformBlocks: Int? = null
     private var cachedMaxCombinedUniformBlocks: Int? = null
     private var cachedMaxComputeUniformBlocks: Int? = null
+    private var cachedMaxGeometryUniformBlocks: Int? = null
 
     fun getGpuDetails(): Triple<String, String, Pair<Int, Int>> {
         cachedGpuDetails?.let { return it }
@@ -182,6 +184,10 @@ object GpuUtils {
             val maxComputeUniformBlocks = IntArray(1)
             GLES31.glGetIntegerv(GLES31.GL_MAX_COMPUTE_UNIFORM_BLOCKS, maxComputeUniformBlocks, 0)
             cachedMaxComputeUniformBlocks = maxComputeUniformBlocks[0]
+
+            val maxGeometryUniformBlocks = IntArray(1)
+            GLES32.glGetIntegerv(GLES32.GL_MAX_GEOMETRY_UNIFORM_BLOCKS, maxGeometryUniformBlocks, 0)
+            cachedMaxGeometryUniformBlocks = maxGeometryUniformBlocks[0]
 
             val extensions = GLES20.glGetString(GLES20.GL_EXTENSIONS) ?: ""
             val extList = if (extensions.isEmpty()) emptyList() else extensions.split(" ")
@@ -424,6 +430,12 @@ object GpuUtils {
         cachedMaxComputeUniformBlocks?.let { return it }
         getGpuDetails()
         return cachedMaxComputeUniformBlocks ?: 0
+    }
+
+    fun getMaxGeometryUniformBlocks(): Int {
+        cachedMaxGeometryUniformBlocks?.let { return it }
+        getGpuDetails()
+        return cachedMaxGeometryUniformBlocks ?: 0
     }
 
     fun getOpenGlExtensions(): List<String> {
