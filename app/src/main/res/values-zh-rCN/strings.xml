@@ -120,6 +120,7 @@
     <string name="gpu_btn_show_device_extensions">显示设备扩展</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">设备 API</string>
+    <string name="gpu_label_instance_api_version">实例 API</string>
     <string name="gpu_label_driver_version">驱动版本</string>
     <string name="gpu_label_device_type">设备类型</string>
     <string name="gpu_max_texture_size_format">%1$d px</string>

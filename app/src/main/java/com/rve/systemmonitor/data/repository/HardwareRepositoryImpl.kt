@@ -81,6 +81,7 @@ class HardwareRepositoryImpl @Inject constructor(
             eglVersion = GpuUtils.getEglVersion(),
             eglVendor = GpuUtils.getEglVendor(),
             detailedGlesVersion = GpuUtils.getDetailedGlesVersion(),
+            vulkanInstanceVersion = GpuUtils.getVulkanInstanceVersion(),
             vulkanVersion = GpuUtils.getVulkanVersion(application),
             vulkanDriverVersion = GpuUtils.getVulkanDriverVersion(),
             maxTextureSize = maxTexSize,

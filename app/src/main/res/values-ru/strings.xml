@@ -120,6 +120,7 @@
     <string name="gpu_btn_show_device_extensions">Показать расширения устройства</string>
     <string name="gpu_vulkan">Vulkan</string>
     <string name="gpu_label_api_version">API устройства</string>
+    <string name="gpu_label_instance_api_version">API экземпляра</string>
     <string name="gpu_label_driver_version">Версия драйвера</string>
     <string name="gpu_label_device_type">Тип устройства</string>
 

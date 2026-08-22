@@ -12,6 +12,7 @@ data class GPU(
     val eglVersion: String = "unknown",
     val eglVendor: String = "unknown",
     val detailedGlesVersion: String = "unknown",
+    val vulkanInstanceVersion: String = "unknown",
     val vulkanVersion: String = "unknown",
     val vulkanDriverVersion: String = "unknown",
     val temperature: Double = 0.0,

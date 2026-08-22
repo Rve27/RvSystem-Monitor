@@ -301,7 +301,7 @@ pub fn get_vulkan_version() -> String {
 
                     vk_destroy_instance(instance, ptr::null());
                     return format!(
-                        "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}",
+                        "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}",
                         format_version(api_version),
                         format_version(driver_version),
                         format_device_type(device_type),
@@ -318,7 +318,8 @@ pub fn get_vulkan_version() -> String {
                         max_color_samples,
                         max_depth_samples,
                         inst_extension_count,
-                        inst_extensions_str
+                        inst_extensions_str,
+                        query_instance_version(vk_enumerate_instance_version)
                     );
                 }
             }
@@ -328,10 +329,10 @@ pub fn get_vulkan_version() -> String {
         }
 
         format!(
-            "{}|Unknown|Unknown|0||0|0|0|0|0|0|0|0|0|0|{}|{}",
-            query_instance_version(vk_enumerate_instance_version),
+            "Unknown|Unknown|Unknown|0||0|0|0|0|0|0|0|0|0|0|{}|{}|{}",
             inst_extension_count,
-            inst_extensions_str
+            inst_extensions_str,
+            query_instance_version(vk_enumerate_instance_version)
         )
     }
 }

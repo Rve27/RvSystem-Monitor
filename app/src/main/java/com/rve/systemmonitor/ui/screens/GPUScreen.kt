@@ -460,24 +460,28 @@ private fun GPUScreenContent(gpuInfo: GPU) {
 
                 TwoColumnInfoRow(modifier = Modifier.padding(bottom = 16.dp)) {
                     InfoItem(
-                        label = stringResource(R.string.gpu_label_api_version),
-                        value = gpuInfo.vulkanVersion,
+                        label = stringResource(R.string.gpu_label_instance_api_version),
+                        value = gpuInfo.vulkanInstanceVersion,
                         modifier = Modifier.weight(1f),
                     )
                     InfoItem(
-                        label = stringResource(R.string.gpu_label_driver_version),
-                        value = gpuInfo.vulkanDriverVersion,
+                        label = stringResource(R.string.gpu_label_api_version),
+                        value = gpuInfo.vulkanVersion,
                         modifier = Modifier.weight(1f),
                     )
                 }
 
                 TwoColumnInfoRow(modifier = Modifier.padding(bottom = 16.dp)) {
                     InfoItem(
+                        label = stringResource(R.string.gpu_label_driver_version),
+                        value = gpuInfo.vulkanDriverVersion,
+                        modifier = Modifier.weight(1f),
+                    )
+                    InfoItem(
                         label = stringResource(R.string.gpu_label_device_type),
                         value = gpuInfo.deviceType,
                         modifier = Modifier.weight(1f),
                     )
-                    Spacer(modifier = Modifier.weight(1f))
                 }
 
                 TwoColumnInfoRow(modifier = Modifier.padding(bottom = 16.dp)) {
