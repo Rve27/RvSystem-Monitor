@@ -1,5 +1,5 @@
 [versions]
-agp = "9.3.1"
+agp = "9.3.2"
 backdrop = "2.0.0"
 coreKtx = "1.19.0"
 datastorePreferences = "1.2.1"
