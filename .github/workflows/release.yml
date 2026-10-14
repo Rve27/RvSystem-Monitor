@@ -1,0 +1,118 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build signed APK and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check tag matches versionName
+        run: |
+          VERSION_NAME="$(grep -oP 'versionName = "\K[^"]+' app/build.gradle.kts | head -n1)"
+          if [ "${GITHUB_REF_NAME}" != "v${VERSION_NAME}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match versionName v${VERSION_NAME} in app/build.gradle.kts"
+            exit 1
+          fi
+
+      - name: Check signing secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          for v in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!v}" ]; then
+              echo "::error::Missing repository secret ${v}"
+              exit 1
+            fi
+          done
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          cache-workspaces: rust
+          rustflags: ""
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+
+      - name: Install Android NDK
+        run: |
+          NDK_VERSION="$(grep -oP 'ndkVersion = "\K[^"]+' app/build.gradle.kts)"
+          SDKMANAGER="$(command -v sdkmanager || true)"
+          if [ -z "${SDKMANAGER}" ]; then
+            SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          fi
+          yes | "${SDKMANAGER}" --licenses > /dev/null || true
+          "${SDKMANAGER}" --install "ndk;${NDK_VERSION}" > /dev/null
+          echo "ANDROID_NDK_HOME=${ANDROID_HOME}/ndk/${NDK_VERSION}" >> "$GITHUB_ENV"
+          echo "ANDROID_NDK_ROOT=${ANDROID_HOME}/ndk/${NDK_VERSION}" >> "$GITHUB_ENV"
+
+      # build.gradle.kts reads signing.properties from the repo root (gitignored).
+      - name: Write keystore and signing.properties
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "${KEYSTORE_BASE64}" | base64 -d > "${RUNNER_TEMP}/release.keystore"
+          {
+            echo "KEYSTORE_PATH=${RUNNER_TEMP}/release.keystore"
+            echo "KEYSTORE_PASSWORD=${KEYSTORE_PASSWORD}"
+            echo "KEY_ALIAS=${KEY_ALIAS}"
+            echo "KEY_PASSWORD=${KEY_PASSWORD}"
+          } > signing.properties
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: assembleGithubRelease
+        run: ./gradlew assembleGithubRelease
+
+      - name: Verify signature and collect assets
+        run: |
+          APK="$(find app/build/outputs/apk/github/release -name '*.apk' | head -n1)"
+          test -n "${APK}" || { echo "::error::No release APK produced"; exit 1; }
+
+          APKSIGNER="$(find "${ANDROID_HOME}/build-tools" -name apksigner | sort -V | tail -n1)"
+          "${APKSIGNER}" verify --print-certs "${APK}"
+
+          mkdir -p dist
+          OUT="dist/RvSystem-Monitor-${GITHUB_REF_NAME}-github.apk"
+          cp "${APK}" "${OUT}"
+          (cd dist && sha256sum "$(basename "${OUT}")" > SHA256SUMS.txt)
+
+      - name: Clean up signing material
+        if: always()
+        run: rm -f signing.properties "${RUNNER_TEMP}/release.keystore"
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.apk
+            dist/SHA256SUMS.txt
+          generate_release_notes: true
+          # v0.9-beta style tags are published as pre-releases.
+          prerelease: ${{ contains(github.ref_name, '-') }}

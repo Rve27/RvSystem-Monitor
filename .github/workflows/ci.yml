@@ -1,0 +1,123 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  spotless:
+    name: Kotlin format (spotless)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: spotlessCheck
+        run: ./gradlew spotlessCheck --no-daemon
+
+  rust:
+    name: Rust (fmt + clippy)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: rust
+    steps:
+      - uses: actions/checkout@v4
+
+      # Toolchain, components and Android targets come from rust-toolchain.toml.
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          cache-workspaces: rust
+          # The action defaults RUSTFLAGS to "-D warnings"; clippy below enforces that itself.
+          rustflags: ""
+
+      - name: cargo fmt
+        run: cargo fmt --check
+
+      - name: cargo clippy
+        if: ${{ !cancelled() }}
+        run: cargo clippy --target aarch64-linux-android -- -D warnings
+
+  android:
+    name: Android (lint + unit tests + debug build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          cache-workspaces: rust
+          rustflags: ""
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+
+      # `buildRustLibraries` runs in preBuild, before AGP could auto-download the NDK,
+      # so the NDK from build.gradle.kts has to be installed up front.
+      - name: Install Android NDK
+        run: |
+          NDK_VERSION="$(grep -oP 'ndkVersion = "\K[^"]+' app/build.gradle.kts)"
+          echo "NDK version: ${NDK_VERSION}"
+          # cmdline-tools is installed on the runner but not always on PATH.
+          SDKMANAGER="$(command -v sdkmanager || true)"
+          if [ -z "${SDKMANAGER}" ]; then
+            SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          fi
+          yes | "${SDKMANAGER}" --licenses > /dev/null || true
+          "${SDKMANAGER}" --install "ndk;${NDK_VERSION}" > /dev/null
+          echo "ANDROID_NDK_HOME=${ANDROID_HOME}/ndk/${NDK_VERSION}" >> "$GITHUB_ENV"
+          echo "ANDROID_NDK_ROOT=${ANDROID_HOME}/ndk/${NDK_VERSION}" >> "$GITHUB_ENV"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Lint, unit tests, assemble
+        run: >
+          ./gradlew
+          lintGithubDebug
+          testGithubDebugUnitTest
+          assembleGithubDebug
+          assembleFdroidDebug
+
+      - name: Upload debug APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apks
+          path: app/build/outputs/apk/*/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload lint and test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: |
+            app/build/reports/
+            app/build/test-results/
+          retention-days: 7

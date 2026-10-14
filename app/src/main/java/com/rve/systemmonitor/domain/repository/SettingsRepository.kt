@@ -19,6 +19,7 @@ interface SettingsRepository {
     val batteryGraphHistorySeconds: Flow<Int>
     val autoUpdateEnabled: Flow<Boolean>
     val useShizuku: Flow<Boolean>
+    val useRoot: Flow<Boolean>
     val updatesPausedUntil: Flow<Long>
     val blurEffectEnabled: Flow<Boolean>
     val navBarBlurEffectEnabled: Flow<Boolean>
@@ -36,6 +37,7 @@ interface SettingsRepository {
     suspend fun setBatteryGraphHistorySeconds(seconds: Int)
     suspend fun setAutoUpdateEnabled(enabled: Boolean)
     suspend fun setUseShizuku(enabled: Boolean)
+    suspend fun setUseRoot(enabled: Boolean)
     suspend fun setUpdatesPausedUntil(timestampMillis: Long)
     suspend fun setBlurEffectEnabled(enabled: Boolean)
     suspend fun setNavBarBlurEffectEnabled(enabled: Boolean)

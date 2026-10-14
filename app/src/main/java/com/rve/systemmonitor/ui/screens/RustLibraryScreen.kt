@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -53,95 +52,92 @@ private data class JniMethod(val name: String, val returnType: String, val param
 fun RustLibraryScreen(onNavigateBack: () -> Unit) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val rustVersion = remember { DeviceUtils.getRustLibraryVersion() }
-    val context = LocalContext.current
 
-    val methods = remember(context) {
-        listOf(
-            JniMethod(
-                "getRustLibraryVersionNative",
-                "jstring",
-                description = context.getString(R.string.rust_method_desc_get_version),
-            ),
-            JniMethod(
-                "getVulkanVersionNative",
-                "jstring",
-                description = context.getString(R.string.rust_method_desc_get_vulkan),
-            ),
-            JniMethod(
-                "getGpuTemperatureNative",
-                "jdouble",
-                description = context.getString(R.string.rust_method_desc_get_gpu_temp),
-            ),
-            JniMethod(
-                "getMemoryDataNative",
-                "jdoubleArray",
-                description = context.getString(R.string.rust_method_desc_get_memory),
-            ),
-            JniMethod(
-                "getRamDataNative",
-                "jdoubleArray",
-                description = context.getString(R.string.rust_method_desc_get_ram),
-            ),
-            JniMethod(
-                "getZramDataNative",
-                "jdoubleArray",
-                description = context.getString(R.string.rust_method_desc_get_zram),
-            ),
-            JniMethod(
-                "getAllCoreFrequenciesNative",
-                "jlongArray",
-                description = context.getString(R.string.rust_method_desc_get_all_freq),
-            ),
-            JniMethod(
-                "getCoreCountNative",
-                "jint",
-                description = context.getString(R.string.rust_method_desc_get_core_count),
-            ),
-            JniMethod(
-                "getCoreFrequencyNative",
-                "jlong",
-                "env, core_id, type",
-                context.getString(R.string.rust_method_desc_get_core_freq),
-            ),
-            JniMethod(
-                "getCoreGovernorNative",
-                "jstring",
-                "env, core_id",
-                context.getString(R.string.rust_method_desc_get_governor),
-            ),
-            JniMethod(
-                "getCpuTemperatureNative",
-                "jdouble",
-                description = context.getString(R.string.rust_method_desc_get_cpu_temp),
-            ),
-            JniMethod(
-                "getAllCoreGovernorsNative",
-                "jobjectArray",
-                description = context.getString(R.string.rust_method_desc_get_all_governors),
-            ),
-            JniMethod(
-                "getAllCoreTemperaturesNative",
-                "jdoubleArray",
-                description = context.getString(R.string.rust_method_desc_get_all_temps),
-            ),
-            JniMethod(
-                "getStaticCoreInfoNative",
-                "jlongArray",
-                description = context.getString(R.string.rust_method_desc_get_static_core_info),
-            ),
-            JniMethod(
-                "getCpuDynamicDataNative",
-                "jdoubleArray",
-                description = context.getString(R.string.rust_method_desc_get_dynamic),
-            ),
-            JniMethod(
-                "calculateCpuLoadNative",
-                "jdoubleArray",
-                "env, proc_stat",
-                context.getString(R.string.rust_method_desc_calculate_load),
-            ),
-        ).sortedBy { it.name }.toImmutableList()
-    }
+    val methods = listOf(
+        JniMethod(
+            "getRustLibraryVersionNative",
+            "jstring",
+            description = stringResource(R.string.rust_method_desc_get_version),
+        ),
+        JniMethod(
+            "getVulkanVersionNative",
+            "jstring",
+            description = stringResource(R.string.rust_method_desc_get_vulkan),
+        ),
+        JniMethod(
+            "getGpuTemperatureNative",
+            "jdouble",
+            description = stringResource(R.string.rust_method_desc_get_gpu_temp),
+        ),
+        JniMethod(
+            "getMemoryDataNative",
+            "jdoubleArray",
+            description = stringResource(R.string.rust_method_desc_get_memory),
+        ),
+        JniMethod(
+            "getRamDataNative",
+            "jdoubleArray",
+            description = stringResource(R.string.rust_method_desc_get_ram),
+        ),
+        JniMethod(
+            "getZramDataNative",
+            "jdoubleArray",
+            description = stringResource(R.string.rust_method_desc_get_zram),
+        ),
+        JniMethod(
+            "getAllCoreFrequenciesNative",
+            "jlongArray",
+            description = stringResource(R.string.rust_method_desc_get_all_freq),
+        ),
+        JniMethod(
+            "getCoreCountNative",
+            "jint",
+            description = stringResource(R.string.rust_method_desc_get_core_count),
+        ),
+        JniMethod(
+            "getCoreFrequencyNative",
+            "jlong",
+            "env, core_id, type",
+            stringResource(R.string.rust_method_desc_get_core_freq),
+        ),
+        JniMethod(
+            "getCoreGovernorNative",
+            "jstring",
+            "env, core_id",
+            stringResource(R.string.rust_method_desc_get_governor),
+        ),
+        JniMethod(
+            "getCpuTemperatureNative",
+            "jdouble",
+            description = stringResource(R.string.rust_method_desc_get_cpu_temp),
+        ),
+        JniMethod(
+            "getAllCoreGovernorsNative",
+            "jobjectArray",
+            description = stringResource(R.string.rust_method_desc_get_all_governors),
+        ),
+        JniMethod(
+            "getAllCoreTemperaturesNative",
+            "jdoubleArray",
+            description = stringResource(R.string.rust_method_desc_get_all_temps),
+        ),
+        JniMethod(
+            "getStaticCoreInfoNative",
+            "jlongArray",
+            description = stringResource(R.string.rust_method_desc_get_static_core_info),
+        ),
+        JniMethod(
+            "getCpuDynamicDataNative",
+            "jdoubleArray",
+            description = stringResource(R.string.rust_method_desc_get_dynamic),
+        ),
+        JniMethod(
+            "calculateCpuLoadNative",
+            "jdoubleArray",
+            "env, proc_stat",
+            stringResource(R.string.rust_method_desc_calculate_load),
+        ),
+    ).sortedBy { it.name }.toImmutableList()
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rve.systemmonitor.domain.repository.SettingsRepository
+import com.rve.systemmonitor.privileged.PrivilegedAccess
 import com.rve.systemmonitor.shizuku.ShizukuManager
 import com.rve.systemmonitor.utils.AppLanguage
 import com.rve.systemmonitor.utils.ThemeMode
@@ -22,10 +23,17 @@ import kotlinx.coroutines.withContext
 class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val shizukuManager: ShizukuManager,
+    private val privilegedAccess: PrivilegedAccess,
 ) : ViewModel() {
 
     val isShizukuAvailable: StateFlow<Boolean> = shizukuManager.isShizukuAvailable
     val hasShizukuPermission: StateFlow<Boolean> = shizukuManager.hasPermission
+
+    val isRootGranted: StateFlow<Boolean> = privilegedAccess.isRootGranted
+
+    fun requestRoot() {
+        viewModelScope.launch { privilegedAccess.requestRoot() }
+    }
 
     fun requestShizukuPermission() {
         shizukuManager.requestPermission()
@@ -121,6 +129,12 @@ class SettingsViewModel @Inject constructor(
             initialValue = true,
         )
 
+    val useRoot: StateFlow<Boolean> = settingsRepository.useRoot
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false,
+        )
     val useShizuku: StateFlow<Boolean> = settingsRepository.useShizuku
         .stateIn(
             scope = viewModelScope,
@@ -217,7 +231,16 @@ class SettingsViewModel @Inject constructor(
 
     fun setUseShizuku(enabled: Boolean) {
         viewModelScope.launch {
+            if (enabled) settingsRepository.setUseRoot(false)
             settingsRepository.setUseShizuku(enabled)
+        }
+    }
+
+    fun setUseRoot(enabled: Boolean) {
+        viewModelScope.launch {
+            if (enabled) settingsRepository.setUseShizuku(false)
+            settingsRepository.setUseRoot(enabled)
+            if (enabled) privilegedAccess.requestRoot()
         }
     }
 

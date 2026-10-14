@@ -22,6 +22,7 @@ data class AppSettings(
     val vibrationIntensity: VibrationIntensity = VibrationIntensity.LIGHT,
     val autoUpdateEnabled: Boolean = true,
     val useShizuku: Boolean = false,
+    val useRoot: Boolean = false,
     val updatesPausedUntil: Long = 0L,
     val blurEffectEnabled: Boolean = true,
     val navBarBlurEffectEnabled: Boolean = true,

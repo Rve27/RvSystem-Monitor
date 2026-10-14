@@ -2,7 +2,7 @@ package com.rve.systemmonitor.utils
 
 import android.util.Log
 import com.rve.systemmonitor.BuildConfig
-import com.rve.systemmonitor.shizuku.ShizukuManager
+import com.rve.systemmonitor.privileged.PrivilegedAccess
 import java.util.Locale
 
 object ThermalUtils {
@@ -15,14 +15,14 @@ object ThermalUtils {
     @Volatile private var cachedTemps: Map<String, Double> = emptyMap()
     @Volatile private var cachedAt: Long = 0L
 
-    suspend fun getCpuTemperature(shizukuManager: ShizukuManager): Double = pickCpuTemp(getTemps(shizukuManager))
+    suspend fun getCpuTemperature(access: PrivilegedAccess): Double = pickCpuTemp(getTemps(access))
 
-    suspend fun getGpuTemperature(shizukuManager: ShizukuManager): Double = pickGpuTemp(getTemps(shizukuManager))
+    suspend fun getGpuTemperature(access: PrivilegedAccess): Double = pickGpuTemp(getTemps(access))
 
-    private suspend fun getTemps(shizukuManager: ShizukuManager): Map<String, Double> {
+    private suspend fun getTemps(access: PrivilegedAccess): Map<String, Double> {
         val now = System.currentTimeMillis()
         if (now - cachedAt < CACHE_TTL_MS) return cachedTemps
-        val output = shizukuManager.executeCommand("dumpsys thermalservice")
+        val output = access.executeCommand("dumpsys thermalservice")
         if (BuildConfig.DEBUG) Log.d(TAG, "dumpsys thermalservice:\n$output")
         cachedTemps = parseHaldTemps(output)
         if (BuildConfig.DEBUG) Log.d(TAG, "parsed temps: $cachedTemps")

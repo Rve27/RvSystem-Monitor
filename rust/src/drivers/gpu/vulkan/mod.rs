@@ -112,35 +112,21 @@ pub fn get_vulkan_version() -> String {
             None
         };
 
-
         let vk_enumerate_instance_extension_properties: Option<
-            extern "system" fn(
-                *const i8,
-                *mut u32,
-                *mut std::ffi::c_void,
-            ) -> VkResult,
+            extern "system" fn(*const i8, *mut u32, *mut std::ffi::c_void) -> VkResult,
         > = if !vk_enumerate_instance_extension_properties_ptr.is_null() {
             Some(std::mem::transmute::<
                 *mut libc::c_void,
-                extern "system" fn(
-                    *const i8,
-                    *mut u32,
-                    *mut std::ffi::c_void,
-                ) -> VkResult,
+                extern "system" fn(*const i8, *mut u32, *mut std::ffi::c_void) -> VkResult,
             >(vk_enumerate_instance_extension_properties_ptr))
         } else {
             None
         };
 
-
         let mut inst_extension_count: u32 = 0;
         let mut inst_extensions_str = String::new();
         if let Some(vk_enum_inst_ext_props) = vk_enumerate_instance_extension_properties {
-            vk_enum_inst_ext_props(
-                ptr::null(),
-                &mut inst_extension_count,
-                ptr::null_mut(),
-            );
+            vk_enum_inst_ext_props(ptr::null(), &mut inst_extension_count, ptr::null_mut());
             if inst_extension_count > 0 {
                 let mut extensions = vec![
                     VkExtensionProperties {
@@ -153,7 +139,8 @@ pub fn get_vulkan_version() -> String {
                     ptr::null(),
                     &mut inst_extension_count,
                     extensions.as_mut_ptr() as *mut std::ffi::c_void,
-                ) == 0 {
+                ) == 0
+                {
                     let names: Vec<String> = extensions
                         .iter()
                         .map(|ext| {

@@ -1,42 +1,34 @@
 package com.rve.systemmonitor.utils
 
-import com.rve.systemmonitor.domain.repository.SettingsRepository
-import com.rve.systemmonitor.shizuku.ShizukuManager
+import com.rve.systemmonitor.privileged.PrivilegedAccess
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @Singleton
-class FpsMonitor @Inject constructor(private val shizukuManager: ShizukuManager, private val settingsRepository: SettingsRepository) {
-    val framesPerSecond: Flow<Int> = combine(
-        settingsRepository.useShizuku,
-        shizukuManager.isShizukuAvailable,
-        shizukuManager.hasPermission,
-    ) { use, avail, perm ->
-        use && avail && perm
-    }.flatMapLatest { shizukuReady ->
+class FpsMonitor @Inject constructor(private val privilegedAccess: PrivilegedAccess) {
+    val framesPerSecond: Flow<Int> = privilegedAccess.isReady.flatMapLatest { privilegedReady ->
         flow {
             var initialized = false
             var lastTotalFrames = -1L
             emit(0)
 
             while (true) {
-                if (shizukuReady) {
+                if (privilegedReady) {
                     try {
                         if (!initialized) {
-                            shizukuManager.executeCommand(
+                            privilegedAccess.executeCommand(
                                 "dumpsys SurfaceFlinger --timestats -enable",
                             )
                             initialized = true
                         } else {
-                            val output = shizukuManager.executeCommand(
+                            val output = privilegedAccess.executeCommand(
                                 "dumpsys SurfaceFlinger --timestats -dump",
                             )
 

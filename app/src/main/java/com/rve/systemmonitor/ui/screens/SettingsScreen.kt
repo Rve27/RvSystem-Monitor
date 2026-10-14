@@ -22,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,7 +29,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,56 +51,45 @@ fun SettingsScreen(
     onNavigateToAbout: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val context = LocalContext.current
 
-    val settingsItems = remember(
-        context,
-        onNavigateToApp,
-        onNavigateToAppearance,
-        onNavigateToMonitoring,
-        onNavigateToOverlay,
-        onNavigateToRustLibrary,
-        onNavigateToAbout,
-    ) {
-        listOf(
-            SettingsItem(
-                title = context.getString(R.string.settings_item_app),
-                subtitle = context.getString(R.string.settings_item_app_desc),
-                iconRes = R.drawable.build_filled,
-                onClick = onNavigateToApp,
-            ),
-            SettingsItem(
-                title = context.getString(R.string.settings_item_appearance),
-                subtitle = context.getString(R.string.settings_item_appearance_desc),
-                iconRes = R.drawable.brightness_medium_filled,
-                onClick = onNavigateToAppearance,
-            ),
-            SettingsItem(
-                title = context.getString(R.string.settings_item_overlay),
-                subtitle = context.getString(R.string.settings_item_overlay_desc),
-                iconRes = R.drawable.layers_filled,
-                onClick = onNavigateToOverlay,
-            ),
-            SettingsItem(
-                title = context.getString(R.string.settings_item_monitoring),
-                subtitle = context.getString(R.string.settings_item_monitoring_desc),
-                iconRes = R.drawable.dvr_filled,
-                onClick = onNavigateToMonitoring,
-            ),
-            SettingsItem(
-                title = context.getString(R.string.settings_item_rust_library),
-                subtitle = context.getString(R.string.settings_item_rust_library_desc),
-                iconRes = R.drawable.ic_rust_logo,
-                onClick = onNavigateToRustLibrary,
-            ),
-            SettingsItem(
-                title = context.getString(R.string.settings_item_about),
-                subtitle = context.getString(R.string.settings_item_about_desc),
-                iconRes = R.drawable.info_filled,
-                onClick = onNavigateToAbout,
-            ),
-        )
-    }
+    val settingsItems = listOf(
+        SettingsItem(
+            title = stringResource(R.string.settings_item_app),
+            subtitle = stringResource(R.string.settings_item_app_desc),
+            iconRes = R.drawable.build_filled,
+            onClick = onNavigateToApp,
+        ),
+        SettingsItem(
+            title = stringResource(R.string.settings_item_appearance),
+            subtitle = stringResource(R.string.settings_item_appearance_desc),
+            iconRes = R.drawable.brightness_medium_filled,
+            onClick = onNavigateToAppearance,
+        ),
+        SettingsItem(
+            title = stringResource(R.string.settings_item_overlay),
+            subtitle = stringResource(R.string.settings_item_overlay_desc),
+            iconRes = R.drawable.layers_filled,
+            onClick = onNavigateToOverlay,
+        ),
+        SettingsItem(
+            title = stringResource(R.string.settings_item_monitoring),
+            subtitle = stringResource(R.string.settings_item_monitoring_desc),
+            iconRes = R.drawable.dvr_filled,
+            onClick = onNavigateToMonitoring,
+        ),
+        SettingsItem(
+            title = stringResource(R.string.settings_item_rust_library),
+            subtitle = stringResource(R.string.settings_item_rust_library_desc),
+            iconRes = R.drawable.ic_rust_logo,
+            onClick = onNavigateToRustLibrary,
+        ),
+        SettingsItem(
+            title = stringResource(R.string.settings_item_about),
+            subtitle = stringResource(R.string.settings_item_about_desc),
+            iconRes = R.drawable.info_filled,
+            onClick = onNavigateToAbout,
+        ),
+    )
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

@@ -49,7 +49,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
@@ -163,7 +162,7 @@ private fun ChargingSpeedCard(battery: Battery, history: ImmutableList<BatteryDa
                         start = 20.dp,
                         top = 20.dp,
                         end = 20.dp,
-                        bottom = if (isGraphVisible) 16.dp else 20.dp
+                        bottom = if (isGraphVisible) 16.dp else 20.dp,
                     ),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -347,7 +346,6 @@ private fun ChargingSpeedCard(battery: Battery, history: ImmutableList<BatteryDa
 @Composable
 private fun BatteryOverviewCard(battery: Battery) {
     val isCharging = battery.status == "Charging"
-    val context = LocalContext.current
 
     val batteryIcon = remember(battery.level, isCharging, battery.wattage) {
         if (isCharging) {
@@ -370,16 +368,14 @@ private fun BatteryOverviewCard(battery: Battery) {
         }
     }
 
-    val displayStatus = remember(battery.status, battery.wattage, battery.statusRes) {
-        if (isCharging) {
-            when {
-                battery.wattage >= 25.0 -> context.getString(R.string.battery_hyper_charging)
-                battery.wattage >= 15.0 -> context.getString(R.string.battery_fast_charging)
-                else -> context.getString(R.string.battery_charging)
-            }
-        } else {
-            context.getString(battery.statusRes)
+    val displayStatus = if (isCharging) {
+        when {
+            battery.wattage >= 25.0 -> stringResource(R.string.battery_hyper_charging)
+            battery.wattage >= 15.0 -> stringResource(R.string.battery_fast_charging)
+            else -> stringResource(R.string.battery_charging)
         }
+    } else {
+        stringResource(battery.statusRes)
     }
 
     OverviewCard(

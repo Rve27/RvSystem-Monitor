@@ -44,7 +44,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -70,27 +69,30 @@ object BottomNavBar {
         val solidBackgroundColor = MaterialTheme.colorScheme.surfaceContainer
         val solidIndicatorColor = MaterialTheme.colorScheme.secondaryContainer
         val navBarBlurEffectEnabled = LocalNavBarBlurEffectEnabled.current
-        val context = LocalContext.current
+        val homeLabel = stringResource(R.string.nav_label_home)
+        val cpuLabel = stringResource(R.string.nav_label_cpu)
+        val memoryLabel = stringResource(R.string.nav_label_memory)
+        val batteryLabel = stringResource(R.string.nav_label_battery)
 
-        val items = remember(context) {
+        val items = remember(homeLabel, cpuLabel, memoryLabel, batteryLabel) {
             listOf(
                 NavItem(
-                    label = context.getString(R.string.nav_label_home),
+                    label = homeLabel,
                     iconUnselected = R.drawable.home,
                     iconSelected = R.drawable.home_filled,
                 ),
                 NavItem(
-                    label = context.getString(R.string.nav_label_cpu),
+                    label = cpuLabel,
                     iconUnselected = R.drawable.memory,
                     iconSelected = R.drawable.memory_filled,
                 ),
                 NavItem(
-                    label = context.getString(R.string.nav_label_memory),
+                    label = memoryLabel,
                     iconUnselected = R.drawable.memory_alt,
                     iconSelected = R.drawable.memory_alt_filled,
                 ),
                 NavItem(
-                    label = context.getString(R.string.nav_label_battery),
+                    label = batteryLabel,
                     iconUnselected = R.drawable.battery_android_0,
                     iconSelected = R.drawable.battery_android_full,
                 ),

@@ -48,13 +48,13 @@
     <string name="home_title_processor">Процессор</string>
     <string name="home_title_graphics">Графика</string>
     <string name="home_os_name_version">%1$s %2$s</string>
-    <string name="home_badge_api">API %1$s</string>
+    <string name="home_badge_api">API %1$d</string>
     <string name="home_badge_patch">Патч: %1$s</string>
     <string name="home_screen_size">Экран %1$s\"</string>
     <string name="home_badge_refresh_rate">%1$s Гц</string>
-    <string name="home_badge_density">%1$s dpi</string>
+    <string name="home_badge_density">%1$d dpi</string>
     <string name="home_badge_hdr">HDR</string>
-    <string name="home_cores_count">Ядер: %1$s</string>
+    <string name="home_cores_count">Ядер: %1$d</string>
     <string name="home_badge_opengl_es">OpenGL ES %1$s</string>
     <string name="home_badge_vulkan">Vulkan %1$s</string>
     <!-- Home Screen Help -->

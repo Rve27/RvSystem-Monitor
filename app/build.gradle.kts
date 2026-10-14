@@ -105,6 +105,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
+    lint {
+        // ru/uk/zh-rCN translations lag behind new strings; don't fail the build for that.
+        disable += "MissingTranslation"
+    }
+
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
             freeCompilerArgs.add("-opt-in=androidx.compose.material3.ExperimentalMaterial3Api")

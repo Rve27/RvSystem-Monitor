@@ -60,6 +60,8 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
 
     override val useShizuku: Flow<Boolean> = settingsPreferences.useShizukuFlow
 
+    override val useRoot: Flow<Boolean> = settingsPreferences.useRootFlow
+
     override val updatesPausedUntil: Flow<Long> = settingsPreferences.updatesPausedUntilFlow
 
     override val blurEffectEnabled: Flow<Boolean> = settingsPreferences.blurEffectEnabledFlow
@@ -120,6 +122,10 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
         settingsPreferences.saveUseShizuku(enabled)
     }
 
+    override suspend fun setUseRoot(enabled: Boolean) {
+        settingsPreferences.saveUseRoot(enabled)
+    }
+
     override suspend fun setUpdatesPausedUntil(timestampMillis: Long) {
         settingsPreferences.saveUpdatesPausedUntil(timestampMillis)
     }
@@ -158,6 +164,7 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
                         ?: VibrationIntensity.LIGHT,
                 autoUpdateEnabled = appPrefs[SettingsPreferences.AUTO_UPDATE_ENABLED_KEY] ?: true,
                 useShizuku = appPrefs[SettingsPreferences.USE_SHIZUKU_KEY] ?: false,
+                useRoot = appPrefs[SettingsPreferences.USE_ROOT_KEY] ?: false,
                 updatesPausedUntil = appPrefs[SettingsPreferences.UPDATES_PAUSED_UNTIL_KEY] ?: 0L,
                 blurEffectEnabled = appPrefs[SettingsPreferences.BLUR_EFFECT_ENABLED_KEY] ?: true,
                 navBarBlurEffectEnabled = appPrefs[SettingsPreferences.NAV_BAR_BLUR_EFFECT_ENABLED_KEY] ?: true,
@@ -207,6 +214,7 @@ class SettingsRepositoryImpl @Inject constructor(private val application: Applic
             prefs[SettingsPreferences.VIBRATION_INTENSITY_KEY] = backup.app.vibrationIntensity.name
             prefs[SettingsPreferences.AUTO_UPDATE_ENABLED_KEY] = backup.app.autoUpdateEnabled
             prefs[SettingsPreferences.USE_SHIZUKU_KEY] = backup.app.useShizuku
+            prefs[SettingsPreferences.USE_ROOT_KEY] = backup.app.useRoot && !backup.app.useShizuku
             prefs[SettingsPreferences.UPDATES_PAUSED_UNTIL_KEY] = backup.app.updatesPausedUntil
             prefs[SettingsPreferences.BLUR_EFFECT_ENABLED_KEY] = backup.app.blurEffectEnabled
             prefs[SettingsPreferences.NAV_BAR_BLUR_EFFECT_ENABLED_KEY] = backup.app.navBarBlurEffectEnabled

@@ -5,7 +5,7 @@ import com.rve.systemmonitor.domain.model.CPU
 import com.rve.systemmonitor.domain.model.CoreDetail
 import com.rve.systemmonitor.domain.repository.CpuRepository
 import com.rve.systemmonitor.domain.repository.SettingsRepository
-import com.rve.systemmonitor.shizuku.ShizukuManager
+import com.rve.systemmonitor.privileged.PrivilegedAccess
 import com.rve.systemmonitor.utils.CpuUtils
 import com.rve.systemmonitor.utils.FlowUtils
 import com.rve.systemmonitor.utils.ThermalUtils
@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.shareIn
 @Singleton
 class CpuRepositoryImpl @Inject constructor(
     private val settingsRepository: SettingsRepository,
-    private val shizukuManager: ShizukuManager,
+    private val privilegedAccess: PrivilegedAccess,
     @param:ApplicationScope private val externalScope: CoroutineScope,
 ) : CpuRepository {
     private val TAG = "CpuRepository"
@@ -31,12 +31,10 @@ class CpuRepositoryImpl @Inject constructor(
     private val sharedCpuStream by lazy {
         kotlinx.coroutines.flow.combine(
             settingsRepository.cpuRefreshDelay,
-            settingsRepository.useShizuku,
-            shizukuManager.isShizukuAvailable,
-            shizukuManager.hasPermission,
-        ) { delayMillis, useShizuku, isAvailable, hasPermission ->
-            Quad(delayMillis, useShizuku, isAvailable, hasPermission)
-        }.flatMapLatest { (delayMillis, useShizuku, isAvailable, hasPermission) ->
+            privilegedAccess.isReady,
+        ) { delayMillis, ready ->
+            delayMillis to ready
+        }.flatMapLatest { (delayMillis, privilegedReady) ->
             val manufacturer = CpuUtils.getSocManufacturer()
             val model = CpuUtils.getSocModel()
             val cores = CpuUtils.getCoreCount()
@@ -59,22 +57,21 @@ class CpuRepositoryImpl @Inject constructor(
             FlowUtils.pollingFlow(TAG, delayMillis) {
                 val dynamicData = CpuUtils.getCpuDynamicData()
                 val nativeTemp = dynamicData.getOrElse(0) { 0.0 }
-                val shizukuReady = useShizuku && isAvailable && hasPermission
-                val fallbackTemp = if (nativeTemp <= 0.0 && shizukuReady) {
-                    ThermalUtils.getCpuTemperature(shizukuManager)
+                val fallbackTemp = if (nativeTemp <= 0.0 && privilegedReady) {
+                    ThermalUtils.getCpuTemperature(privilegedAccess)
                 } else {
                     0.0
                 }
                 val cpuTemperature = if (nativeTemp > 0.0) nativeTemp else fallbackTemp
                 val coreDetails = ArrayList<CoreDetail>(cores)
 
-                var isShizukuSuccess = false
-                val cpuLoads = if (shizukuReady) {
-                    val procStat = shizukuManager.executeCommand("cat /proc/stat")
+                var isPrivilegedSuccess = false
+                val cpuLoads = if (privilegedReady) {
+                    val procStat = privilegedAccess.executeCommand("cat /proc/stat")
                     if (procStat.isNotEmpty() && !procStat.startsWith("ERROR:")) {
                         val loads = CpuUtils.calculateCpuLoad(procStat)
                         if (loads.isNotEmpty()) {
-                            isShizukuSuccess = true
+                            isPrivilegedSuccess = true
                             loads
                         } else {
                             DoubleArray(0)
@@ -86,13 +83,13 @@ class CpuRepositoryImpl @Inject constructor(
                     DoubleArray(0)
                 }
 
-                val totalLoad = cpuLoads.getOrElse(0) { if (isShizukuSuccess) -1.0 else 0.0 }
+                val totalLoad = cpuLoads.getOrElse(0) { if (isPrivilegedSuccess) -1.0 else 0.0 }
 
                 for (i in 0 until cores) {
                     val currentKhz = dynamicData.getOrElse(1 + i * 2) { 0.0 }.toLong()
                     val nativeCoreTemp = dynamicData.getOrElse(2 + i * 2) { 0.0 }
                     val currentTemp = nativeCoreTemp
-                    val currentLoad = cpuLoads.getOrElse(1 + i) { if (isShizukuSuccess) -1.0 else 0.0 }
+                    val currentLoad = cpuLoads.getOrElse(1 + i) { if (isPrivilegedSuccess) -1.0 else 0.0 }
                     val static = staticCoreInfo[i]
                     coreDetails.add(
                         CoreDetail(
@@ -117,7 +114,7 @@ class CpuRepositoryImpl @Inject constructor(
                     abi = abi,
                     temperature = cpuTemperature,
                     load = totalLoad,
-                    isLoadAvailable = isShizukuSuccess,
+                    isLoadAvailable = isPrivilegedSuccess,
                     coreDetails = coreDetails.toImmutableList(),
                 )
             }
@@ -127,8 +124,6 @@ class CpuRepositoryImpl @Inject constructor(
             replay = 1,
         )
     }
-
-    private data class Quad<A, B, C, D>(val a: A, val b: B, val c: C, val d: D)
 
     override fun getCpuInfo(): CPU {
         return CPU(

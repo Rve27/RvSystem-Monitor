@@ -118,7 +118,7 @@ fun OverlaySettingsScreen(
 
     val isShizukuAvailable by viewModel.isShizukuAvailable.collectAsStateWithLifecycle()
     val hasShizukuPermission by viewModel.hasShizukuPermission.collectAsStateWithLifecycle()
-    val useShizuku by viewModel.useShizuku.collectAsStateWithLifecycle()
+    val isPrivilegedReady by viewModel.isPrivilegedReady.collectAsStateWithLifecycle()
 
     val isOverlayActive = isOverlayEnabled || isAutoToggleEnabled
 
@@ -269,9 +269,7 @@ fun OverlaySettingsScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
-            val isShizukuServiceReady = isShizukuAvailable && hasShizukuPermission
-
-            if (!isShizukuServiceReady) {
+            if (!isPrivilegedReady) {
                 item {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -313,7 +311,7 @@ fun OverlaySettingsScreen(
                                 val statusText = when {
                                     !isShizukuAvailable -> stringResource(R.string.shizuku_status_not_running)
                                     !hasShizukuPermission -> stringResource(R.string.shizuku_status_permission_required)
-                                    else -> ""
+                                    else -> stringResource(R.string.privileged_status_disabled)
                                 }
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
@@ -427,7 +425,7 @@ fun OverlaySettingsScreen(
                         icon = R.drawable.sixty_fps_select_rounded,
                         isEnabled = isFpsEnabled,
                         hasPermission = hasOverlayPermission,
-                        enabled = isOverlayActive && useShizuku && isShizukuServiceReady,
+                        enabled = isOverlayActive && isPrivilegedReady,
                         onClick = rememberHapticOnClick {
                             if (!hasOverlayPermission && !isFpsEnabled) {
                                 val intent = Intent(

@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -37,7 +36,6 @@ fun HomeScreen(isActive: Boolean, onNavigateToCPU: () -> Unit, onNavigateToGPU: 
 private fun HomeScreenContent(uiState: HomeUiState, onNavigateToCPU: () -> Unit, onNavigateToGPU: () -> Unit) {
     var showHelpSheet by remember { mutableStateOf(false) }
     val sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
-    val context = LocalContext.current
 
     if (showHelpSheet) {
         ModalBottomSheet(
@@ -49,72 +47,70 @@ private fun HomeScreenContent(uiState: HomeUiState, onNavigateToCPU: () -> Unit,
         }
     }
 
-    val infoCards = remember(uiState, context) {
-        listOf(
-            InfoCardData(
-                title = context.getString(R.string.home_title_device),
-                headline = if (uiState.device.marketName != "unknown") {
-                    "${uiState.device.marketName} (${uiState.device.model})"
-                } else {
-                    uiState.device.model
-                },
-                subhead = context.getString(R.string.label_by, uiState.device.brand),
-                iconRes = R.drawable.mobile_filled,
-                badges = listOf(uiState.device.device).toImmutableList(),
-                onHelpClick = { showHelpSheet = true },
-            ),
-            InfoCardData(
-                title = context.getString(R.string.home_title_os),
-                headline = "${context.getString(R.string.home_os_name_version, uiState.os.name, uiState.os.version)} " +
-                    "(${context.getString(uiState.os.dessertNameRes)})",
-                subhead = uiState.os.hyperOSVersion?.let { "HyperOS $it" } ?: "",
-                iconRes = R.drawable.android_filled,
-                backgroundIconOffset = 45.dp,
-                badges = listOf(
-                    context.getString(R.string.home_badge_api, uiState.os.sdk),
-                    context.getString(R.string.home_badge_patch, uiState.os.securityPatch),
-                ).toImmutableList(),
-            ),
-            InfoCardData(
-                title = context.getString(R.string.home_title_display),
-                headline = uiState.display.resolution,
-                subhead = run {
-                    val displaySupported = uiState.display.supportedRefreshRates.joinToString(", ") { "${it}Hz" }
-                    val displaySubhead = context.getString(R.string.home_screen_size, uiState.display.screenSizeInches)
-                    if (displaySupported.isNotEmpty()) "$displaySubhead\n$displaySupported" else displaySubhead
-                },
-                iconRes = R.drawable.mobile_3_filled,
-                backgroundIconOffset = 20.dp,
-                badges = buildList {
-                    add(context.getString(R.string.home_badge_density, uiState.display.densityDpi))
-                    if (uiState.display.isHdrSupported) {
-                        add(context.getString(R.string.home_badge_hdr))
-                        addAll(uiState.display.hdrTypes)
-                    }
-                }.toImmutableList(),
-                secondaryBadgeIndices = listOf(0).toImmutableList(),
-            ),
-            InfoCardData(
-                title = context.getString(R.string.home_title_processor),
-                headline = uiState.cpu.model,
-                subhead = context.getString(R.string.label_by, uiState.cpu.manufacturer),
-                iconRes = R.drawable.memory_filled,
-                badges = listOf(context.getString(R.string.home_cores_count, uiState.cpu.cores)).toImmutableList(),
-                onClick = onNavigateToCPU,
-            ),
-            InfoCardData(
-                title = context.getString(R.string.home_title_graphics),
-                headline = uiState.gpu.renderer,
-                subhead = context.getString(R.string.label_by, uiState.gpu.vendor),
-                iconRes = R.drawable.view_in_ar_filled,
-                badges = listOf(
-                    context.getString(R.string.home_badge_opengl_es, uiState.gpu.glesVersion),
-                    context.getString(R.string.home_badge_vulkan, uiState.gpu.vulkanVersion),
-                ).toImmutableList(),
-                onClick = onNavigateToGPU,
-            ),
-        ).toImmutableList()
-    }
+    val infoCards = listOf(
+        InfoCardData(
+            title = stringResource(R.string.home_title_device),
+            headline = if (uiState.device.marketName != "unknown") {
+                "${uiState.device.marketName} (${uiState.device.model})"
+            } else {
+                uiState.device.model
+            },
+            subhead = stringResource(R.string.label_by, uiState.device.brand),
+            iconRes = R.drawable.mobile_filled,
+            badges = listOf(uiState.device.device).toImmutableList(),
+            onHelpClick = { showHelpSheet = true },
+        ),
+        InfoCardData(
+            title = stringResource(R.string.home_title_os),
+            headline = "${stringResource(R.string.home_os_name_version, uiState.os.name, uiState.os.version)} " +
+                "(${stringResource(uiState.os.dessertNameRes)})",
+            subhead = uiState.os.hyperOSVersion?.let { "HyperOS $it" } ?: "",
+            iconRes = R.drawable.android_filled,
+            backgroundIconOffset = 45.dp,
+            badges = listOf(
+                stringResource(R.string.home_badge_api, uiState.os.sdk),
+                stringResource(R.string.home_badge_patch, uiState.os.securityPatch),
+            ).toImmutableList(),
+        ),
+        InfoCardData(
+            title = stringResource(R.string.home_title_display),
+            headline = uiState.display.resolution,
+            subhead = run {
+                val displaySupported = uiState.display.supportedRefreshRates.joinToString(", ") { "${it}Hz" }
+                val displaySubhead = stringResource(R.string.home_screen_size, uiState.display.screenSizeInches.toString())
+                if (displaySupported.isNotEmpty()) "$displaySubhead\n$displaySupported" else displaySubhead
+            },
+            iconRes = R.drawable.mobile_3_filled,
+            backgroundIconOffset = 20.dp,
+            badges = buildList {
+                add(stringResource(R.string.home_badge_density, uiState.display.densityDpi))
+                if (uiState.display.isHdrSupported) {
+                    add(stringResource(R.string.home_badge_hdr))
+                    addAll(uiState.display.hdrTypes)
+                }
+            }.toImmutableList(),
+            secondaryBadgeIndices = listOf(0).toImmutableList(),
+        ),
+        InfoCardData(
+            title = stringResource(R.string.home_title_processor),
+            headline = uiState.cpu.model,
+            subhead = stringResource(R.string.label_by, uiState.cpu.manufacturer),
+            iconRes = R.drawable.memory_filled,
+            badges = listOf(stringResource(R.string.home_cores_count, uiState.cpu.cores)).toImmutableList(),
+            onClick = onNavigateToCPU,
+        ),
+        InfoCardData(
+            title = stringResource(R.string.home_title_graphics),
+            headline = uiState.gpu.renderer,
+            subhead = stringResource(R.string.label_by, uiState.gpu.vendor),
+            iconRes = R.drawable.view_in_ar_filled,
+            badges = listOf(
+                stringResource(R.string.home_badge_opengl_es, uiState.gpu.glesVersion),
+                stringResource(R.string.home_badge_vulkan, uiState.gpu.vulkanVersion),
+            ).toImmutableList(),
+            onClick = onNavigateToGPU,
+        ),
+    ).toImmutableList()
 
     ScreenLazyColumn {
         items(

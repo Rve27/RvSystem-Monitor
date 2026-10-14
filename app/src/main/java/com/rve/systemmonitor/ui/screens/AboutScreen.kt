@@ -89,13 +89,14 @@ private fun AboutScreenContent(
 ) {
     val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val noBrowserMessage = stringResource(R.string.error_no_browser)
 
     val openUrl = { url: String ->
         try {
             val intent = Intent(Intent.ACTION_VIEW, url.toUri())
             context.startActivity(intent)
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(context, context.getString(R.string.error_no_browser), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, noBrowserMessage, Toast.LENGTH_SHORT).show()
         }
     }
 

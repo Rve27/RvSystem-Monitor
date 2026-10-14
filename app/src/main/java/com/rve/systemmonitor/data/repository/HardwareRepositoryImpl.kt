@@ -9,7 +9,7 @@ import com.rve.systemmonitor.domain.model.OS
 import com.rve.systemmonitor.domain.model.Storage
 import com.rve.systemmonitor.domain.repository.HardwareRepository
 import com.rve.systemmonitor.domain.repository.SettingsRepository
-import com.rve.systemmonitor.shizuku.ShizukuManager
+import com.rve.systemmonitor.privileged.PrivilegedAccess
 import com.rve.systemmonitor.utils.DeviceUtils
 import com.rve.systemmonitor.utils.DisplayUtils
 import com.rve.systemmonitor.utils.FlowUtils
@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.shareIn
 class HardwareRepositoryImpl @Inject constructor(
     private val application: Application,
     private val settingsRepository: SettingsRepository,
-    private val shizukuManager: ShizukuManager,
+    private val privilegedAccess: PrivilegedAccess,
     @param:ApplicationScope private val externalScope: CoroutineScope,
 ) : HardwareRepository {
     private val TAG = "HardwareRepository"
@@ -133,14 +133,12 @@ class HardwareRepositoryImpl @Inject constructor(
     private val sharedGpuStream by lazy {
         combine(
             settingsRepository.gpuRefreshDelay,
-            settingsRepository.useShizuku,
-            shizukuManager.isShizukuAvailable,
-            shizukuManager.hasPermission,
-        ) { delayMillis, useShizuku, isAvailable, hasPermission ->
-            Quad(delayMillis, useShizuku, isAvailable, hasPermission)
-        }.flatMapLatest { (delayMillis, useShizuku, isAvailable, hasPermission) ->
+            privilegedAccess.isReady,
+        ) { delayMillis, ready ->
+            delayMillis to ready
+        }.flatMapLatest { (delayMillis, privilegedReady) ->
             FlowUtils.pollingFlow(TAG, delayMillis) {
-                getGpuInfo(useShizuku, isAvailable, hasPermission)
+                getGpuInfo(privilegedReady)
             }
         }.shareIn(
             scope = externalScope,
@@ -159,10 +157,10 @@ class HardwareRepositoryImpl @Inject constructor(
         temperature = GpuUtils.getGpuTemperature(),
     )
 
-    private suspend fun getGpuInfo(useShizuku: Boolean, isAvailable: Boolean, hasPermission: Boolean): GPU {
+    private suspend fun getGpuInfo(privilegedReady: Boolean): GPU {
         val nativeTemp = GpuUtils.getGpuTemperature()
-        val fallbackTemp = if (nativeTemp <= 0.0 && useShizuku && isAvailable && hasPermission) {
-            ThermalUtils.getGpuTemperature(shizukuManager)
+        val fallbackTemp = if (nativeTemp <= 0.0 && privilegedReady) {
+            ThermalUtils.getGpuTemperature(privilegedAccess)
         } else {
             0.0
         }
@@ -175,5 +173,3 @@ class HardwareRepositoryImpl @Inject constructor(
 
     override fun getStorageInfo(): Storage = StorageUtils.getStorageData()
 }
-
-private data class Quad<A, B, C, D>(val a: A, val b: B, val c: C, val d: D)

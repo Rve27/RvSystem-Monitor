@@ -27,6 +27,7 @@ class SettingsPreferences(private val context: Context) {
         val VIBRATION_INTENSITY_KEY = stringPreferencesKey("vibration_intensity")
         val AUTO_UPDATE_ENABLED_KEY = booleanPreferencesKey("auto_update_enabled")
         val USE_SHIZUKU_KEY = booleanPreferencesKey("use_shizuku")
+        val USE_ROOT_KEY = booleanPreferencesKey("use_root")
         val UPDATES_PAUSED_UNTIL_KEY = longPreferencesKey("updates_paused_until")
         val BLUR_EFFECT_ENABLED_KEY = booleanPreferencesKey("blur_effect_enabled")
         val NAV_BAR_BLUR_EFFECT_ENABLED_KEY = booleanPreferencesKey("nav_bar_blur_effect_enabled")
@@ -35,6 +36,7 @@ class SettingsPreferences(private val context: Context) {
 
     val autoUpdateEnabledFlow: Flow<Boolean> = context.dataStore.getValueFlow(AUTO_UPDATE_ENABLED_KEY, true)
     val useShizukuFlow: Flow<Boolean> = context.dataStore.getValueFlow(USE_SHIZUKU_KEY, false)
+    val useRootFlow: Flow<Boolean> = context.dataStore.getValueFlow(USE_ROOT_KEY, false)
     val updatesPausedUntilFlow: Flow<Long> = context.dataStore.getValueFlow(UPDATES_PAUSED_UNTIL_KEY, 0L)
     val blurEffectEnabledFlow: Flow<Boolean> = context.dataStore.getValueFlow(BLUR_EFFECT_ENABLED_KEY, true)
     val navBarBlurEffectEnabledFlow: Flow<Boolean> = context.dataStore.getValueFlow(NAV_BAR_BLUR_EFFECT_ENABLED_KEY, true)
@@ -67,6 +69,7 @@ class SettingsPreferences(private val context: Context) {
     suspend fun saveVibrationIntensity(intensity: VibrationIntensity) = context.dataStore.setEnum(VIBRATION_INTENSITY_KEY, intensity)
     suspend fun saveAutoUpdateEnabled(enabled: Boolean) = context.dataStore.setValue(AUTO_UPDATE_ENABLED_KEY, enabled)
     suspend fun saveUseShizuku(enabled: Boolean) = context.dataStore.setValue(USE_SHIZUKU_KEY, enabled)
+    suspend fun saveUseRoot(enabled: Boolean) = context.dataStore.setValue(USE_ROOT_KEY, enabled)
     suspend fun saveUpdatesPausedUntil(timestamp: Long) = context.dataStore.setValue(UPDATES_PAUSED_UNTIL_KEY, timestamp)
     suspend fun saveBlurEffectEnabled(enabled: Boolean) = context.dataStore.setValue(BLUR_EFFECT_ENABLED_KEY, enabled)
     suspend fun saveNavBarBlurEffectEnabled(enabled: Boolean) = context.dataStore.setValue(NAV_BAR_BLUR_EFFECT_ENABLED_KEY, enabled)

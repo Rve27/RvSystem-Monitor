@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.rve.systemmonitor.domain.model.OverlayPosition
 import com.rve.systemmonitor.domain.repository.OverlayRepository
 import com.rve.systemmonitor.domain.repository.SettingsRepository
+import com.rve.systemmonitor.privileged.PrivilegedAccess
 import com.rve.systemmonitor.shizuku.ShizukuManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -19,11 +20,12 @@ class OverlaySettingsViewModel @Inject constructor(
     private val overlayRepository: OverlayRepository,
     private val settingsRepository: SettingsRepository,
     private val shizukuManager: ShizukuManager,
+    privilegedAccess: PrivilegedAccess,
 ) : ViewModel() {
 
     val isShizukuAvailable: StateFlow<Boolean> = shizukuManager.isShizukuAvailable
     val hasShizukuPermission: StateFlow<Boolean> = shizukuManager.hasPermission
-    val useShizuku: StateFlow<Boolean> = settingsRepository.useShizuku
+    val isPrivilegedReady: StateFlow<Boolean> = privilegedAccess.isReady
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

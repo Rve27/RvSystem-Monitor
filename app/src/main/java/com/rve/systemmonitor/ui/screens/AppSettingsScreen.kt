@@ -83,6 +83,8 @@ fun AppSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onNavigate
     val useShizuku by viewModel.useShizuku.collectAsStateWithLifecycle()
     val isShizukuAvailable by viewModel.isShizukuAvailable.collectAsStateWithLifecycle()
     val hasShizukuPermission by viewModel.hasShizukuPermission.collectAsStateWithLifecycle()
+    val useRoot by viewModel.useRoot.collectAsStateWithLifecycle()
+    val isRootGranted by viewModel.isRootGranted.collectAsStateWithLifecycle()
 
     AppSettingsScreenContent(
         autoUpdateEnabled = autoUpdateEnabled,
@@ -90,11 +92,15 @@ fun AppSettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), onNavigate
         useShizuku = useShizuku,
         isShizukuAvailable = isShizukuAvailable,
         hasShizukuPermission = hasShizukuPermission,
+        useRoot = useRoot,
+        isRootGranted = isRootGranted,
         onAutoUpdateChange = { viewModel.setAutoUpdateEnabled(it) },
         onLanguageChange = { viewModel.setLanguage(it) },
         onUseShizukuChange = { viewModel.setUseShizuku(it) },
         onRefreshShizukuStatus = { viewModel.refreshShizukuState() },
         onRequestShizukuPermission = { viewModel.requestShizukuPermission() },
+        onUseRootChange = { viewModel.setUseRoot(it) },
+        onRequestRoot = { viewModel.requestRoot() },
         onExportSettings = { uri, callback -> viewModel.exportSettingsToFile(context, uri, callback) },
         onImportSettings = { uri, callback -> viewModel.importSettingsFromFile(context, uri, callback) },
         onNavigateBack = onNavigateBack,
@@ -110,11 +116,15 @@ private fun AppSettingsScreenContent(
     useShizuku: Boolean,
     isShizukuAvailable: Boolean,
     hasShizukuPermission: Boolean,
+    useRoot: Boolean,
+    isRootGranted: Boolean,
     onAutoUpdateChange: (Boolean) -> Unit,
     onLanguageChange: (AppLanguage) -> Unit,
     onUseShizukuChange: (Boolean) -> Unit,
     onRefreshShizukuStatus: () -> Unit,
     onRequestShizukuPermission: () -> Unit,
+    onUseRootChange: (Boolean) -> Unit,
+    onRequestRoot: () -> Unit,
     onExportSettings: (Uri, (Boolean) -> Unit) -> Unit,
     onImportSettings: (Uri, (Boolean) -> Unit) -> Unit,
     onNavigateBack: () -> Unit,
@@ -447,6 +457,143 @@ private fun AppSettingsScreenContent(
                                             ) {
                                                 Text(
                                                     text = stringResource(R.string.button_grant_permission),
+                                                    style = MaterialTheme.typography.labelMedium,
+                                                    fontWeight = FontWeight.Bold,
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            HorizontalDivider(
+                                modifier = Modifier.padding(horizontal = 20.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            )
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .hapticClickable { onUseRootChange(!useRoot) }
+                                    .padding(horizontal = 20.dp, vertical = 20.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    modifier = Modifier.weight(1f),
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(48.dp)
+                                            .clip(RoundedCornerShape(12.dp))
+                                            .background(MaterialTheme.colorScheme.primary),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.ic_root),
+                                            contentDescription = stringResource(R.string.cd_root_icon),
+                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier.size(28.dp),
+                                        )
+                                    }
+
+                                    Column {
+                                        Text(
+                                            text = stringResource(R.string.settings_use_root),
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                        )
+                                        Text(
+                                            text = stringResource(R.string.settings_use_root_description),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                    }
+                                }
+
+                                Switch(
+                                    checked = useRoot,
+                                    onCheckedChange = onUseRootChange,
+                                    colors = SwitchDefaults.colors(
+                                        checkedIconColor = MaterialTheme.colorScheme.primary,
+                                    ),
+                                    thumbContent = {
+                                        Crossfade(
+                                            targetState = useRoot,
+                                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                            label = "Root Switch Icon",
+                                        ) { enabled ->
+                                            Icon(
+                                                painter = painterResource(
+                                                    if (enabled) R.drawable.check_rounded else R.drawable.close_rounded,
+                                                ),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                                            )
+                                        }
+                                    },
+                                )
+                            }
+
+                            AnimatedVisibility(
+                                visible = useRoot,
+                                enter = expandVertically() + fadeIn(),
+                                exit = shrinkVertically() + fadeOut(),
+                            ) {
+                                Column {
+                                    HorizontalDivider(
+                                        modifier = Modifier.padding(horizontal = 20.dp),
+                                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                    )
+
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 20.dp, vertical = 16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                    ) {
+                                        val rootColor = if (isRootGranted) {
+                                            Color(0xFF22C55E)
+                                        } else {
+                                            MaterialTheme.colorScheme.error
+                                        }
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                            modifier = Modifier.weight(1f),
+                                        ) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(8.dp)
+                                                    .clip(CircleShape)
+                                                    .background(rootColor),
+                                            )
+                                            Text(
+                                                text = stringResource(
+                                                    if (isRootGranted) {
+                                                        R.string.root_status_granted
+                                                    } else {
+                                                        R.string.root_status_not_granted
+                                                    },
+                                                ),
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = rootColor,
+                                                fontWeight = FontWeight.Bold,
+                                            )
+                                        }
+
+                                        if (!isRootGranted) {
+                                            Button(
+                                                onClick = onRequestRoot,
+                                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                                                modifier = Modifier.height(32.dp),
+                                            ) {
+                                                Text(
+                                                    text = stringResource(R.string.button_request_root),
                                                     style = MaterialTheme.typography.labelMedium,
                                                     fontWeight = FontWeight.Bold,
                                                 )
