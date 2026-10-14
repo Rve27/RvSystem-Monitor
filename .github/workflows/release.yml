@@ -85,7 +85,7 @@ jobs:
             echo "KEY_PASSWORD=${KEY_PASSWORD}"
           } > signing.properties
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: assembleGithubRelease
         run: ./gradlew assembleGithubRelease
