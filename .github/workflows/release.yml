@@ -49,7 +49,7 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           cache-workspaces: rust
           rustflags: ""
