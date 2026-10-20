@@ -48,13 +48,13 @@
     <string name="home_title_processor">处理器</string>
     <string name="home_title_graphics">图形</string>
     <string name="home_os_name_version">%1$s %2$s</string>
-    <string name="home_badge_api">API %1$d</string>
+    <string name="home_badge_api">API %1$s</string>
     <string name="home_badge_patch">补丁：%1$s</string>
     <string name="home_screen_size">屏幕尺寸：%1$s&quot;</string>
     <string name="home_badge_refresh_rate">%1$sHz</string>
-    <string name="home_badge_density">%1$d dpi</string>
+    <string name="home_badge_density">%1$s dpi</string>
     <string name="home_badge_hdr">HDR</string>
-    <string name="home_cores_count">%1$d 个核心</string>
+    <string name="home_cores_count">%1$s 个核心</string>
     <string name="home_badge_opengl_es">OpenGL ES %1$s</string>
     <string name="home_badge_vulkan">Vulkan %1$s</string>
     <!-- Home Screen Help -->

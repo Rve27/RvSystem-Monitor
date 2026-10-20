@@ -173,3 +173,4 @@ class HardwareRepositoryImpl @Inject constructor(
 
     override fun getStorageInfo(): Storage = StorageUtils.getStorageData()
 }
+
